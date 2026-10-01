@@ -536,6 +536,7 @@ def _init(context: _Context, arguments: argparse.Namespace) -> int:
             "foreign_material": [
                 {"directory": one.directory, "files": one.files} for one in result.foreign_material
             ],
+            "foreign_notes": list(result.foreign_notes),
             "next_steps": [
                 {"command": one.command, "reason": one.reason} for one in _next_steps(result)
             ],
@@ -574,7 +575,7 @@ _PILE_NEXT_STEPS = (
 
 
 def _next_steps(result: InitializationResult) -> tuple[_NextStep, ...]:
-    return _PILE_NEXT_STEPS if result.foreign_material else ()
+    return _PILE_NEXT_STEPS if result.foreign_material or result.foreign_notes else ()
 
 
 def _init_summary(context: _Context, result: InitializationResult) -> str:
@@ -596,6 +597,12 @@ def _init_summary(context: _Context, result: InitializationResult) -> str:
             f"    {one.directory} ({one.files} {'file' if one.files == 1 else 'files'})"
             for one in foreign
         )
+    if result.foreign_notes:
+        count = len(result.foreign_notes)
+        lines.append(
+            f"  loose:     {count} loose {'note' if count == 1 else 'notes'} left in place"
+        )
+        lines.extend(f"    {name}" for name in result.foreign_notes)
     steps = _next_steps(result)
     if steps:
         width = max(len(one.command) for one in steps)

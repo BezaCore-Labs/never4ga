@@ -27,6 +27,7 @@ from never4ga.layout import (
     SYSTEM_DIRECTORIES,
     SYSTEM_MANIFEST,
     VaultRoot,
+    foreign_names,
 )
 from never4ga.ports.document_store import DocumentStore
 from never4ga.ports.vault_files import VaultFileStore
@@ -72,6 +73,9 @@ class InitializationResult:
     #: Every top-level directory registered as foreign material, whether this
     #: run found it or an earlier one did.
     foreign_material: tuple[ForeignDirectory, ...] = field(default=())
+    #: Every loose top-level Markdown note registered as foreign material,
+    #: whether this run found it or an earlier one did.
+    foreign_notes: tuple[str, ...] = field(default=())
 
     @property
     def already_initialized(self) -> bool:
@@ -105,11 +109,12 @@ class VaultInitializer:
         # Before anything is created: what is foreign is what was there
         # first, and a directory this run makes must never be mistaken for it.
         foreign = self._find_foreign_material()
+        loose = self._find_loose_notes()
         already_there = tuple(self._files.iter_paths())
         self._create_directories()
         self._create_navigation()
         vault_id = self._create_system_manifest(title)
-        registered = self._register_foreign_material(foreign)
+        registered, notes = self._register_foreign_material(foreign, loose)
         self._create_domain_registry()
         self._create_home(title)
         self._create_templates()
@@ -123,6 +128,7 @@ class VaultInitializer:
             preserved=self._left_alone(already_there),
             updated=tuple(self._updated),
             foreign_material=registered,
+            foreign_notes=notes,
         )
 
     def _left_alone(self, already_there: tuple[VaultPath, ...]) -> tuple[VaultPath, ...]:
@@ -148,10 +154,8 @@ class VaultInitializer:
         """Every top-level directory that is not a root (`core/01` section 1).
 
         Dot directories never reach here: the file store leaves them out, and
-        `.obsidian/` is the tool's, not the user's. A top-level *file* is not
-        foreign material either -- `index.md` and `home.md` are reserved, and a
-        loose README or note is left exactly where it is without a record,
-        because a registry of directories is what the later steps read.
+        `.obsidian/` is the tool's, not the user's. Loose top-level notes are
+        found by :meth:`_find_loose_notes`.
         """
         roots = {str(root) for root in VaultRoot}
         found: list[ForeignDirectory] = []
@@ -163,20 +167,41 @@ class VaultInitializer:
             found.append(ForeignDirectory(directory.segments[0], files))
         return tuple(found)
 
-    def _register_foreign_material(
-        self, found: tuple[ForeignDirectory, ...]
-    ) -> tuple[ForeignDirectory, ...]:
-        """Record the foreign directories in the manifest, once each.
+    def _find_loose_notes(self) -> tuple[str, ...]:
+        """Every Markdown note at the top level that is not a reserved root file.
 
-        The union with what an earlier `init` recorded: a directory registered
-        then and emptied since is still the user's, and un-registering it is
-        not this verb's to do. The manifest is rewritten only when the list
-        changes, so a second `init` over the same pile touches nothing.
+        A folder of notes keeps many of them at its top level, and they are
+        as much the user's as a directory is (`core/01` section 1). Only
+        Markdown: a loose image or PDF is not a note. `index.md`, `home.md`
+        and `log.md` are Never4gA's names at the vault root, so a file by one
+        of them is never registered.
+        """
+        return tuple(
+            sorted(
+                path.name
+                for path in self._files.iter_paths()
+                if len(path.segments) == 1
+                and path.name.endswith(".md")
+                and foreign_names([path.name])
+            )
+        )
+
+    def _register_foreign_material(
+        self, found: tuple[ForeignDirectory, ...], loose: tuple[str, ...]
+    ) -> tuple[tuple[ForeignDirectory, ...], tuple[str, ...]]:
+        """Record the foreign directories and loose notes in the manifest, once each.
+
+        The union with what an earlier `init` recorded: a name registered then
+        and emptied or adopted since is still the user's, and un-registering
+        it is not this verb's to do. The manifest is rewritten only when the
+        list changes, so a second `init` over the same pile touches nothing.
+        A recorded name is reported as a loose note when it names Markdown
+        rather than a directory.
         """
         manifest = self._documents.get_by_path(SYSTEM_MANIFEST)
         assert manifest is not None  # created or preserved just above
         recorded = [str(name) for name in manifest.frontmatter.get(FOREIGN_MATERIAL_FIELD) or []]
-        names = sorted({*recorded, *(one.directory for one in found)})
+        names = sorted({*recorded, *(one.directory for one in found), *loose})
         if names != recorded:
             self._documents.put(
                 with_updated_generation(
@@ -189,7 +214,17 @@ class VaultInitializer:
             if SYSTEM_MANIFEST not in self._created:
                 self._updated.append(SYSTEM_MANIFEST)
         counted = {one.directory: one.files for one in found}
-        return tuple(ForeignDirectory(name, counted.get(name, 0)) for name in names)
+        notes = tuple(
+            name
+            for name in names
+            if name not in counted
+            and name.endswith(".md")
+            and not self._files.is_directory(VaultPath.parse(name))
+        )
+        directories = tuple(
+            ForeignDirectory(name, counted.get(name, 0)) for name in names if name not in notes
+        )
+        return directories, notes
 
     def _seed_navigation(self) -> None:
         """Put the generated block into every index this run created.

@@ -341,6 +341,7 @@ class TestAPileIsRegisteredAsForeignMaterial:
             ("Projects", 2),
             ("Reading", 1),
         ]
+        assert result.foreign_notes == ("README.md",)
 
     def test_the_registration_is_recorded_in_the_system_manifest(
         self, files: FileSystemVaultFileStore, documents: FileSystemMarkdownStore, root: Path
@@ -349,7 +350,7 @@ class TestAPileIsRegisteredAsForeignMaterial:
         VaultInitializer(files, documents, now=fixed_clock).initialize()
         manifest = documents.get_by_path(SYSTEM_MANIFEST)
         assert manifest is not None
-        assert manifest.frontmatter[FOREIGN_MATERIAL_FIELD] == ["Projects", "Reading"]
+        assert manifest.frontmatter[FOREIGN_MATERIAL_FIELD] == ["Projects", "README.md", "Reading"]
 
     def test_the_manifest_still_validates_strictly(
         self, files: FileSystemVaultFileStore, documents: FileSystemMarkdownStore, root: Path
@@ -458,7 +459,12 @@ class TestAPileIsRegisteredAsForeignMaterial:
         assert second.updated == (SYSTEM_MANIFEST,)
         manifest = documents.get_by_path(SYSTEM_MANIFEST)
         assert manifest is not None
-        assert manifest.frontmatter[FOREIGN_MATERIAL_FIELD] == ["Projects", "Reading", "Recipes"]
+        assert manifest.frontmatter[FOREIGN_MATERIAL_FIELD] == [
+            "Projects",
+            "README.md",
+            "Reading",
+            "Recipes",
+        ]
         assert manifest.frontmatter["generated"]["at"] == "2026-09-14T12:00:00Z"
 
     def test_the_vault_is_otherwise_healthy_about_its_own_structure(

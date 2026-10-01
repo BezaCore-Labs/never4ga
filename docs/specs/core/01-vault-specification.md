@@ -49,6 +49,12 @@ by path for search only, and emptied one document at a time as its contents
 are adopted into their typed homes. The registration is recorded in
 `50_System/system.md`.
 
+**Amended 2026-10-01 under ADR-0039.** A loose Markdown note `init` finds at
+the top level is registered as foreign material the same way, by name, and is
+held, indexed by path and adopted exactly as a note in a registered directory
+is. `index.md`, `home.md` and `log.md` at the vault root are Never4gA's and are
+never registered.
+
 ## 2. Root `index.md`
 
 The root `index.md` is the OKF bundle/index entry point.

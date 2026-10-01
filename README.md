@@ -47,7 +47,7 @@ happens. Never4gA does that part first, mechanically:
 | **Remembers across tools** | Claude Code, Codex, Antigravity and any MCP client read the same memory. Switch tools and nothing is lost. |
 | **Writes back what happened** | Sessions record progress and decisions as dated logs, so the next one picks up where this one stopped. |
 | **Keeps your notes yours** | Everything is Markdown in a normal Obsidian vault. Uninstall Never4gA and your notes are exactly as they were. |
-| **Starts from the notes you have** | Point it at an existing folder. Your files stay where they are, and notes in its subfolders are searchable on the first run. |
+| **Starts from the notes you have** | Point it at an existing folder. Your files stay where they are, and your notes are searchable on the first run. |
 | **Brings in your tracker** | Open work items from OpenProject join the pack, and a session can update them. |
 
 ## How it works

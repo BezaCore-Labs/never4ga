@@ -158,7 +158,10 @@ These MUST be explicitly located in a registered integration/system location or 
 
 A directory `never4ga init` registered as foreign material (ADR-0039,
 `core/01` §1) is such a location, and the record of those directories in
-`50_System/system.md` is that registry's first form. Inside it, a document
+`50_System/system.md` is that registry's first form. **Amended 2026-10-01
+under ADR-0039:** so is a loose top-level Markdown note `init` registered by
+name in the same record, other than the reserved `index.md`, `home.md` and
+`log.md`. Inside it, a document
 without an `id` — with or without frontmatter of its own — is *untracked*, a
 warning that names `adopt`, and never a `missing_id` error. Its frontmatter is
 the writer's and is preserved untouched.
