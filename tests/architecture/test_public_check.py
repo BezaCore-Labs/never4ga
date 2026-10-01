@@ -8,6 +8,7 @@ other.
 from __future__ import annotations
 
 import importlib.util
+import io
 import subprocess
 import sys
 from pathlib import Path
@@ -155,6 +156,37 @@ class TestInternalReferences:
         second = commit(check, "src/a.py", "# See ADR-0043.\nx = 1\n")
         found = check.check_push_prose([f"refs/heads/main {second} refs/heads/main {first}"])
         assert [str(finding) for finding in found] == ["src/a.py:1: 'ADR-0043'"]
+
+    def test_a_root_commit_is_checked_on_every_file_it_adds(self, check: ModuleType) -> None:
+        # A root commit has no parent to diff against, so its whole tree is
+        # what the push publishes.
+        (check.REPOSITORY / "src").mkdir()
+        root = commit(check, "src/a.py", "# See ADR-0043.\nx = 1\n")
+        found = check.check_push_prose([f"refs/heads/main {root} refs/heads/main {NO_COMMIT}"])
+        assert [str(finding) for finding in found] == ["src/a.py:1: 'ADR-0043'"]
+
+    def test_a_new_branch_from_a_root_is_checked_on_the_root_s_files_too(
+        self, check: ModuleType
+    ) -> None:
+        (check.REPOSITORY / "src").mkdir()
+        commit(check, "src/a.py", "# See ADR-0043.\nx = 1\n")
+        tip = commit(check, "src/b.py", "y = 2\n")
+        found = check.check_push_prose([f"refs/heads/main {tip} refs/heads/main {NO_COMMIT}"])
+        assert [str(finding) for finding in found] == ["src/a.py:1: 'ADR-0043'"]
+
+    def test_a_push_git_cannot_read_is_refused(
+        self, check: ModuleType, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        # A commit this clone does not hold: the check must not read that as
+        # a push that changed nothing.
+        tip = commit(check, "a.txt", "plain\n")
+        unknown = "1" * 40
+        monkeypatch.setattr(check, "load_markers", lambda: None)
+        monkeypatch.setattr(
+            "sys.stdin", io.StringIO(f"refs/heads/main {tip} refs/heads/main {unknown}\n")
+        )
+        assert check.main(["--pre-push"]) == 1
+        assert "refusing" in capsys.readouterr().err
 
     @pytest.mark.parametrize(
         ("name", "source"),
