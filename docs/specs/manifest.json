@@ -1,0 +1,30 @@
+{
+  "source": "10_Workspaces/BezaCore-Labs/Workspaces/Never4gA/Architecture",
+  "files": {
+    "00-spec-index.md": "dae4ef7f8b1113c3b4d89579f5405efa4e18f0d624c40d1d6890b123e56ce756",
+    "core/00-constitution.md": "401a979d375abcd7e7758a3f701acfad8762e312c2869029fabf5deb6f455ddf",
+    "core/01-vault-specification.md": "1f439e0c8d085b22dfa976f074b3fe7114fb9e8e30e2ec2346337b107159f719",
+    "core/02-formal-schema.md": "7caa0a97b8542b24c8be6485de7a6a4342a431d579cc3c25b39a4003e9384784",
+    "core/03-workspace-specification.md": "1e0da1f5d8589780abe1de7beaabafae97da0bb3e6475a80102cf53587505db9",
+    "core/04-agent-and-skills-architecture.md": "1a0ca8a30c168a5bbce355de222d8f50ff7346f3f6b4728bb9785724f834d00e",
+    "core/05-runtime-architecture.md": "ec97e45a629298921cc0a28590456df9314188cae822419795f02f6c1484808c",
+    "core/06-future-backends-and-evolution.md": "64238c913664ebb77330fa9bd7f7513adf791d50f565c975a0677d9af85c81f3",
+    "core/07-context-acquisition-and-mechanical-tools.md": "585344e36cf80044599d9518dda16e9d273dc31a7c9e8e9c24950a92c410d0b0",
+    "core/08-memory-provider-extension-contract.md": "fdae5696cc062ba211c875270dda498d1904269b8d41eb7ec88cbfacbd6e9df8",
+    "core/09-extension-registry-and-capability-sync.md": "98ff1753dd7bb996202673411240ee4e05ac3ec4bbb21caee74aca450580ea1d",
+    "core/index.md": "cefacb6d9748654fd46399a3d6c12f62efa9565312e4d3433d84c2904dbbcd98",
+    "details/agent-instruction-layering.md": "5d3f8628653c925524b391732e088b0b33039eaa4d2da4d25b5592df51f32aae",
+    "details/agent-session-flow.md": "3a60cfdad11f0acf424ca6d783f105569ef43fa908ba9df86bcc83a8be9694f4",
+    "details/api-cli-mcp-contract.md": "9c3c681193c4bdcb8833a07eb975bdc651aee5d7aac2e2c8e38a38ee2348a207",
+    "details/data-indexing-maintenance.md": "e675d41a6988dded49a9448020c8b8c955c02ce6abde8c106a64c8ec3bdc6d3d",
+    "details/external-work-management-architecture.md": "2449cf73ecab0cdfc0c0bedec0b9c0f58e737d9f888df8c7f0ffde3faa2182d8",
+    "details/index.md": "0d7a77610c1bb62df3de1df7d8bcf8065e142698d1248516df3dd516cdc44f3d",
+    "details/obsidian-experience.md": "717677d3f74d287a1a0e842e47d7d9fbd9fc5fe064ee65bcd4c8ff929cc4d879",
+    "details/openproject-adapter.md": "2ac08812a3a59e075e9fde3aca5d04daf0325546f337154898623d45bd2ea6c5",
+    "details/retrieval-context-memory.md": "94ca1786f43d307d2d229e675773549ceb7b99234ce04d69023808c5b25b8af4",
+    "details/security-configuration.md": "5da916cdf31be168c9e00dadc4ca6f68dc4dce941149df4db44447caa92f8e55",
+    "details/skill-library-policy.md": "87b8273d2087615db0aac5086b792737ede4c7376e04f68a5e0d0b4833840113",
+    "details/tool-adapter-matrix.md": "7c410cecf73c346337b6f5c84b4921cc4d9dc29df8e12bfea7da3726082241a7",
+    "index.md": "b2e47390b35d4b2149bb29d8d9727a9e0b5421e11c5e2f7a691db75b42a4edb2"
+  }
+}

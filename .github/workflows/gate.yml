@@ -1,0 +1,75 @@
+# The quality gate for this repository.
+#
+# This is repository infrastructure, not product surface. `pyproject.toml` ships
+# exactly one thing -- `packages = ["src/never4ga"]` -- so nothing here reaches a
+# user's machine, and Never4gA neither generates nor runs CI for anyone else's
+# project. Continuous integration cannot be packaged and shipped to a user, so
+# detection that must travel with the product ships as `doctor`.
+#
+# What it runs is exactly the gate AGENTS.md documents for local use, in order:
+# format/lint, type check, then the tests -- unit, integration, contract suites
+# and spec compliance, which are markers and directories inside the one suite.
+#
+# Normal CI never depends on live OpenProject or external AI APIs; the tests
+# that use them are opt-in. Nothing here has network access beyond installing the
+# package, no service containers, and no secrets.
+
+name: gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Least privilege. The gate reads the tree and reports a status; it has no
+# reason to write to the repository, and a token that cannot write cannot be
+# talked into it.
+permissions:
+  contents: read
+
+# A superseded run reports on code nobody is going to merge -- but that is only
+# true of a pull request, where a new push replaces the commit under review.
+#
+# On `main` every push is a *different merge*, not a newer draft of the same
+# one, so cancelling discards the only verification that merge will ever get.
+# Merges can land in quick succession, and a broken `main` would then go
+# unreported: the run that would have said so was cancelled, and a cancelled
+# run reads like a cancelled run, not like a gate that never finished.
+concurrency:
+  group: gate-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          # core/05 section 3: standard-library UUIDv7. Not negotiable, and a
+          # test asserts `requires-python` still says so.
+          python-version: "3.14"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Format
+        run: ruff format --check .
+
+      - name: Types
+        run: mypy
+
+      # Includes tests/architecture, which verifies the layering rules, the
+      # dependency gates of core/05 section 4, the deferred boundary, and
+      # PACKAGE_MANIFEST.md. An unrecorded edit to a packaged document fails
+      # here rather than being noticed later, if ever.
+      - name: Tests
+        run: pytest

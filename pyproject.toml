@@ -1,0 +1,109 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "never4ga"
+version = "0.1.0.dev0"
+description = "Markdown-first, local-first personal knowledge, context, memory, and agent-support system"
+readme = "README.md"
+requires-python = ">=3.14"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Joseph Soper", email = "joseph.soper.dev@gmail.com" }]
+
+# Every runtime dependency is a recorded decision (AGENTS.md, "Dependencies").
+#
+# docs/specs/core/05-runtime-architecture.md section 4 lists the vetted
+# candidate set (fastapi, uvicorn, pydantic, httpx, ruamel.yaml, markdown-it-py,
+# watchdog, platformdirs, mcp). Being vetted is permission to consider a package,
+# not to install it: none is pulled in until the code's tests genuinely require
+# it.
+#
+#   ruamel.yaml  Round-trip YAML frontmatter: preserves key order, comments
+#                and quoting style, and implements YAML 1.2 so unquoted
+#                timestamps and `no`/`on`/`off` are not silently retyped
+#                (core/02 sections 7.4 and 31). Confined to
+#                never4ga/adapters/filesystem/.
+#   fastapi      The loopback HTTP API of core/05 section 12. pydantic is
+#   uvicorn      declared even though fastapi installs
+#   pydantic     it, because never4ga/api imports it: declaring what you import
+#                keeps this list a description of the code rather than of a
+#                resolver's output. All three are confined to never4ga/api and
+#                never4ga/service and may not appear in services/ or below.
+#   watchdog     Filesystem events as hints; the kernel interfaces exist but
+#                the standard library exposes none of them. Reconciliation, not
+#                the watcher, is the guarantee.
+#   httpx        One HTTP client for the CLI talking to the local service
+#                and for OpenProject, so there is one client rather than two.
+dependencies = [
+    "ruamel.yaml>=0.18",
+    "fastapi>=0.115",
+    "uvicorn>=0.34",
+    "pydantic>=2.11",
+    "watchdog>=6.0",
+    "httpx>=0.28",
+]
+
+# The two interfaces a person or a client actually starts. The API is not here:
+# it is not a process anybody launches -- the daemon is, and the daemon is
+# `never4ga serve`. Pinned by test_milestone_boundary.py.
+[project.scripts]
+never4ga = "never4ga.cli:main"
+never4ga-mcp = "never4ga.mcp.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "mypy>=1.14",
+    "ruff>=0.9",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/never4ga"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+    "contract: reusable port contract suite, run against every implementation",
+    "architecture: spec-compliance / architectural-invariant test",
+    "live: reads a real external system; opt-in, never run in CI",
+    "live_write: CHANGES a real external system; opt-in, never run in CI, and only\n     ever against the scratch project named by NEVER4GA_LIVE_OPENPROJECT_SCRATCH",
+    "eval_vault: measures retrieval over a real personal vault; opt-in, never run in\n     CI, and read-only. The fixture corpus is the gate; this is the measurement",
+]
+
+[tool.mypy]
+python_version = "3.14"
+files = ["src", "tests"]
+strict = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",    # pycodestyle
+    "F",         # pyflakes
+    "I",         # isort
+    "N",         # pep8-naming
+    "UP",        # pyupgrade
+    "B",         # bugbear
+    "A",         # builtins shadowing
+    "C4",        # comprehensions
+    "SIM",       # simplify
+    "TID",       # tidy imports
+    "RUF",       # ruff-specific
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["N801"]  # contract suites are mixin classes, not Test* classes
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"

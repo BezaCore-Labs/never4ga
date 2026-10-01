@@ -1,0 +1,247 @@
+{
+  "derivedStartDate": null,
+  "derivedDueDate": null,
+  "spentTime": "PT0S",
+  "laborCosts": "0.00 €",
+  "_embedded": {},
+  "_type": "WorkPackage",
+  "id": 838,
+  "displayId": "838",
+  "lockVersion": 4,
+  "subject": "Milestone 6 — OpenProject Read Integration",
+  "description": {
+    "format": "markdown",
+    "raw": "**Next.** Read open work items from the tracker, so a startup pack can show what is actually in progress.\n\n**Build:** a connection definition whose token stays in the secret store; a provider adapter for health, project resolution, search and get; a read cache beside the index; and bounded signals in the startup pack.\n\n**Not in scope:** writes, webhooks, or mirroring tickets into Markdown.\n\n**Done when** work items reach startup and focused packs, and with the tracker switched off nothing else behaves differently.",
+    "html": "<p class=\"op-uc-p\"><strong>Next.</strong> Read open work items from the tracker, so a startup pack can show what is actually in progress.</p>\n<p class=\"op-uc-p\"><strong>Build:</strong> a connection definition whose token stays in the secret store; a provider adapter for health, project resolution, search and get; a read cache beside the index; and bounded signals in the startup pack.</p>\n<p class=\"op-uc-p\"><strong>Not in scope:</strong> writes, webhooks, or mirroring tickets into Markdown.</p>\n<p class=\"op-uc-p\"><strong>Done when</strong> work items reach startup and focused packs, and with the tracker switched off nothing else behaves differently.</p>"
+  },
+  "scheduleManually": true,
+  "startDate": "2026-08-25",
+  "dueDate": "2026-09-15",
+  "estimatedTime": null,
+  "derivedEstimatedTime": null,
+  "derivedRemainingTime": null,
+  "duration": null,
+  "ignoreNonWorkingDays": false,
+  "percentageDone": 40,
+  "derivedPercentageDone": null,
+  "createdAt": "2026-07-12T13:52:18.424Z",
+  "updatedAt": "2026-08-03T02:44:47.371Z",
+  "position": 14,
+  "storyPoints": null,
+  "_links": {
+    "attachments": {
+      "href": "/api/v3/work_packages/55/attachments"
+    },
+    "addAttachment": {
+      "href": "/api/v3/work_packages/55/attachments",
+      "method": "post"
+    },
+    "update": {
+      "href": "/api/v3/work_packages/55/form",
+      "method": "post"
+    },
+    "schema": {
+      "href": "/api/v3/work_packages/schemas/32-5"
+    },
+    "updateImmediately": {
+      "href": "/api/v3/work_packages/55",
+      "method": "patch"
+    },
+    "delete": {
+      "href": "/api/v3/work_packages/55",
+      "method": "delete"
+    },
+    "logTime": {
+      "href": "/api/v3/time_entries",
+      "title": "Log time on work package 'Milestone 6 — OpenProject Read Integration'"
+    },
+    "move": {
+      "href": "/work_packages/55/move/new",
+      "type": "text/html",
+      "title": "Move work package 'Milestone 6 — OpenProject Read Integration'"
+    },
+    "copy": {
+      "href": "/work_packages/55/copy",
+      "type": "text/html",
+      "title": "Copy work package 'Milestone 6 — OpenProject Read Integration'"
+    },
+    "pdf": {
+      "href": "/work_packages/55.pdf",
+      "type": "application/pdf",
+      "title": "Export as PDF"
+    },
+    "generate_pdf": {
+      "href": "/work_packages/55/generate_pdf_dialog",
+      "type": "text/vnd.turbo-stream.html",
+      "title": "Generate PDF"
+    },
+    "atom": {
+      "href": "/work_packages/55.atom",
+      "type": "application/rss+xml",
+      "title": "Atom feed"
+    },
+    "availableRelationCandidates": {
+      "href": "/api/v3/work_packages/55/available_relation_candidates",
+      "title": "Potential work packages to relate to"
+    },
+    "customFields": {
+      "href": "/projects/never4ga/settings/custom_fields",
+      "type": "text/html",
+      "title": "Custom fields"
+    },
+    "configureForm": {
+      "href": "/types/1/form_configuration/edit",
+      "type": "text/html",
+      "title": "Configure form"
+    },
+    "activities": {
+      "href": "/api/v3/work_packages/55/activities"
+    },
+    "availableWatchers": {
+      "href": "/api/v3/work_packages/55/available_watchers"
+    },
+    "relations": {
+      "href": "/api/v3/work_packages/55/relations"
+    },
+    "watchers": {
+      "href": "/api/v3/work_packages/55/watchers"
+    },
+    "addWatcher": {
+      "href": "/api/v3/work_packages/55/watchers",
+      "method": "post",
+      "payload": {
+        "user": {
+          "href": "/api/v3/users/{user_id}"
+        }
+      },
+      "templated": true
+    },
+    "removeWatcher": {
+      "href": "/api/v3/work_packages/55/watchers/{user_id}",
+      "method": "delete",
+      "templated": true
+    },
+    "addRelation": {
+      "href": "/api/v3/work_packages/55/relations",
+      "method": "post",
+      "title": "Add relation"
+    },
+    "addChild": {
+      "href": "/api/v3/workspaces/never4ga/work_packages",
+      "method": "post",
+      "title": "Add child of Milestone 6 — OpenProject Read Integration"
+    },
+    "changeParent": {
+      "href": "/api/v3/work_packages/55",
+      "method": "patch",
+      "title": "Change parent of Milestone 6 — OpenProject Read Integration"
+    },
+    "addComment": {
+      "href": "/api/v3/work_packages/55/activities",
+      "method": "post",
+      "title": "Add comment"
+    },
+    "previewMarkup": {
+      "href": "/api/v3/render/markdown?context=/api/v3/work_packages/55",
+      "method": "post"
+    },
+    "timeEntries": {
+      "href": "/api/v3/time_entries?filters=%5B%7B%22entity_type%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22WorkPackage%22%5D%7D%7D%2C%7B%22entity_id%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%2255%22%5D%7D%7D%5D",
+      "title": "Time entries"
+    },
+    "category": {
+      "href": "/api/v3/categories/10",
+      "title": "Documentation"
+    },
+    "type": {
+      "href": "/api/v3/types/5",
+      "title": "Epic"
+    },
+    "priority": {
+      "href": "/api/v3/priorities/7",
+      "title": "High"
+    },
+    "projectPhaseDefinition": {
+      "href": null
+    },
+    "status": {
+      "href": "/api/v3/statuses/7",
+      "title": "In progress"
+    },
+    "author": {
+      "href": "/api/v3/users/5",
+      "title": "Ada Example"
+    },
+    "responsible": {
+      "href": "/api/v3/users/5",
+      "title": "Ada Example"
+    },
+    "assignee": {
+      "href": "/api/v3/users/5",
+      "title": "Ada Example"
+    },
+    "version": {
+      "href": "/api/v3/versions/6",
+      "title": "v0.1"
+    },
+    "showCosts": {
+      "href": "/projects/4/cost_reports?fields%5B%5D=WorkPackageId&operators%5BWorkPackageId%5D=%3D&set_filter=1&values%5BWorkPackageId%5D=55",
+      "type": "text/html",
+      "title": "Show cost entries"
+    },
+    "sprint": {
+      "href": null
+    },
+    "backlogBucket": {
+      "href": null
+    },
+    "github_pull_requests": {
+      "href": "/api/v3/work_packages/55/github_pull_requests",
+      "title": "GitHub pull requests"
+    },
+    "gitlab_merge_requests": {
+      "href": "/api/v3/work_packages/55/gitlab_merge_requests",
+      "title": "Gitlab merge requests"
+    },
+    "gitlab_issues": {
+      "href": "/api/v3/work_packages/55/gitlab_issues",
+      "title": "Gitlab Issues"
+    },
+    "meetings": {
+      "href": "/work_packages/55/tabs/meetings",
+      "title": "meetings"
+    },
+    "fileLinks": {
+      "href": "/api/v3/work_packages/55/file_links"
+    },
+    "addFileLink": {
+      "href": "/api/v3/work_packages/55/file_links",
+      "method": "post"
+    },
+    "self": {
+      "href": "/api/v3/work_packages/838",
+      "title": "Milestone 6 — OpenProject Read Integration"
+    },
+    "unwatch": {
+      "href": "/api/v3/work_packages/55/watchers/5",
+      "method": "delete"
+    },
+    "ancestors": [
+      {
+        "href": "/api/v3/work_packages/117",
+        "title": "Architecture diagram suite (14 diagrams)",
+        "displayId": "117"
+      }
+    ],
+    "project": {
+      "href": "/api/v3/projects/32",
+      "title": "Never4gA"
+    },
+    "parent": {
+      "href": "/api/v3/work_packages/117",
+      "title": "Never4gA v0.1",
+      "displayId": "117"
+    },
+    "customActions": []
+  }
+}

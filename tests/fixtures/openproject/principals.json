@@ -1,0 +1,53 @@
+{
+  "_type": "Collection",
+  "total": 4,
+  "count": 4,
+  "_embedded": {
+    "elements": [
+      {
+        "_type": "User",
+        "id": 100,
+        "name": "Alex Rivera",
+        "_links": {
+          "self": {
+            "href": "/api/v3/users/100",
+            "title": "Alex Rivera"
+          }
+        }
+      },
+      {
+        "_type": "User",
+        "id": 103,
+        "name": "Sam Okafor",
+        "_links": {
+          "self": {
+            "href": "/api/v3/users/103",
+            "title": "Sam Okafor"
+          }
+        }
+      },
+      {
+        "_type": "User",
+        "id": 101,
+        "name": "Instance Admin",
+        "_links": {
+          "self": {
+            "href": "/api/v3/users/101",
+            "title": "Instance Admin"
+          }
+        }
+      },
+      {
+        "_type": "User",
+        "id": 102,
+        "name": "alex rivera",
+        "_links": {
+          "self": {
+            "href": "/api/v3/users/102",
+            "title": "alex rivera"
+          }
+        }
+      }
+    ]
+  }
+}

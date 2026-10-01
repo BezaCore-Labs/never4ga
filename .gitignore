@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Test/tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors
+.idea/
+.vscode/
+
+# Secrets / local environment
+.env
+.env.*
+!.env.example
+*.secret
+secrets/
+
+# Never4gA local runtime state must not become repository state
+.never4ga/runtime/
+.never4ga/cache/
+.never4ga/state/
+*.sqlite
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# OS
+.DS_Store
+Thumbs.db

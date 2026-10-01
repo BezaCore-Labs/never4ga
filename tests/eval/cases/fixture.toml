@@ -1,0 +1,65 @@
+# The synthetic corpus. Runs in CI and gates every pull request.
+#
+# Every expectation here is true by construction -- `tests/eval/fixture_vault.py`
+# writes the vault so that the required document is the only one that discusses
+# what the case asks about. That makes this a regression gate on the retrieval
+# lanes and their fusion, and NOT a measurement of whether retrieval is good.
+# Only the real vault can answer that, and only the maintainer can ratify those cases.
+#
+# `ratified_by = "construction"` says exactly that, and the hash still guards it:
+# edit an expectation and the case stops counting until somebody re-stamps it.
+# Print the hash a case needs with:
+#
+#     .venv/bin/python -m tests.eval stamp
+
+[[case]]
+id = "index-backend-decision"
+task = "which database backs the index"
+workspace = "Fixture Product"
+depth = "focused"
+requires = ["10_Workspaces/Fixture-Product/Decisions/adr-0002_postgres-index.md"]
+forbids = []
+deprioritises = ["10_Workspaces/Fixture-Product/Decisions/adr-0001_sqlite-index.md"]
+why = """
+The current decision answers the question and the superseded one contradicts it.
+Both match the same terms, so this case measures whether anything distinguishes
+them -- which is the whole of what a lexical lane cannot do on its own.
+"""
+ratified_by = "construction"
+ratified_at = "2026-08-28"
+ratified_hash = "340439aadd6bb6d6"
+
+[[case]]
+id = "hybrid-retrieval-design"
+task = "how does hybrid retrieval fuse lanes"
+workspace = "Fixture Product"
+depth = "focused"
+requires = ["10_Workspaces/Fixture-Product/Context/hybrid-retrieval.md"]
+forbids = []
+deprioritises = ["10_Workspaces/Fixture-Product/Context/deployment.md"]
+why = """
+One document in the workspace describes retrieval and one describes shipping
+containers. The deployment note is not forbidden, because it genuinely matches
+on "how" and `terms_from_task` accepts a common-word match by design -- what it
+must not do is outrank the document that answers the question.
+"""
+ratified_by = "construction"
+ratified_at = "2026-08-28"
+ratified_hash = "1e254018bf32959e"
+
+[[case]]
+id = "knowledge-reached-only-at-depth"
+task = "reciprocal rank fusion"
+workspace = "Fixture Product"
+depth = "deep"
+requires = ["30_Knowledge/Notes/reciprocal-rank-fusion.md"]
+forbids = []
+deprioritises = []
+why = """
+`30_Knowledge/` belongs to no workspace, so a workspace filter excludes it however
+relevant it is. Deep admits it (core/04 section 18). This case fails if that
+admission is ever lost, which no unit test would notice.
+"""
+ratified_by = "construction"
+ratified_at = "2026-08-28"
+ratified_hash = "1c6d986c3848be6a"

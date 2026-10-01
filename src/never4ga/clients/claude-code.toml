@@ -1,0 +1,35 @@
+# Claude Code. Paths measured 2026-08-24 against 2.1.231; see
+# details/tool-adapter-matrix.md, "Measured global Skill paths".
+client_id = "claude_code"
+title = "Claude Code"
+global_skills_path = "~/.claude/skills"
+workspace_skills_path = ".claude/skills"
+# A subagent is its own extension class (core/09 section 3). Claude Code is
+# the only one of the three with a native subagent format; the other two
+# descriptors leave this unset, which is a fact about them rather than an
+# omission here.
+global_agents_path = "~/.claude/agents"
+global_rules_path = "~/.claude/CLAUDE.md"
+detect_paths = ["~/.claude"]
+detect_command = "claude"
+deployment = "copy"
+measured_on = "2026-08-24"
+measured_version = "2.1.231"
+
+# MCP registration, measured 2026-08-27 -- and corrected by running it.
+#
+# `--scope user` is the machine-wide one; local and project are the other two,
+# and a Never4gA server belongs to the machine rather than to one repository.
+#
+# **The `--` is required**, which the usage line does not say and an example
+# does: `claude mcp add my-server -- my-command --some-flag arg1`. Without it
+# the server's own `--vault` is parsed as an option to `claude mcp add`, which
+# answers `unknown option '--vault'`. Codex needs the same separator for the
+# same reason; Antigravity does not.
+mcp_add_arguments = ["mcp", "add", "--scope", "user", "-t", "stdio", "{name}", "--", "{command}"]
+mcp_list_arguments = ["mcp", "list"]
+mcp_remove_arguments = ["mcp", "remove", "--scope", "user", "{name}"]
+
+# The repo-side name this client reads, occupied by a generated pointer
+# (details/agent-instruction-layering.md section 3.2).
+repository_rules_path = "CLAUDE.md"

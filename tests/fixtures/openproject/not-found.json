@@ -1,0 +1,5 @@
+{
+  "_type": "Error",
+  "errorIdentifier": "urn:openproject-org:api:v3:errors:NotFound",
+  "message": "The work package you are looking for cannot be found or has been deleted."
+}

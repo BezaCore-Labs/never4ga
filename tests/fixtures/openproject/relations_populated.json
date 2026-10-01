@@ -1,0 +1,66 @@
+{
+  "_type": "Collection",
+  "total": 2,
+  "count": 2,
+  "pageSize": 20,
+  "offset": 1,
+  "_embedded": {
+    "elements": [
+      {
+        "_type": "Relation",
+        "id": 1,
+        "name": "relates to",
+        "type": "relates",
+        "reverseType": "relates",
+        "description": null,
+        "_links": {
+          "self": {
+            "href": "/api/v3/relations/1"
+          },
+          "from": {
+            "href": "/api/v3/work_packages/838",
+            "title": "Milestone 6"
+          },
+          "to": {
+            "href": "/api/v3/work_packages/840",
+            "title": "Milestone 9"
+          }
+        }
+      },
+      {
+        "_type": "Relation",
+        "id": 2,
+        "name": "blocks",
+        "type": "blocks",
+        "reverseType": "blocked",
+        "description": null,
+        "_links": {
+          "self": {
+            "href": "/api/v3/relations/2"
+          },
+          "from": {
+            "href": "/api/v3/work_packages/838",
+            "title": "Milestone 6"
+          },
+          "to": {
+            "href": "/api/v3/work_packages/841",
+            "title": "Milestone 5c"
+          }
+        }
+      }
+    ]
+  },
+  "_links": {
+    "self": {
+      "href": "/api/v3/relations?filters=%5B%7B%22involved%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22838%22%5D%7D%7D%5D&offset=1&pageSize=20"
+    },
+    "jumpTo": {
+      "href": "/api/v3/relations?filters=%5B%7B%22involved%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22838%22%5D%7D%7D%5D&offset=%7Boffset%7D&pageSize=20",
+      "templated": true
+    },
+    "changeSize": {
+      "href": "/api/v3/relations?filters=%5B%7B%22involved%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22838%22%5D%7D%7D%5D&offset=1&pageSize=%7Bsize%7D",
+      "templated": true
+    }
+  }
+}

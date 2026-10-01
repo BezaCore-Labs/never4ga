@@ -1,0 +1,32 @@
+# Antigravity CLI. Paths measured 2026-08-24 against 1.1.19.
+#
+# The global customization root is `~/.gemini/config/`, which the CLI documents
+# in its own bundled `agy-customizations` Skill. This file said
+# `~/.gemini/antigravity-cli/skills` until it was measured, and a probe Skill
+# placed there was discovered by nothing -- the reason a client path is
+# descriptor data and never a core constant (core/04 section 9).
+#
+# Antigravity 2.x and Antigravity IDE are separate products and get no
+# descriptor: neither has been measured.
+client_id = "antigravity_cli"
+title = "Antigravity CLI"
+global_skills_path = "~/.gemini/config/skills"
+workspace_skills_path = ".agents/skills"
+global_rules_path = "~/.gemini/GEMINI.md"
+detect_paths = ["~/.gemini/antigravity-cli"]
+detect_command = "agy"
+deployment = "copy"
+measured_on = "2026-08-24"
+measured_version = "1.1.19"
+notes = "Headless mode auto-denies any tool without a permissions.allow rule."
+
+# MCP registration, measured 2026-08-27 against `agy mcp add --help`. Its help
+# says "Add or update", so re-registering is not an error here -- which is the
+# client's business rather than something Never4gA needs to model.
+mcp_add_arguments = ["mcp", "add", "-t", "stdio", "{name}", "{command}"]
+mcp_list_arguments = ["mcp", "list"]
+mcp_remove_arguments = ["mcp", "remove", "{name}"]
+
+# The repo-side name this client reads, occupied by a generated pointer
+# (details/agent-instruction-layering.md section 3.2).
+repository_rules_path = "GEMINI.md"

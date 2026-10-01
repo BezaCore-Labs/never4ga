@@ -1,0 +1,93 @@
+#!/bin/sh
+# Refuse a commit made directly on the default branch.
+#
+# All work happens on a branch and lands through a pull request. The slip this
+# catches is an easy one: `git add -A && git commit` run while `main` is checked
+# out, before remembering to branch.
+#
+# The blast radius is what makes it worth a hook rather than a reminder. A
+# remote can carry several push URLs, so one `git push origin` may reach
+# mirrors as well as the forge that takes pull requests. A commit that lands on
+# local `main` reaches the mirrors directly, while the forge takes the
+# *squashed* version through the pull request -- so the copies end up holding
+# the same tree under two different commit ids, `main` stops fast-forwarding,
+# and repairing it needs a force push.
+#
+# Enabled by `git config core.hooksPath .githooks`, which lives in the repo so a
+# fresh clone gets it with one command. Bypass with `--no-verify` when there is
+# a real reason -- the point is to make it deliberate, not impossible.
+
+branch=$(git symbolic-ref --short HEAD 2>/dev/null) || exit 0
+
+case "$branch" in
+main | master)
+	printf '\n  refusing to commit directly on %s.\n\n' "$branch" >&2
+	printf '  Branch first, then commit:\n\n' >&2
+	printf '      git switch -c <short-descriptive-branch>\n' >&2
+	printf '      git commit ...\n\n' >&2
+	printf '  Already staged? The staging area survives the switch, so the\n' >&2
+	printf '  command above is all that is needed.\n\n' >&2
+	printf '  Deliberate exception: git commit --no-verify\n\n' >&2
+	exit 1
+	;;
+esac
+
+# Run the gate's two fast checks before the slow one in CI has to.
+#
+# A formatting diff or a missing type annotation is not a bug that needs CI to
+# find it: both checks are already installed in the virtualenv. `ruff check .
+# && ruff format --check .` takes a fraction of a second and `mypy` about half
+# a second, against a gate of several minutes.
+#
+# `pytest` is deliberately not here. It takes well over a minute, which is the
+# point at which a hook stops being free and starts being something people
+# bypass out of habit -- and a habit of `--no-verify` costs more than the checks
+# buy.
+
+# Only when Python is staged. The checks below run over the whole tree, exactly
+# as CI does, so that the two cannot drift; staging is the guard that keeps
+# that tolerable. An edit to a Markdown file runs nothing, so a half-finished
+# module in the working tree cannot hold a documentation commit hostage.
+if [ -z "$(git diff --cached --name-only --diff-filter=ACMR -- '*.py')" ]; then
+	exit 0
+fi
+
+root=$(git rev-parse --show-toplevel) || exit 0
+
+# The virtualenv first, then the PATH. A tool that is absent is skipped with a
+# note rather than refused: a fresh clone has no `.venv`, and a hook that
+# demands its own setup before it will let you commit is a hook that gets
+# deleted.
+find_tool() {
+	if [ -x "$root/.venv/bin/$1" ]; then
+		printf '%s
+' "$root/.venv/bin/$1"
+	else
+		command -v "$1" 2>/dev/null
+	fi
+}
+
+refuse() {
+	printf '\n  %s\n\n' "$1" >&2
+	printf '  This is the gate CI runs, reached half a second earlier.\n' >&2
+	printf '  Fix it, or commit deliberately: git commit --no-verify\n\n' >&2
+	exit 1
+}
+
+ruff=$(find_tool ruff)
+mypy=$(find_tool mypy)
+
+if [ -z "$ruff" ] || [ -z "$mypy" ]; then
+	printf '\n  skipping the pre-commit checks: ' >&2
+	[ -z "$ruff" ] && printf 'ruff ' >&2
+	[ -z "$mypy" ] && printf 'mypy ' >&2
+	printf 'not found.\n' >&2
+	printf '  Install the toolchain with: uv pip install -e ".[dev]"\n\n' >&2
+	exit 0
+fi
+
+(cd "$root" && "$ruff" check .) || refuse "ruff check failed."
+(cd "$root" && "$ruff" format --check .) || refuse "ruff format --check failed. Run: ruff format ."
+(cd "$root" && "$mypy") || refuse "mypy failed."
+
+exit 0

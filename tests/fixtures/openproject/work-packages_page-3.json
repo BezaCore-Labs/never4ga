@@ -1,0 +1,948 @@
+{
+  "_type": "WorkPackageCollection",
+  "total": 8,
+  "count": 2,
+  "pageSize": 3,
+  "offset": 3,
+  "_embedded": {
+    "elements": [
+      {
+        "derivedStartDate": null,
+        "derivedDueDate": null,
+        "spentTime": "PT0S",
+        "laborCosts": "0.00 €",
+        "_type": "WorkPackage",
+        "id": 844,
+        "displayId": "844",
+        "lockVersion": 1,
+        "subject": "Milestone 11 — Obsidian Companion",
+        "description": {
+          "format": "markdown",
+          "raw": "An optional plugin that reads the local service: health, search, open work items and why each context item was chosen.\n\n**Implement:** local API pairing; a status view; search; a context inspector; and the first write commands, all through the service and never around it.\n\n**Done when** the plugin is useful with the service running and harmless with it stopped.",
+          "html": "<p class=\"op-uc-p\">An optional plugin that reads the local service: health, search, open work items and why each context item was chosen.</p>\n<p class=\"op-uc-p\"><strong>Implement:</strong> local API pairing; a status view; search; a context inspector; and the first write commands, all through the service and never around it.</p>\n<p class=\"op-uc-p\"><strong>Done when</strong> the plugin is useful with the service running and harmless with it stopped.</p>"
+        },
+        "scheduleManually": true,
+        "startDate": null,
+        "dueDate": null,
+        "estimatedTime": null,
+        "derivedEstimatedTime": null,
+        "derivedRemainingTime": null,
+        "duration": null,
+        "ignoreNonWorkingDays": false,
+        "percentageDone": null,
+        "derivedPercentageDone": null,
+        "createdAt": "2026-08-25T17:33:36.229Z",
+        "updatedAt": "2026-08-25T18:40:36.723Z",
+        "position": 7,
+        "storyPoints": null,
+        "_links": {
+          "attachments": {
+            "href": "/api/v3/work_packages/844/attachments"
+          },
+          "addAttachment": {
+            "href": "/api/v3/work_packages/844/attachments",
+            "method": "post"
+          },
+          "update": {
+            "href": "/api/v3/work_packages/844/form",
+            "method": "post"
+          },
+          "schema": {
+            "href": "/api/v3/work_packages/schemas/32-5"
+          },
+          "updateImmediately": {
+            "href": "/api/v3/work_packages/844",
+            "method": "patch"
+          },
+          "delete": {
+            "href": "/api/v3/work_packages/844",
+            "method": "delete"
+          },
+          "logTime": {
+            "href": "/api/v3/time_entries",
+            "title": "Log time on work package 'Milestone 11 — Obsidian Companion'"
+          },
+          "move": {
+            "href": "/work_packages/844/move/new",
+            "type": "text/html",
+            "title": "Move work package 'Milestone 11 — Obsidian Companion'"
+          },
+          "copy": {
+            "href": "/work_packages/844/copy",
+            "type": "text/html",
+            "title": "Copy work package 'Milestone 11 — Obsidian Companion'"
+          },
+          "pdf": {
+            "href": "/work_packages/844.pdf",
+            "type": "application/pdf",
+            "title": "Export as PDF"
+          },
+          "generate_pdf": {
+            "href": "/work_packages/844/generate_pdf_dialog",
+            "type": "text/vnd.turbo-stream.html",
+            "title": "Generate PDF"
+          },
+          "atom": {
+            "href": "/work_packages/844.atom",
+            "type": "application/rss+xml",
+            "title": "Atom feed"
+          },
+          "availableRelationCandidates": {
+            "href": "/api/v3/work_packages/844/available_relation_candidates",
+            "title": "Potential work packages to relate to"
+          },
+          "customFields": {
+            "href": "/projects/never4ga/settings/custom_fields",
+            "type": "text/html",
+            "title": "Custom fields"
+          },
+          "configureForm": {
+            "href": "/types/5/form_configuration/edit",
+            "type": "text/html",
+            "title": "Configure form"
+          },
+          "activities": {
+            "href": "/api/v3/work_packages/844/activities"
+          },
+          "availableWatchers": {
+            "href": "/api/v3/work_packages/844/available_watchers"
+          },
+          "relations": {
+            "href": "/api/v3/work_packages/844/relations"
+          },
+          "watchers": {
+            "href": "/api/v3/work_packages/844/watchers"
+          },
+          "addWatcher": {
+            "href": "/api/v3/work_packages/844/watchers",
+            "method": "post",
+            "payload": {
+              "user": {
+                "href": "/api/v3/users/{user_id}"
+              }
+            },
+            "templated": true
+          },
+          "removeWatcher": {
+            "href": "/api/v3/work_packages/844/watchers/{user_id}",
+            "method": "delete",
+            "templated": true
+          },
+          "addRelation": {
+            "href": "/api/v3/work_packages/844/relations",
+            "method": "post",
+            "title": "Add relation"
+          },
+          "addChild": {
+            "href": "/api/v3/workspaces/never4ga/work_packages",
+            "method": "post",
+            "title": "Add child of Milestone 11 — Obsidian Companion"
+          },
+          "changeParent": {
+            "href": "/api/v3/work_packages/844",
+            "method": "patch",
+            "title": "Change parent of Milestone 11 — Obsidian Companion"
+          },
+          "addComment": {
+            "href": "/api/v3/work_packages/844/activities",
+            "method": "post",
+            "title": "Add comment"
+          },
+          "previewMarkup": {
+            "href": "/api/v3/render/markdown?context=/api/v3/work_packages/844",
+            "method": "post"
+          },
+          "timeEntries": {
+            "href": "/api/v3/time_entries?filters=%5B%7B%22entity_type%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22WorkPackage%22%5D%7D%7D%2C%7B%22entity_id%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22844%22%5D%7D%7D%5D",
+            "title": "Time entries"
+          },
+          "category": {
+            "href": null
+          },
+          "type": {
+            "href": "/api/v3/types/5",
+            "title": "Epic"
+          },
+          "priority": {
+            "href": "/api/v3/priorities/8",
+            "title": "Normal"
+          },
+          "projectPhaseDefinition": {
+            "href": null
+          },
+          "status": {
+            "href": "/api/v3/statuses/1",
+            "title": "New"
+          },
+          "author": {
+            "href": "/api/v3/users/5",
+            "title": "Ada Example"
+          },
+          "responsible": {
+            "href": null
+          },
+          "assignee": {
+            "href": null
+          },
+          "version": {
+            "href": null
+          },
+          "showCosts": {
+            "href": "/projects/32/cost_reports?fields%5B%5D=WorkPackageId&operators%5BWorkPackageId%5D=%3D&set_filter=1&values%5BWorkPackageId%5D=844",
+            "type": "text/html",
+            "title": "Show cost entries"
+          },
+          "sprint": {
+            "href": null
+          },
+          "backlogBucket": {
+            "href": null
+          },
+          "github_pull_requests": {
+            "href": "/api/v3/work_packages/844/github_pull_requests",
+            "title": "GitHub pull requests"
+          },
+          "gitlab_merge_requests": {
+            "href": "/api/v3/work_packages/844/gitlab_merge_requests",
+            "title": "Gitlab merge requests"
+          },
+          "gitlab_issues": {
+            "href": "/api/v3/work_packages/844/gitlab_issues",
+            "title": "Gitlab Issues"
+          },
+          "meetings": {
+            "href": "/work_packages/844/tabs/meetings",
+            "title": "meetings"
+          },
+          "fileLinks": {
+            "href": "/api/v3/work_packages/844/file_links"
+          },
+          "addFileLink": {
+            "href": "/api/v3/work_packages/844/file_links",
+            "method": "post"
+          },
+          "self": {
+            "href": "/api/v3/work_packages/844",
+            "title": "Milestone 11 — Obsidian Companion"
+          },
+          "unwatch": {
+            "href": "/api/v3/work_packages/844/watchers/5",
+            "method": "delete"
+          },
+          "ancestors": [],
+          "project": {
+            "href": "/api/v3/projects/32",
+            "title": "Never4gA"
+          },
+          "parent": {
+            "href": null
+          },
+          "customActions": []
+        }
+      },
+      {
+        "derivedStartDate": null,
+        "derivedDueDate": null,
+        "spentTime": "PT0S",
+        "laborCosts": "0.00 €",
+        "_type": "WorkPackage",
+        "id": 845,
+        "displayId": "845",
+        "lockVersion": 1,
+        "subject": "Milestone 12 — Project Migration",
+        "description": {
+          "format": "markdown",
+          "raw": "Migrate existing projects one at a time, starting with one representative project.\n\nFor each: a workspace; its parent; its repositories; its decisions; and its history as activity logs. Every source file is accounted for in a migration report.\n\n**Done when** every migrated document validates and the report's ledger reconciles.",
+          "html": "<p class=\"op-uc-p\">Migrate existing projects one at a time, starting with one representative project.</p>\n<p class=\"op-uc-p\">For each: a workspace; its parent; its repositories; its decisions; and its history as activity logs. Every source file is accounted for in a migration report.</p>\n<p class=\"op-uc-p\"><strong>Done when</strong> every migrated document validates and the report's ledger reconciles.</p>"
+        },
+        "scheduleManually": true,
+        "startDate": null,
+        "dueDate": null,
+        "estimatedTime": null,
+        "derivedEstimatedTime": null,
+        "derivedRemainingTime": null,
+        "duration": null,
+        "ignoreNonWorkingDays": false,
+        "percentageDone": null,
+        "derivedPercentageDone": null,
+        "createdAt": "2026-08-25T17:33:36.346Z",
+        "updatedAt": "2026-08-25T18:40:36.920Z",
+        "position": 8,
+        "storyPoints": null,
+        "_links": {
+          "attachments": {
+            "href": "/api/v3/work_packages/845/attachments"
+          },
+          "addAttachment": {
+            "href": "/api/v3/work_packages/845/attachments",
+            "method": "post"
+          },
+          "update": {
+            "href": "/api/v3/work_packages/845/form",
+            "method": "post"
+          },
+          "schema": {
+            "href": "/api/v3/work_packages/schemas/32-5"
+          },
+          "updateImmediately": {
+            "href": "/api/v3/work_packages/845",
+            "method": "patch"
+          },
+          "delete": {
+            "href": "/api/v3/work_packages/845",
+            "method": "delete"
+          },
+          "logTime": {
+            "href": "/api/v3/time_entries",
+            "title": "Log time on work package 'Milestone 12 — Project Migration'"
+          },
+          "move": {
+            "href": "/work_packages/845/move/new",
+            "type": "text/html",
+            "title": "Move work package 'Milestone 12 — Project Migration'"
+          },
+          "copy": {
+            "href": "/work_packages/845/copy",
+            "type": "text/html",
+            "title": "Copy work package 'Milestone 12 — Project Migration'"
+          },
+          "pdf": {
+            "href": "/work_packages/845.pdf",
+            "type": "application/pdf",
+            "title": "Export as PDF"
+          },
+          "generate_pdf": {
+            "href": "/work_packages/845/generate_pdf_dialog",
+            "type": "text/vnd.turbo-stream.html",
+            "title": "Generate PDF"
+          },
+          "atom": {
+            "href": "/work_packages/845.atom",
+            "type": "application/rss+xml",
+            "title": "Atom feed"
+          },
+          "availableRelationCandidates": {
+            "href": "/api/v3/work_packages/845/available_relation_candidates",
+            "title": "Potential work packages to relate to"
+          },
+          "customFields": {
+            "href": "/projects/never4ga/settings/custom_fields",
+            "type": "text/html",
+            "title": "Custom fields"
+          },
+          "configureForm": {
+            "href": "/types/5/form_configuration/edit",
+            "type": "text/html",
+            "title": "Configure form"
+          },
+          "activities": {
+            "href": "/api/v3/work_packages/845/activities"
+          },
+          "availableWatchers": {
+            "href": "/api/v3/work_packages/845/available_watchers"
+          },
+          "relations": {
+            "href": "/api/v3/work_packages/845/relations"
+          },
+          "watchers": {
+            "href": "/api/v3/work_packages/845/watchers"
+          },
+          "addWatcher": {
+            "href": "/api/v3/work_packages/845/watchers",
+            "method": "post",
+            "payload": {
+              "user": {
+                "href": "/api/v3/users/{user_id}"
+              }
+            },
+            "templated": true
+          },
+          "removeWatcher": {
+            "href": "/api/v3/work_packages/845/watchers/{user_id}",
+            "method": "delete",
+            "templated": true
+          },
+          "addRelation": {
+            "href": "/api/v3/work_packages/845/relations",
+            "method": "post",
+            "title": "Add relation"
+          },
+          "addChild": {
+            "href": "/api/v3/workspaces/never4ga/work_packages",
+            "method": "post",
+            "title": "Add child of Milestone 12 — Project Migration"
+          },
+          "changeParent": {
+            "href": "/api/v3/work_packages/845",
+            "method": "patch",
+            "title": "Change parent of Milestone 12 — Project Migration"
+          },
+          "addComment": {
+            "href": "/api/v3/work_packages/845/activities",
+            "method": "post",
+            "title": "Add comment"
+          },
+          "previewMarkup": {
+            "href": "/api/v3/render/markdown?context=/api/v3/work_packages/845",
+            "method": "post"
+          },
+          "timeEntries": {
+            "href": "/api/v3/time_entries?filters=%5B%7B%22entity_type%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22WorkPackage%22%5D%7D%7D%2C%7B%22entity_id%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22845%22%5D%7D%7D%5D",
+            "title": "Time entries"
+          },
+          "category": {
+            "href": null
+          },
+          "type": {
+            "href": "/api/v3/types/5",
+            "title": "Epic"
+          },
+          "priority": {
+            "href": "/api/v3/priorities/8",
+            "title": "Normal"
+          },
+          "projectPhaseDefinition": {
+            "href": null
+          },
+          "status": {
+            "href": "/api/v3/statuses/1",
+            "title": "New"
+          },
+          "author": {
+            "href": "/api/v3/users/5",
+            "title": "Ada Example"
+          },
+          "responsible": {
+            "href": null
+          },
+          "assignee": {
+            "href": null
+          },
+          "version": {
+            "href": null
+          },
+          "showCosts": {
+            "href": "/projects/32/cost_reports?fields%5B%5D=WorkPackageId&operators%5BWorkPackageId%5D=%3D&set_filter=1&values%5BWorkPackageId%5D=845",
+            "type": "text/html",
+            "title": "Show cost entries"
+          },
+          "sprint": {
+            "href": null
+          },
+          "backlogBucket": {
+            "href": null
+          },
+          "github_pull_requests": {
+            "href": "/api/v3/work_packages/845/github_pull_requests",
+            "title": "GitHub pull requests"
+          },
+          "gitlab_merge_requests": {
+            "href": "/api/v3/work_packages/845/gitlab_merge_requests",
+            "title": "Gitlab merge requests"
+          },
+          "gitlab_issues": {
+            "href": "/api/v3/work_packages/845/gitlab_issues",
+            "title": "Gitlab Issues"
+          },
+          "meetings": {
+            "href": "/work_packages/845/tabs/meetings",
+            "title": "meetings"
+          },
+          "fileLinks": {
+            "href": "/api/v3/work_packages/845/file_links"
+          },
+          "addFileLink": {
+            "href": "/api/v3/work_packages/845/file_links",
+            "method": "post"
+          },
+          "self": {
+            "href": "/api/v3/work_packages/845",
+            "title": "Milestone 12 — Project Migration"
+          },
+          "unwatch": {
+            "href": "/api/v3/work_packages/845/watchers/5",
+            "method": "delete"
+          },
+          "ancestors": [],
+          "project": {
+            "href": "/api/v3/projects/32",
+            "title": "Never4gA"
+          },
+          "parent": {
+            "href": null
+          },
+          "customActions": []
+        }
+      }
+    ],
+    "schemas": {
+      "_type": "Collection",
+      "total": 1,
+      "count": 1,
+      "_embedded": {
+        "elements": [
+          {
+            "_attributeGroups": [
+              {
+                "_type": "WorkPackageFormAttributeGroup",
+                "name": "People",
+                "attributes": [
+                  "assignee",
+                  "responsible"
+                ]
+              },
+              {
+                "_type": "WorkPackageFormAttributeGroup",
+                "name": "Estimates and progress",
+                "attributes": [
+                  "estimatedTime",
+                  "remainingTime",
+                  "percentageDone",
+                  "spentTime",
+                  "storyPoints"
+                ]
+              },
+              {
+                "_type": "WorkPackageFormAttributeGroup",
+                "name": "Details",
+                "attributes": [
+                  "priority",
+                  "sprint",
+                  "backlogBucket",
+                  "version",
+                  "category",
+                  "projectPhase",
+                  "date"
+                ]
+              },
+              {
+                "_type": "WorkPackageFormAttributeGroup",
+                "name": "Other",
+                "attributes": [
+                  "position"
+                ]
+              },
+              {
+                "_type": "WorkPackageFormAttributeGroup",
+                "name": "Costs",
+                "attributes": [
+                  "laborCosts"
+                ]
+              }
+            ],
+            "_type": "Schema",
+            "_dependencies": [],
+            "lockVersion": {
+              "type": "Integer",
+              "name": "Lock version",
+              "required": true,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "id": {
+              "type": "Integer",
+              "name": "ID",
+              "required": true,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "subject": {
+              "type": "String",
+              "name": "Subject",
+              "required": true,
+              "hasDefault": false,
+              "writable": true,
+              "minLength": 1,
+              "maxLength": 255,
+              "options": {}
+            },
+            "description": {
+              "type": "Formattable",
+              "name": "Description",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "options": {}
+            },
+            "duration": {
+              "type": "Duration",
+              "name": "Duration",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "options": {}
+            },
+            "scheduleManually": {
+              "type": "Boolean",
+              "name": "Manual scheduling",
+              "required": false,
+              "hasDefault": true,
+              "writable": true,
+              "options": {}
+            },
+            "ignoreNonWorkingDays": {
+              "type": "Boolean",
+              "name": "Ignore non working days",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "options": {}
+            },
+            "startDate": {
+              "type": "Date",
+              "name": "Start date",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "options": {}
+            },
+            "dueDate": {
+              "type": "Date",
+              "name": "Finish date",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "options": {}
+            },
+            "derivedStartDate": {
+              "type": "Date",
+              "name": "Derived start date",
+              "required": false,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "derivedDueDate": {
+              "type": "Date",
+              "name": "Derived finish date",
+              "required": false,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "estimatedTime": {
+              "type": "Duration",
+              "name": "Work",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "Estimates and progress",
+              "options": {}
+            },
+            "derivedEstimatedTime": {
+              "type": "Duration",
+              "name": "Total work",
+              "required": false,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "remainingTime": {
+              "type": "Duration",
+              "name": "Remaining work",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "Estimates and progress",
+              "options": {}
+            },
+            "derivedRemainingTime": {
+              "type": "Duration",
+              "name": "Total remaining work",
+              "required": false,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "spentTime": {
+              "type": "Duration",
+              "name": "Spent time",
+              "required": false,
+              "hasDefault": false,
+              "writable": false,
+              "attributeGroup": "Estimates and progress",
+              "options": {}
+            },
+            "percentageDone": {
+              "type": "Integer",
+              "name": "% Complete",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "Estimates and progress",
+              "options": {}
+            },
+            "derivedPercentageDone": {
+              "type": "Integer",
+              "name": "Total % complete",
+              "required": false,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "createdAt": {
+              "type": "DateTime",
+              "name": "Created on",
+              "required": true,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "updatedAt": {
+              "type": "DateTime",
+              "name": "Updated on",
+              "required": true,
+              "hasDefault": false,
+              "writable": false,
+              "options": {}
+            },
+            "author": {
+              "type": "User",
+              "name": "Author",
+              "required": true,
+              "hasDefault": false,
+              "writable": false,
+              "options": {},
+              "location": "_links"
+            },
+            "project": {
+              "type": "Project",
+              "name": "Project",
+              "required": true,
+              "hasDefault": false,
+              "writable": true,
+              "location": "_links",
+              "_links": {}
+            },
+            "parent": {
+              "type": "WorkPackage",
+              "name": "Parent",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "location": "_links",
+              "_links": {}
+            },
+            "assignee": {
+              "type": "User",
+              "name": "Assignee",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "People",
+              "location": "_links",
+              "_links": {}
+            },
+            "responsible": {
+              "type": "User",
+              "name": "Accountable",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "People",
+              "location": "_links",
+              "_links": {}
+            },
+            "type": {
+              "type": "Type",
+              "name": "Type",
+              "required": true,
+              "hasDefault": false,
+              "writable": true,
+              "location": "_links",
+              "_links": {}
+            },
+            "status": {
+              "type": "Status",
+              "name": "Status",
+              "required": true,
+              "hasDefault": true,
+              "writable": true,
+              "location": "_links",
+              "_links": {}
+            },
+            "category": {
+              "type": "Category",
+              "name": "Category",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "Details",
+              "location": "_links",
+              "_links": {}
+            },
+            "version": {
+              "type": "Version",
+              "name": "Version",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "Details",
+              "location": "_links",
+              "_links": {}
+            },
+            "priority": {
+              "type": "Priority",
+              "name": "Priority",
+              "required": true,
+              "hasDefault": true,
+              "writable": true,
+              "attributeGroup": "Details",
+              "location": "_links",
+              "_links": {}
+            },
+            "laborCosts": {
+              "type": "String",
+              "name": "Labor costs",
+              "required": false,
+              "hasDefault": false,
+              "writable": false,
+              "attributeGroup": "Costs",
+              "options": {}
+            },
+            "position": {
+              "type": "Integer",
+              "name": "Position",
+              "required": false,
+              "hasDefault": false,
+              "writable": false,
+              "attributeGroup": "Other",
+              "options": {}
+            },
+            "storyPoints": {
+              "type": "Integer",
+              "name": "Story Points",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "Estimates and progress",
+              "options": {}
+            },
+            "sprint": {
+              "type": "Sprint",
+              "name": "Sprint",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "Details",
+              "location": "_links",
+              "_links": {}
+            },
+            "backlogBucket": {
+              "type": "BacklogBucket",
+              "name": "Backlog bucket",
+              "required": false,
+              "hasDefault": false,
+              "writable": true,
+              "attributeGroup": "Details",
+              "location": "_links",
+              "_links": {}
+            },
+            "_links": {
+              "self": {
+                "href": "/api/v3/work_packages/schemas/32-5"
+              },
+              "attachments": {
+                "href": null
+              }
+            }
+          }
+        ]
+      },
+      "_links": {
+        "self": {
+          "href": "/api/v3/work_packages/schemas?filters=%5B%7Bid%3A+%7Boperator%3A+%22%3D%22%2C+values%3A+%5B%2232-5%22%5D%7D%7D%5D"
+        }
+      }
+    }
+  },
+  "_links": {
+    "self": {
+      "href": "/api/v3/workspaces/32/work_packages?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D"
+    },
+    "jumpTo": {
+      "href": "/api/v3/workspaces/32/work_packages?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=%7Boffset%7D&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D",
+      "templated": true
+    },
+    "changeSize": {
+      "href": "/api/v3/workspaces/32/work_packages?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=%7Bsize%7D&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D",
+      "templated": true
+    },
+    "previousByOffset": {
+      "href": "/api/v3/workspaces/32/work_packages?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=2&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D"
+    },
+    "editWorkPackage": {
+      "href": "/api/v3/work_packages/{work_package_id}/form",
+      "method": "post",
+      "templated": true
+    },
+    "createWorkPackage": {
+      "href": "/api/v3/work_packages/form",
+      "method": "post"
+    },
+    "createWorkPackageImmediate": {
+      "href": "/api/v3/work_packages",
+      "method": "post"
+    },
+    "schemas": {
+      "href": "/api/v3/work_packages/schemas?filters=%5B%7Bid%3A+%7Boperator%3A+%22%3D%22%2C+values%3A+%5B%2232-5%22%5D%7D%7D%5D"
+    },
+    "customFields": {
+      "href": "/projects/never4ga/settings/custom_fields",
+      "type": "text/html",
+      "title": "Custom fields"
+    },
+    "representations": [
+      {
+        "href": "/projects/never4ga/work_packages.pdf?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D&pdf_export_type=table",
+        "identifier": "pdf",
+        "type": "application/pdf",
+        "title": "PDF Table"
+      },
+      {
+        "href": "/projects/never4ga/work_packages.pdf?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D&pdf_export_type=report&show_images=true",
+        "identifier": "pdf-with-descriptions",
+        "type": "application/pdf",
+        "title": "PDF Report with images"
+      },
+      {
+        "href": "/projects/never4ga/work_packages.pdf?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D&pdf_export_type=report",
+        "identifier": "pdf-descr",
+        "type": "application/pdf",
+        "title": "PDF Report"
+      },
+      {
+        "href": "/projects/never4ga/work_packages.xls?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D",
+        "identifier": "xls",
+        "type": "application/vnd.ms-excel",
+        "title": "XLS"
+      },
+      {
+        "href": "/projects/never4ga/work_packages.xls?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D&show_descriptions=true",
+        "identifier": "xls-with-descriptions",
+        "type": "application/vnd.ms-excel",
+        "title": "XLS with descriptions"
+      },
+      {
+        "href": "/projects/never4ga/work_packages.xls?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D&show_relations=true",
+        "identifier": "xls-with-relations",
+        "type": "application/vnd.ms-excel",
+        "title": "XLS with relations"
+      },
+      {
+        "href": "/projects/never4ga/work_packages.csv?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D",
+        "identifier": "csv",
+        "type": "text/csv",
+        "title": "CSV"
+      },
+      {
+        "href": "/projects/never4ga/work_packages.atom?filters=%5B%7B%22status%22%3A%7B%22operator%22%3A%22%2A%22%2C%22values%22%3A%5B%5D%7D%7D%5D&includeSubprojects=true&offset=3&pageSize=3&showHierarchies=true&showSums=false&sortBy=%5B%5B%22id%22%2C%22asc%22%5D%5D",
+        "identifier": "atom",
+        "type": "application/atom+xml",
+        "title": "Atom"
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "_type": "Root",
+  "instanceName": "OpenProject",
+  "coreVersion": "17.6.0",
+  "_links": {
+    "self": {
+      "href": "/api/v3"
+    },
+    "configuration": {
+      "href": "/api/v3/configuration"
+    },
+    "memberships": {
+      "href": "/api/v3/memberships"
+    },
+    "priorities": {
+      "href": "/api/v3/priorities"
+    },
+    "relations": {
+      "href": "/api/v3/relations"
+    },
+    "statuses": {
+      "href": "/api/v3/statuses"
+    },
+    "time_entries": {
+      "href": "/api/v3/time_entries"
+    },
+    "types": {
+      "href": "/api/v3/types"
+    },
+    "user": {
+      "href": "/api/v3/users/5",
+      "title": "Ada Example"
+    },
+    "userPreferences": {
+      "href": "/api/v3/users/5/preferences"
+    },
+    "workPackages": {
+      "href": "/api/v3/work_packages"
+    }
+  }
+}

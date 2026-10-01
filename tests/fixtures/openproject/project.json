@@ -1,0 +1,168 @@
+{
+  "favorited": false,
+  "_embedded": {
+    "parent": {
+      "favorited": false,
+      "_type": "Project",
+      "id": 5,
+      "identifier": "example-labs",
+      "name": "Example Org",
+      "active": true,
+      "public": false,
+      "description": {
+        "format": "markdown",
+        "raw": "",
+        "html": ""
+      },
+      "createdAt": "2026-07-12T14:21:56.558Z",
+      "updatedAt": "2026-08-25T17:32:30.243Z",
+      "statusExplanation": {
+        "format": "markdown",
+        "raw": "",
+        "html": ""
+      },
+      "_links": {
+        "self": {
+          "href": "/api/v3/projects/5",
+          "title": "Example Org"
+        },
+        "createWorkPackage": {
+          "href": "/api/v3/workspaces/5/work_packages/form",
+          "method": "post"
+        },
+        "createWorkPackageImmediately": {
+          "href": "/api/v3/workspaces/5/work_packages",
+          "method": "post"
+        },
+        "workPackages": {
+          "href": "/api/v3/workspaces/5/work_packages"
+        },
+        "storages": [],
+        "categories": {
+          "href": "/api/v3/workspaces/5/categories"
+        },
+        "versions": {
+          "href": "/api/v3/workspaces/5/versions"
+        },
+        "memberships": {
+          "href": "/api/v3/memberships?filters=%5B%7B%22project%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%225%22%5D%7D%7D%5D"
+        },
+        "types": {
+          "href": "/api/v3/workspaces/5/types"
+        },
+        "update": {
+          "href": "/api/v3/projects/5/form",
+          "method": "post"
+        },
+        "updateImmediately": {
+          "href": "/api/v3/projects/5",
+          "method": "patch"
+        },
+        "delete": {
+          "href": "/api/v3/projects/5",
+          "method": "delete"
+        },
+        "favor": {
+          "method": "post",
+          "href": "/api/v3/workspaces/5/favorite"
+        },
+        "schema": {
+          "href": "/api/v3/workspaces/schema"
+        },
+        "status": {
+          "href": null
+        },
+        "ancestors": [],
+        "projectStorages": {
+          "href": "/api/v3/project_storages?filters=%5B%7B%22projectId%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%225%22%5D%7D%7D%5D"
+        },
+        "parent": {
+          "href": null
+        }
+      }
+    }
+  },
+  "_type": "Project",
+  "id": 32,
+  "identifier": "never4ga",
+  "name": "Never4gA",
+  "active": true,
+  "public": false,
+  "description": {
+    "format": "markdown",
+    "raw": "The local knowledge and context system: a Markdown-first canonical vault, mechanical-first context acquisition with zero required LLM calls, and a loopback service that indexes and serves it. Example Org' flagship product, personal-first and productisable.\n\n**The vault holds the work; the repository holds the product.** Everything about how Never4gA was designed and decided lives in the `Never4gA` workspace at `10_Workspaces/Example-Org/Workspaces/Never4gA/` in the `notes` vault. The implementation lives in the `never4ga` repository (GitHub/GitLab/Gitea, `Example-Org`). This project tracks operational work only — durable context is not mirrored here.\n\n## State as of 2026-08-25\n\nMilestones 0 through 5b are complete. A working `never4ga` CLI creates, checks, indexes and searches a canonical vault; `serve` runs a loopback service that owns the index and watches for changes; a working directory resolves to its workspace and a bounded Context Pack assembles from it with no model call; and eight canonical Skills deploy to Claude Code, Codex CLI and Antigravity CLI.\n\nRunning order for what remains: **6 → 7 → 9 → 5c → 8**, then 10, 11 and 12.\n\n## The constraints that shape everything\n\n- Markdown with YAML frontmatter is the only canonical store. SQLite, FTS, vectors and graph projections are derived and rebuildable.\n- Context acquisition is mechanical-first: scope → structure → lexical → relations → external state, *before* any LLM enrichment. Startup requires zero Never4gA-owned model calls.\n- Everything must remain useful with Never4gA not running.\n- Secrets never enter the vault. Runtime state lives outside it.\n- Never4gA is never an inference gateway.\n\n## Source of truth boundary\n\nOpenProject stays authoritative for tickets, status, assignees, dates and dependencies. Never4gA stays authoritative for identity, goals, plans, decisions, architecture, standards and durable history. Neither duplicates the other. Tickets are surfaced into Never4gA context dynamically and are never mirrored into Markdown.",
+    "html": "<p class=\"op-uc-p\">The local knowledge and context system: a Markdown-first canonical vault, mechanical-first context acquisition with zero required LLM calls, and a loopback service that indexes and serves it. Example Org' flagship product, personal-first and productisable.</p>\n<p class=\"op-uc-p\"><strong>The vault holds the work; the repository holds the product.</strong> Everything about how Never4gA was designed and decided lives in the <code class=\"op-uc-code\">Never4gA</code> workspace at <code class=\"op-uc-code\">10_Workspaces/Example-Org/Workspaces/Never4gA/</code> in the <code class=\"op-uc-code\">notes</code> vault. The implementation lives in the <code class=\"op-uc-code\">never4ga</code> repository (GitHub/GitLab/Gitea, <code class=\"op-uc-code\">Example-Org</code>). This project tracks operational work only — durable context is not mirrored here.</p>\n<h2 id=\"op-frag-state-as-of-2026-08-25\" class=\"op-uc-h2\">\n<a href=\"#op-frag-state-as-of-2026-08-25\" aria-hidden=\"true\" rel=\"noopener noreferrer nofollow\" class=\"op-uc-link_permalink icon-link op-uc-link\"></a>State as of 2026-08-25</h2>\n<p class=\"op-uc-p\">Milestones 0 through 5b are complete. A working <code class=\"op-uc-code\">never4ga</code> CLI creates, checks, indexes and searches a canonical vault; <code class=\"op-uc-code\">serve</code> runs a loopback service that owns the index and watches for changes; a working directory resolves to its workspace and a bounded Context Pack assembles from it with no model call; and eight canonical Skills deploy to Claude Code, Codex CLI and Antigravity CLI.</p>\n<p class=\"op-uc-p\">Running order for what remains: <strong>6 → 7 → 9 → 5c → 8</strong>, then 10, 11 and 12.</p>\n<h2 id=\"op-frag-the-constraints-that-shape-everything\" class=\"op-uc-h2\">\n<a href=\"#op-frag-the-constraints-that-shape-everything\" aria-hidden=\"true\" rel=\"noopener noreferrer nofollow\" class=\"op-uc-link_permalink icon-link op-uc-link\"></a>The constraints that shape everything</h2>\n<ul class=\"op-uc-list\">\n<li class=\"op-uc-list--item\">Markdown with YAML frontmatter is the only canonical store. SQLite, FTS, vectors and graph projections are derived and rebuildable.</li>\n<li class=\"op-uc-list--item\">Context acquisition is mechanical-first: scope → structure → lexical → relations → external state, <em>before</em> any LLM enrichment. Startup requires zero Never4gA-owned model calls.</li>\n<li class=\"op-uc-list--item\">Everything must remain useful with Never4gA not running.</li>\n<li class=\"op-uc-list--item\">Secrets never enter the vault. Runtime state lives outside it.</li>\n<li class=\"op-uc-list--item\">Never4gA is never an inference gateway.</li>\n</ul>\n<h2 id=\"op-frag-source-of-truth-boundary\" class=\"op-uc-h2\">\n<a href=\"#op-frag-source-of-truth-boundary\" aria-hidden=\"true\" rel=\"noopener noreferrer nofollow\" class=\"op-uc-link_permalink icon-link op-uc-link\"></a>Source of truth boundary</h2>\n<p class=\"op-uc-p\">OpenProject stays authoritative for tickets, status, assignees, dates and dependencies. Never4gA stays authoritative for identity, goals, plans, decisions, architecture, standards and durable history. Neither duplicates the other. Tickets are surfaced into Never4gA context dynamically and are never mirrored into Markdown.</p>"
+  },
+  "createdAt": "2026-08-25T17:32:30.222Z",
+  "updatedAt": "2026-08-25T17:32:30.247Z",
+  "statusExplanation": {
+    "format": "markdown",
+    "raw": "",
+    "html": ""
+  },
+  "_links": {
+    "self": {
+      "href": "/api/v3/projects/32",
+      "title": "Never4gA"
+    },
+    "createWorkPackage": {
+      "href": "/api/v3/workspaces/32/work_packages/form",
+      "method": "post"
+    },
+    "createWorkPackageImmediately": {
+      "href": "/api/v3/workspaces/32/work_packages",
+      "method": "post"
+    },
+    "workPackages": {
+      "href": "/api/v3/workspaces/32/work_packages"
+    },
+    "storages": [],
+    "categories": {
+      "href": "/api/v3/workspaces/32/categories"
+    },
+    "versions": {
+      "href": "/api/v3/workspaces/32/versions"
+    },
+    "memberships": {
+      "href": "/api/v3/memberships?filters=%5B%7B%22project%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%2232%22%5D%7D%7D%5D"
+    },
+    "types": {
+      "href": "/api/v3/workspaces/32/types"
+    },
+    "update": {
+      "href": "/api/v3/projects/32/form",
+      "method": "post"
+    },
+    "updateImmediately": {
+      "href": "/api/v3/projects/32",
+      "method": "patch"
+    },
+    "delete": {
+      "href": "/api/v3/projects/32",
+      "method": "delete"
+    },
+    "favor": {
+      "method": "post",
+      "href": "/api/v3/workspaces/32/favorite"
+    },
+    "schema": {
+      "href": "/api/v3/workspaces/schema"
+    },
+    "status": {
+      "href": null
+    },
+    "ancestors": [
+      {
+        "href": "/api/v3/projects/5",
+        "title": "Example Org"
+      }
+    ],
+    "projectStorages": {
+      "href": "/api/v3/project_storages?filters=%5B%7B%22projectId%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%2232%22%5D%7D%7D%5D"
+    },
+    "parent": {
+      "href": "/api/v3/projects/5",
+      "title": "Example Org"
+    }
+  }
+}

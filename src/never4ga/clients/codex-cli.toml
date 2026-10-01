@@ -1,0 +1,27 @@
+# Codex CLI. Paths measured 2026-08-24 against 0.149.0.
+#
+# The Skill directory is `~/.agents/skills`, not `~/.codex/skills`: with only
+# that directory populated, Codex found the probe Skill and the other two
+# clients reported none.
+client_id = "codex_cli"
+title = "Codex CLI"
+global_skills_path = "~/.agents/skills"
+workspace_skills_path = ".agents/skills"
+global_rules_path = "~/.codex/AGENTS.md"
+detect_paths = ["~/.codex"]
+detect_command = "codex"
+deployment = "copy"
+measured_on = "2026-08-24"
+measured_version = "0.149.0"
+notes = "Reads a repository's AGENTS.md natively, with nothing written."
+
+# MCP registration, measured 2026-08-27 against `codex mcp add --help`.
+# The `--` is required: the usage is `codex mcp add [OPTIONS] <NAME> (--url
+# <URL> | -- <COMMAND>...)`, and without it the command is read as options.
+mcp_add_arguments = ["mcp", "add", "{name}", "--", "{command}"]
+mcp_list_arguments = ["mcp", "list"]
+mcp_remove_arguments = ["mcp", "remove", "{name}"]
+
+# No repository_rules_path: Codex reads AGENTS.md natively, so the pointer at
+# AGENTS.md is the one it reads (details/agent-instruction-layering.md
+# section 3.2).

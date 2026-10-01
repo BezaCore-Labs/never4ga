@@ -1,0 +1,133 @@
+{
+  "_type": "Collection",
+  "total": 7,
+  "count": 7,
+  "_embedded": {
+    "elements": [
+      {
+        "_type": "Type",
+        "id": 1,
+        "name": "Task",
+        "color": "#1A67A3",
+        "position": 1,
+        "isDefault": true,
+        "isMilestone": false,
+        "createdAt": "2026-07-12T12:04:54.342Z",
+        "updatedAt": "2026-07-12T12:04:54.342Z",
+        "_links": {
+          "self": {
+            "href": "/api/v3/types/1",
+            "title": "Task"
+          }
+        }
+      },
+      {
+        "_type": "Type",
+        "id": 2,
+        "name": "Milestone",
+        "color": "#35C53F",
+        "position": 2,
+        "isDefault": true,
+        "isMilestone": true,
+        "createdAt": "2026-07-12T12:04:54.350Z",
+        "updatedAt": "2026-07-12T12:04:54.350Z",
+        "_links": {
+          "self": {
+            "href": "/api/v3/types/2",
+            "title": "Milestone"
+          }
+        }
+      },
+      {
+        "_type": "Type",
+        "id": 3,
+        "name": "Summary task",
+        "color": "#FF922B",
+        "position": 3,
+        "isDefault": true,
+        "isMilestone": false,
+        "createdAt": "2026-07-12T12:04:54.357Z",
+        "updatedAt": "2026-07-12T12:04:54.357Z",
+        "_links": {
+          "self": {
+            "href": "/api/v3/types/3",
+            "title": "Summary task"
+          }
+        }
+      },
+      {
+        "_type": "Type",
+        "id": 4,
+        "name": "Feature",
+        "color": "#5C7CFA",
+        "position": 4,
+        "isDefault": false,
+        "isMilestone": false,
+        "createdAt": "2026-07-12T12:04:54.380Z",
+        "updatedAt": "2026-07-12T12:04:54.380Z",
+        "_links": {
+          "self": {
+            "href": "/api/v3/types/4",
+            "title": "Feature"
+          }
+        }
+      },
+      {
+        "_type": "Type",
+        "id": 5,
+        "name": "Epic",
+        "color": "#845EF7",
+        "position": 5,
+        "isDefault": false,
+        "isMilestone": false,
+        "createdAt": "2026-07-12T12:04:54.385Z",
+        "updatedAt": "2026-07-12T12:04:54.385Z",
+        "_links": {
+          "self": {
+            "href": "/api/v3/types/5",
+            "title": "Epic"
+          }
+        }
+      },
+      {
+        "_type": "Type",
+        "id": 6,
+        "name": "User story",
+        "color": "#00B0F0",
+        "position": 6,
+        "isDefault": false,
+        "isMilestone": false,
+        "createdAt": "2026-07-12T12:04:54.390Z",
+        "updatedAt": "2026-07-12T12:04:54.390Z",
+        "_links": {
+          "self": {
+            "href": "/api/v3/types/6",
+            "title": "User story"
+          }
+        }
+      },
+      {
+        "_type": "Type",
+        "id": 7,
+        "name": "Bug",
+        "color": "#F03E3E",
+        "position": 7,
+        "isDefault": false,
+        "isMilestone": false,
+        "createdAt": "2026-07-12T12:04:54.395Z",
+        "updatedAt": "2026-07-12T12:04:54.395Z",
+        "_links": {
+          "self": {
+            "href": "/api/v3/types/7",
+            "title": "Bug"
+          }
+        }
+      }
+    ]
+  },
+  "_links": {
+    "self": {
+      "href": "/api/v3/types"
+    }
+  }
+}

@@ -1,0 +1,439 @@
+{
+  "derivedStartDate": null,
+  "derivedDueDate": null,
+  "spentTime": "PT0S",
+  "laborCosts": "0.00 €",
+  "_embedded": {
+    "attachments": {
+      "_type": "Collection",
+      "total": 0,
+      "count": 0,
+      "_embedded": {
+        "elements": []
+      },
+      "_links": {
+        "self": {
+          "href": "/api/v3/work_packages/838/attachments"
+        }
+      }
+    },
+    "relations": {
+      "_type": "Collection",
+      "total": 0,
+      "count": 0,
+      "_embedded": {
+        "elements": []
+      },
+      "_links": {
+        "self": {
+          "href": "/api/v3/work_packages/838/relations"
+        }
+      }
+    },
+    "type": {
+      "_type": "Type",
+      "id": 5,
+      "name": "Epic",
+      "color": "#845EF7",
+      "position": 5,
+      "isDefault": false,
+      "isMilestone": false,
+      "createdAt": "2026-07-12T12:04:54.385Z",
+      "updatedAt": "2026-07-12T12:04:54.385Z",
+      "_links": {
+        "self": {
+          "href": "/api/v3/types/5",
+          "title": "Epic"
+        }
+      }
+    },
+    "priority": {
+      "_type": "Priority",
+      "id": 8,
+      "name": "Normal",
+      "position": 2,
+      "color": "#74C0FC",
+      "isDefault": true,
+      "isActive": true,
+      "_links": {
+        "self": {
+          "href": "/api/v3/priorities/8",
+          "title": "Normal"
+        }
+      }
+    },
+    "project": {
+      "favorited": false,
+      "_type": "Project",
+      "id": 32,
+      "identifier": "never4ga",
+      "name": "Never4gA",
+      "active": true,
+      "public": false,
+      "description": {
+        "format": "markdown",
+        "raw": "The local knowledge and context system: a Markdown-first canonical vault, mechanical-first context acquisition with zero required LLM calls, and a loopback service that indexes and serves it. Example Org' flagship product, personal-first and productisable.\n\n**The vault holds the work; the repository holds the product.** Everything about how Never4gA was designed and decided lives in the `Never4gA` workspace at `10_Workspaces/Example-Org/Workspaces/Never4gA/` in the `notes` vault. The implementation lives in the `never4ga` repository (GitHub/GitLab/Gitea, `Example-Org`). This project tracks operational work only — durable context is not mirrored here.\n\n## State as of 2026-08-25\n\nMilestones 0 through 5b are complete. A working `never4ga` CLI creates, checks, indexes and searches a canonical vault; `serve` runs a loopback service that owns the index and watches for changes; a working directory resolves to its workspace and a bounded Context Pack assembles from it with no model call; and eight canonical Skills deploy to Claude Code, Codex CLI and Antigravity CLI.\n\nRunning order for what remains: **6 → 7 → 9 → 5c → 8**, then 10, 11 and 12.\n\n## The constraints that shape everything\n\n- Markdown with YAML frontmatter is the only canonical store. SQLite, FTS, vectors and graph projections are derived and rebuildable.\n- Context acquisition is mechanical-first: scope → structure → lexical → relations → external state, *before* any LLM enrichment. Startup requires zero Never4gA-owned model calls.\n- Everything must remain useful with Never4gA not running.\n- Secrets never enter the vault. Runtime state lives outside it.\n- Never4gA is never an inference gateway.\n\n## Source of truth boundary\n\nOpenProject stays authoritative for tickets, status, assignees, dates and dependencies. Never4gA stays authoritative for identity, goals, plans, decisions, architecture, standards and durable history. Neither duplicates the other. Tickets are surfaced into Never4gA context dynamically and are never mirrored into Markdown.",
+        "html": "<p class=\"op-uc-p\">The local knowledge and context system: a Markdown-first canonical vault, mechanical-first context acquisition with zero required LLM calls, and a loopback service that indexes and serves it. Example Org' flagship product, personal-first and productisable.</p>\n<p class=\"op-uc-p\"><strong>The vault holds the work; the repository holds the product.</strong> Everything about how Never4gA was designed and decided lives in the <code class=\"op-uc-code\">Never4gA</code> workspace at <code class=\"op-uc-code\">10_Workspaces/Example-Org/Workspaces/Never4gA/</code> in the <code class=\"op-uc-code\">notes</code> vault. The implementation lives in the <code class=\"op-uc-code\">never4ga</code> repository (GitHub/GitLab/Gitea, <code class=\"op-uc-code\">Example-Org</code>). This project tracks operational work only — durable context is not mirrored here.</p>\n<h2 id=\"op-frag-state-as-of-2026-08-25\" class=\"op-uc-h2\">\n<a href=\"#op-frag-state-as-of-2026-08-25\" aria-hidden=\"true\" rel=\"noopener noreferrer nofollow\" class=\"op-uc-link_permalink icon-link op-uc-link\"></a>State as of 2026-08-25</h2>\n<p class=\"op-uc-p\">Milestones 0 through 5b are complete. A working <code class=\"op-uc-code\">never4ga</code> CLI creates, checks, indexes and searches a canonical vault; <code class=\"op-uc-code\">serve</code> runs a loopback service that owns the index and watches for changes; a working directory resolves to its workspace and a bounded Context Pack assembles from it with no model call; and eight canonical Skills deploy to Claude Code, Codex CLI and Antigravity CLI.</p>\n<p class=\"op-uc-p\">Running order for what remains: <strong>6 → 7 → 9 → 5c → 8</strong>, then 10, 11 and 12.</p>\n<h2 id=\"op-frag-the-constraints-that-shape-everything\" class=\"op-uc-h2\">\n<a href=\"#op-frag-the-constraints-that-shape-everything\" aria-hidden=\"true\" rel=\"noopener noreferrer nofollow\" class=\"op-uc-link_permalink icon-link op-uc-link\"></a>The constraints that shape everything</h2>\n<ul class=\"op-uc-list\">\n<li class=\"op-uc-list--item\">Markdown with YAML frontmatter is the only canonical store. SQLite, FTS, vectors and graph projections are derived and rebuildable.</li>\n<li class=\"op-uc-list--item\">Context acquisition is mechanical-first: scope → structure → lexical → relations → external state, <em>before</em> any LLM enrichment. Startup requires zero Never4gA-owned model calls.</li>\n<li class=\"op-uc-list--item\">Everything must remain useful with Never4gA not running.</li>\n<li class=\"op-uc-list--item\">Secrets never enter the vault. Runtime state lives outside it.</li>\n<li class=\"op-uc-list--item\">Never4gA is never an inference gateway.</li>\n</ul>\n<h2 id=\"op-frag-source-of-truth-boundary\" class=\"op-uc-h2\">\n<a href=\"#op-frag-source-of-truth-boundary\" aria-hidden=\"true\" rel=\"noopener noreferrer nofollow\" class=\"op-uc-link_permalink icon-link op-uc-link\"></a>Source of truth boundary</h2>\n<p class=\"op-uc-p\">OpenProject stays authoritative for tickets, status, assignees, dates and dependencies. Never4gA stays authoritative for identity, goals, plans, decisions, architecture, standards and durable history. Neither duplicates the other. Tickets are surfaced into Never4gA context dynamically and are never mirrored into Markdown.</p>"
+      },
+      "createdAt": "2026-08-25T17:32:30.222Z",
+      "updatedAt": "2026-08-25T17:32:30.247Z",
+      "statusExplanation": {
+        "format": "markdown",
+        "raw": "",
+        "html": ""
+      },
+      "_links": {
+        "self": {
+          "href": "/api/v3/projects/32",
+          "title": "Never4gA"
+        },
+        "createWorkPackage": {
+          "href": "/api/v3/workspaces/32/work_packages/form",
+          "method": "post"
+        },
+        "createWorkPackageImmediately": {
+          "href": "/api/v3/workspaces/32/work_packages",
+          "method": "post"
+        },
+        "workPackages": {
+          "href": "/api/v3/workspaces/32/work_packages"
+        },
+        "storages": [],
+        "categories": {
+          "href": "/api/v3/workspaces/32/categories"
+        },
+        "versions": {
+          "href": "/api/v3/workspaces/32/versions"
+        },
+        "memberships": {
+          "href": "/api/v3/memberships?filters=%5B%7B%22project%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%2232%22%5D%7D%7D%5D"
+        },
+        "types": {
+          "href": "/api/v3/workspaces/32/types"
+        },
+        "update": {
+          "href": "/api/v3/projects/32/form",
+          "method": "post"
+        },
+        "updateImmediately": {
+          "href": "/api/v3/projects/32",
+          "method": "patch"
+        },
+        "delete": {
+          "href": "/api/v3/projects/32",
+          "method": "delete"
+        },
+        "favor": {
+          "method": "post",
+          "href": "/api/v3/workspaces/32/favorite"
+        },
+        "schema": {
+          "href": "/api/v3/workspaces/schema"
+        },
+        "status": {
+          "href": null
+        },
+        "ancestors": [
+          {
+            "href": "/api/v3/projects/5",
+            "title": "Example Org"
+          }
+        ],
+        "projectStorages": {
+          "href": "/api/v3/project_storages?filters=%5B%7B%22projectId%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%2232%22%5D%7D%7D%5D"
+        },
+        "parent": {
+          "href": "/api/v3/projects/5",
+          "title": "Example Org"
+        }
+      }
+    },
+    "status": {
+      "_type": "Status",
+      "id": 1,
+      "name": "New",
+      "isClosed": false,
+      "color": "#1098AD",
+      "isDefault": true,
+      "isReadonly": false,
+      "excludedFromTotals": false,
+      "defaultDoneRatio": 0,
+      "position": 1,
+      "_links": {
+        "self": {
+          "href": "/api/v3/statuses/1",
+          "title": "New"
+        }
+      }
+    },
+    "author": {
+      "_type": "User",
+      "id": 5,
+      "name": "Ada Example",
+      "createdAt": "2026-07-12T12:18:44.642Z",
+      "updatedAt": "2026-08-23T19:36:57.863Z",
+      "login": "ada",
+      "admin": true,
+      "firstName": "Ada",
+      "lastName": "Example",
+      "email": "ada@example.test",
+      "avatar": "https://avatar.example/anonymous",
+      "status": "active",
+      "identityUrl": null,
+      "language": "en",
+      "_links": {
+        "self": {
+          "href": "/api/v3/users/5",
+          "title": "Ada Example"
+        },
+        "memberships": {
+          "href": "/api/v3/memberships?filters=%5B%7B%22principal%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%225%22%5D%7D%7D%5D",
+          "title": "Memberships"
+        },
+        "showUser": {
+          "href": "/users/5",
+          "type": "text/html"
+        },
+        "updateImmediately": {
+          "href": "/api/v3/users/5",
+          "title": "Update ada@example.test",
+          "method": "patch"
+        },
+        "lock": {
+          "href": "/api/v3/users/5/lock",
+          "title": "Set lock on ada@example.test",
+          "method": "post"
+        }
+      }
+    },
+    "customActions": []
+  },
+  "_type": "WorkPackage",
+  "id": 838,
+  "displayId": "838",
+  "lockVersion": 1,
+  "subject": "Milestone 6 — OpenProject Read Integration",
+  "description": {
+    "format": "markdown",
+    "raw": "**Next.** Read open work items from the tracker, so a startup pack can show what is actually in progress.\n\n**Build:** a connection definition whose token stays in the secret store; a provider adapter for health, project resolution, search and get; a read cache beside the index; and bounded signals in the startup pack.\n\n**Not in scope:** writes, webhooks, or mirroring tickets into Markdown.\n\n**Done when** work items reach startup and focused packs, and with the tracker switched off nothing else behaves differently.",
+    "html": "<p class=\"op-uc-p\"><strong>Next.</strong> Read open work items from the tracker, so a startup pack can show what is actually in progress.</p>\n<p class=\"op-uc-p\"><strong>Build:</strong> a connection definition whose token stays in the secret store; a provider adapter for health, project resolution, search and get; a read cache beside the index; and bounded signals in the startup pack.</p>\n<p class=\"op-uc-p\"><strong>Not in scope:</strong> writes, webhooks, or mirroring tickets into Markdown.</p>\n<p class=\"op-uc-p\"><strong>Done when</strong> work items reach startup and focused packs, and with the tracker switched off nothing else behaves differently.</p>"
+  },
+  "scheduleManually": true,
+  "startDate": null,
+  "dueDate": null,
+  "estimatedTime": null,
+  "derivedEstimatedTime": null,
+  "derivedRemainingTime": null,
+  "duration": null,
+  "ignoreNonWorkingDays": false,
+  "percentageDone": null,
+  "derivedPercentageDone": null,
+  "createdAt": "2026-08-25T17:33:35.329Z",
+  "updatedAt": "2026-08-25T18:40:30.703Z",
+  "position": 1,
+  "storyPoints": null,
+  "_links": {
+    "attachments": {
+      "href": "/api/v3/work_packages/838/attachments"
+    },
+    "addAttachment": {
+      "href": "/api/v3/work_packages/838/attachments",
+      "method": "post"
+    },
+    "update": {
+      "href": "/api/v3/work_packages/838/form",
+      "method": "post"
+    },
+    "schema": {
+      "href": "/api/v3/work_packages/schemas/32-5"
+    },
+    "updateImmediately": {
+      "href": "/api/v3/work_packages/838",
+      "method": "patch"
+    },
+    "delete": {
+      "href": "/api/v3/work_packages/838",
+      "method": "delete"
+    },
+    "logTime": {
+      "href": "/api/v3/time_entries",
+      "title": "Log time on work package 'Milestone 6 — OpenProject Read Integration'"
+    },
+    "move": {
+      "href": "/work_packages/838/move/new",
+      "type": "text/html",
+      "title": "Move work package 'Milestone 6 — OpenProject Read Integration'"
+    },
+    "copy": {
+      "href": "/work_packages/838/copy",
+      "type": "text/html",
+      "title": "Copy work package 'Milestone 6 — OpenProject Read Integration'"
+    },
+    "pdf": {
+      "href": "/work_packages/838.pdf",
+      "type": "application/pdf",
+      "title": "Export as PDF"
+    },
+    "generate_pdf": {
+      "href": "/work_packages/838/generate_pdf_dialog",
+      "type": "text/vnd.turbo-stream.html",
+      "title": "Generate PDF"
+    },
+    "atom": {
+      "href": "/work_packages/838.atom",
+      "type": "application/rss+xml",
+      "title": "Atom feed"
+    },
+    "availableRelationCandidates": {
+      "href": "/api/v3/work_packages/838/available_relation_candidates",
+      "title": "Potential work packages to relate to"
+    },
+    "customFields": {
+      "href": "/projects/never4ga/settings/custom_fields",
+      "type": "text/html",
+      "title": "Custom fields"
+    },
+    "configureForm": {
+      "href": "/types/5/form_configuration/edit",
+      "type": "text/html",
+      "title": "Configure form"
+    },
+    "activities": {
+      "href": "/api/v3/work_packages/838/activities"
+    },
+    "availableWatchers": {
+      "href": "/api/v3/work_packages/838/available_watchers"
+    },
+    "relations": {
+      "href": "/api/v3/work_packages/838/relations"
+    },
+    "watchers": {
+      "href": "/api/v3/work_packages/838/watchers"
+    },
+    "addWatcher": {
+      "href": "/api/v3/work_packages/838/watchers",
+      "method": "post",
+      "payload": {
+        "user": {
+          "href": "/api/v3/users/{user_id}"
+        }
+      },
+      "templated": true
+    },
+    "removeWatcher": {
+      "href": "/api/v3/work_packages/838/watchers/{user_id}",
+      "method": "delete",
+      "templated": true
+    },
+    "addRelation": {
+      "href": "/api/v3/work_packages/838/relations",
+      "method": "post",
+      "title": "Add relation"
+    },
+    "addChild": {
+      "href": "/api/v3/workspaces/never4ga/work_packages",
+      "method": "post",
+      "title": "Add child of Milestone 6 — OpenProject Read Integration"
+    },
+    "changeParent": {
+      "href": "/api/v3/work_packages/838",
+      "method": "patch",
+      "title": "Change parent of Milestone 6 — OpenProject Read Integration"
+    },
+    "addComment": {
+      "href": "/api/v3/work_packages/838/activities",
+      "method": "post",
+      "title": "Add comment"
+    },
+    "previewMarkup": {
+      "href": "/api/v3/render/markdown?context=/api/v3/work_packages/838",
+      "method": "post"
+    },
+    "timeEntries": {
+      "href": "/api/v3/time_entries?filters=%5B%7B%22entity_type%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22WorkPackage%22%5D%7D%7D%2C%7B%22entity_id%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%22838%22%5D%7D%7D%5D",
+      "title": "Time entries"
+    },
+    "category": {
+      "href": null
+    },
+    "type": {
+      "href": "/api/v3/types/5",
+      "title": "Epic"
+    },
+    "priority": {
+      "href": "/api/v3/priorities/8",
+      "title": "Normal"
+    },
+    "projectPhaseDefinition": {
+      "href": null
+    },
+    "status": {
+      "href": "/api/v3/statuses/1",
+      "title": "New"
+    },
+    "author": {
+      "href": "/api/v3/users/5",
+      "title": "Ada Example"
+    },
+    "responsible": {
+      "href": null
+    },
+    "assignee": {
+      "href": null
+    },
+    "version": {
+      "href": null
+    },
+    "showCosts": {
+      "href": "/projects/32/cost_reports?fields%5B%5D=WorkPackageId&operators%5BWorkPackageId%5D=%3D&set_filter=1&values%5BWorkPackageId%5D=838",
+      "type": "text/html",
+      "title": "Show cost entries"
+    },
+    "sprint": {
+      "href": null
+    },
+    "backlogBucket": {
+      "href": null
+    },
+    "github_pull_requests": {
+      "href": "/api/v3/work_packages/838/github_pull_requests",
+      "title": "GitHub pull requests"
+    },
+    "gitlab_merge_requests": {
+      "href": "/api/v3/work_packages/838/gitlab_merge_requests",
+      "title": "Gitlab merge requests"
+    },
+    "gitlab_issues": {
+      "href": "/api/v3/work_packages/838/gitlab_issues",
+      "title": "Gitlab Issues"
+    },
+    "meetings": {
+      "href": "/work_packages/838/tabs/meetings",
+      "title": "meetings"
+    },
+    "fileLinks": {
+      "href": "/api/v3/work_packages/838/file_links"
+    },
+    "addFileLink": {
+      "href": "/api/v3/work_packages/838/file_links",
+      "method": "post"
+    },
+    "self": {
+      "href": "/api/v3/work_packages/838",
+      "title": "Milestone 6 — OpenProject Read Integration"
+    },
+    "unwatch": {
+      "href": "/api/v3/work_packages/838/watchers/5",
+      "method": "delete"
+    },
+    "ancestors": [],
+    "project": {
+      "href": "/api/v3/projects/32",
+      "title": "Never4gA"
+    },
+    "parent": {
+      "href": null
+    },
+    "customActions": []
+  }
+}
