@@ -220,6 +220,25 @@ def check_tree_prose() -> list[Finding]:
     return findings
 
 
+def _files_changed(oldest: str, local: str, remote: str) -> list[str]:
+    """The files a push adds, modifies or renames, as of its tip.
+
+    A new branch is compared with the parent of its oldest new commit. A root
+    commit has no parent, so every file at the tip is new. A git failure
+    stops the check rather than reading as a push that changed nothing.
+    """
+    if remote != _NO_COMMIT:
+        base = remote
+    elif _git("rev-list", "--parents", "-n", "1", oldest).split()[1:]:
+        base = f"{oldest}^"
+    else:
+        return [
+            name for name in _git("ls-tree", "-r", "-z", "--name-only", local).split("\0") if name
+        ]
+    listed = _git("diff", "--name-only", "-z", "--diff-filter=AMR", base, local)
+    return [name for name in listed.split("\0") if name]
+
+
 def check_push_prose(updates: Iterable[str]) -> list[Finding]:
     """The rule, applied to the files a push changes, as they are at its tip."""
     findings: list[Finding] = []
@@ -231,15 +250,7 @@ def check_push_prose(updates: Iterable[str]) -> list[Finding]:
         commits = commits_to_push(local, remote)
         if not commits:
             continue
-        base = f"{commits[-1]}^" if remote == _NO_COMMIT else remote
-        listed = subprocess.run(
-            ["git", "diff", "--name-only", "--diff-filter=AMR", base, local],
-            cwd=REPOSITORY,
-            capture_output=True,
-            text=True,
-            check=False,
-        ).stdout.split()
-        for relative in listed:
+        for relative in _files_changed(commits[-1], local, remote):
             if _held_to_the_rule(relative):
                 findings += internal_references(_git("show", f"{local}:{relative}"), relative)
     return findings
@@ -271,9 +282,17 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     updates = list(sys.stdin) if arguments.pre_push else []
     private: list[Finding] = []
-    if markers is not None:
-        private = check_push(updates, markers) if arguments.pre_push else check_tree(markers)
-    internal = check_push_prose(updates) if arguments.pre_push else check_tree_prose()
+    try:
+        if markers is not None:
+            private = check_push(updates, markers) if arguments.pre_push else check_tree(markers)
+        internal = check_push_prose(updates) if arguments.pre_push else check_tree_prose()
+    except subprocess.CalledProcessError as error:
+        detail = (error.stderr or "").strip() or f"exit status {error.returncode}"
+        print(
+            f"public check: git could not say what this publishes ({detail}); refusing",
+            file=sys.stderr,
+        )
+        return 1
     if private:
         print("\n  This would publish something private:\n", file=sys.stderr)
         for finding in private:
