@@ -52,6 +52,7 @@ from never4ga.schema import (
     TypeSpec,
     ValidationLevel,
     ValidationReport,
+    coerce_field,
     domains_from_registry,
     type_spec,
     validate_document,
@@ -594,6 +595,7 @@ class ContentService:
         ``series`` names which of a folder's series it belongs to. Both are
         refused for any other type.
         """
+        fields = _declared_kinds(fields)
         spec = type_spec(concept_type)
         if spec is None:
             registered = ", ".join(sorted(TYPE_REGISTRY))
@@ -689,6 +691,7 @@ class ContentService:
         that is a fact about the content (`occurred_at`) is refused rather
         than invented, exactly as `create` refuses it.
         """
+        fields = _declared_kinds(fields)
         foreign = self._is_foreign_note(path)
         if not foreign:
             self._refuse_what_adoption_does_not_cover(path)
@@ -1271,6 +1274,30 @@ class _Placement:
 #: are what Never4gA resolved and reports. `created_at` is deliberately absent:
 #: when a document was written is a fact about its content.
 OWNED_FIELDS: Final = ("type", "id", "schema", "generated")
+
+
+def _declared_kinds(fields: Mapping[str, Any] | None) -> Mapping[str, Any] | None:
+    """Supplied fields, each converted to the kind the vocabulary declares.
+
+    Every interface hands creation what its caller typed: a `--field` string,
+    or a JSON value from a form. Converting here rather than in an interface
+    means the CLI, the API and MCP write the same frontmatter for the same
+    request (`details/api-cli-mcp-contract.md` section 3), so `unit: "3"`
+    becomes `unit: 3` and `required_reading: "true"` the boolean core/02
+    section 21.15 requires. An undeclared field, and a value that is not
+    really of its declared kind, stay what they were; a list converts each
+    element.
+    """
+    if not fields:
+        return fields
+    return {
+        name: (
+            [coerce_field(name, one) for one in value]
+            if isinstance(value, list)
+            else coerce_field(name, value)
+        )
+        for name, value in fields.items()
+    }
 
 
 def _refuse_owned_fields(fields: Mapping[str, Any] | None, type_hint: str) -> None:

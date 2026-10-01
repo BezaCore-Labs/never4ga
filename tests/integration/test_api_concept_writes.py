@@ -18,6 +18,12 @@ def hand_written(vault: Path, relative: str, text: str = "# By Hand\n\nprose\n")
     absolute.write_text(text, encoding="utf-8")
 
 
+def workspace_id(vault: Path) -> str:
+    manifest = (vault / "10_Workspaces/Never4gA/workspace.md").read_text(encoding="utf-8")
+    (line,) = [line for line in manifest.splitlines() if line.startswith("id: ")]
+    return line.removeprefix("id: ")
+
+
 class TestCreatingAConcept:
     def test_a_knowledge_note_is_created(self, client: TestClient, vault: Path) -> None:
         response = client.post(
@@ -92,6 +98,79 @@ class TestCreatingAConcept:
         assert response.status_code == 422, response.text
         assert response.json()["error"]["code"] == "concept_not_created"
         assert sorted(path for path in vault.rglob("*.md")) == before
+
+
+class TestADeclaredKindIsConverted:
+    """A field the vocabulary declares is written as its kind, whoever sent it.
+
+    JSON from a client carries what a person typed into a form, so `unit` and
+    `required_reading` arrive as strings. The service converts them exactly as
+    `--field` does on the command line, or a note made over HTTP and one made
+    in a terminal disagree about the type of the same property (core/02
+    section 21.15, `details/api-cli-mcp-contract.md` section 3).
+    """
+
+    def test_a_boolean_string_is_written_as_a_boolean(
+        self, client: TestClient, vault: Path
+    ) -> None:
+        response = client.post(
+            "/v1/concepts",
+            json={
+                "type": "standard",
+                "title": "Commit Messages",
+                "fields": {"required_reading": "true"},
+            },
+        )
+        assert response.status_code == 201, response.text
+        text = (vault / response.json()["path"]).read_text(encoding="utf-8")
+        assert "\nrequired_reading: true\n" in text
+
+    def test_an_integer_string_is_written_as_an_integer(
+        self, client: TestClient, vault: Path
+    ) -> None:
+        response = client.post(
+            "/v1/concepts",
+            json={
+                "type": "course_unit",
+                "title": "Sets and Logic",
+                "workspace": workspace_id(vault),
+                "in": "10_Workspaces/Never4gA/Units",
+                "fields": {"unit": "3"},
+            },
+        )
+        assert response.status_code == 201, response.text
+        text = (vault / response.json()["path"]).read_text(encoding="utf-8")
+        assert "\nunit: 3\n" in text
+
+    def test_a_label_in_an_integer_field_stays_a_label(
+        self, client: TestClient, vault: Path
+    ) -> None:
+        response = client.post(
+            "/v1/concepts",
+            json={
+                "type": "course_unit",
+                "title": "Final Exam",
+                "workspace": workspace_id(vault),
+                "in": "10_Workspaces/Never4gA/Units",
+                "fields": {"unit": "Final"},
+            },
+        )
+        assert response.status_code == 201, response.text
+        text = (vault / response.json()["path"]).read_text(encoding="utf-8")
+        assert "\nunit: Final\n" in text
+
+    def test_adoption_converts_as_creation_does(self, client: TestClient, vault: Path) -> None:
+        hand_written(vault, "50_System/Standards/by-hand.md")
+        response = client.post(
+            "/v1/concepts/adopt",
+            json={
+                "path": "50_System/Standards/by-hand.md",
+                "fields": {"required_reading": "false"},
+            },
+        )
+        assert response.status_code == 200, response.text
+        text = (vault / "50_System/Standards/by-hand.md").read_text(encoding="utf-8")
+        assert "\nrequired_reading: false\n" in text
 
 
 class TestAdoptingOverHttp:

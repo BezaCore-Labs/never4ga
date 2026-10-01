@@ -180,7 +180,7 @@ def field_kind(name: str) -> str | None:
     """What a registered field is, or ``None`` when nothing declares it.
 
     The registry publishes this so a client can render the right input, and
-    the CLI uses it to decide what a `--field` string may safely become.
+    creation uses it to decide what a supplied string may safely become.
     """
     if name in LIST_VALUED_FIELDS:
         return "list"
@@ -196,10 +196,10 @@ def field_kind(name: str) -> str | None:
 
 
 def coerce_field(name: str, value: Any) -> Any:
-    """Convert a `--field` string to what the vocabulary says the field is.
+    """Convert a supplied string to what the vocabulary says the field is.
 
     **Only a declared field is converted, and only when the value really is
-    one.** Without conversion, `--field unit=1` would write `unit: '1'` while
+    one.** Without conversion, `unit=1` would write `unit: '1'` while
     the same field typed by hand is an integer, and two notes of one type would
     disagree about the type of the property a Base sorts by.
 

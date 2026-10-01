@@ -104,7 +104,7 @@ from never4ga.platform_paths import PlatformPaths
 from never4ga.ports.service_manager import ServiceManager, ServiceState, ServiceStatus
 from never4ga.ports.session_store import SessionStore
 from never4ga.ports.work_management import ProviderHealth
-from never4ga.schema import Severity, ValidationLevel, coerce_field
+from never4ga.schema import Severity, ValidationLevel
 from never4ga.service_client import (
     ServiceClient,
     ServicePresence,
@@ -2059,30 +2059,22 @@ def _concept_types(context: _Context, arguments: argparse.Namespace) -> int:
 def _parse_fields(assignments: list[str]) -> dict[str, Any]:
     """`name=value` pairs, where repeating a name means a list of values.
 
-    A value becomes what the *vocabulary declares the field to be*, and stays
-    a string when nothing declares it. Otherwise `--field unit=1` would write
-    `unit: '1'` while the same field typed by hand in Obsidian is an integer,
-    and two notes of one type would disagree about the property a Base sorts
-    by.
-
-    Nothing is *guessed*, and that is the point: a verb that guessed
-    would have to rule on whether `1.0` is a number and `no` is a boolean,
-    which is why core/02 quotes its timestamps. Conversion is opt-in per
-    field, declared in `schema.vocabulary`, and applies to nothing else.
+    Every value stays the string that was typed. The creation service converts
+    a field to the kind the vocabulary declares, for this interface and the
+    API and MCP alike (`details/api-cli-mcp-contract.md` section 3).
     """
     fields: dict[str, Any] = {}
     for assignment in assignments:
         name, separator, value = assignment.partition("=")
         if not separator or not name:
             raise ConceptCreationError(f"--field takes name=value, not {assignment!r}")
-        converted = coerce_field(name, value)
         existing = fields.get(name)
         if existing is None:
-            fields[name] = converted
+            fields[name] = value
         elif isinstance(existing, list):
-            existing.append(converted)
+            existing.append(value)
         else:
-            fields[name] = [existing, converted]
+            fields[name] = [existing, value]
     return fields
 
 
