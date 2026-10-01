@@ -396,6 +396,36 @@ class TestFields:
         assert not (root / "30_Knowledge/Notes/hybrid-retrieval.md").exists()
         assert not (root / "30_Knowledge/Notes/other.md").exists()
 
+    def test_a_declared_kind_is_converted_by_the_service(
+        self, content: ContentService, workspace: ConceptId
+    ) -> None:
+        # Every interface reaches this verb, so converting here is what makes
+        # the CLI, the API and MCP write the same frontmatter.
+        standard = content.create_concept(
+            "standard", "Commit Messages", fields={"required_reading": "true"}
+        )
+        unit = content.create_concept(
+            "course_unit",
+            "Sets and Logic",
+            workspace=workspace,
+            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Units"),
+            fields={"unit": "3"},
+        )
+        assert standard.document.frontmatter["required_reading"] is True
+        assert unit.document.frontmatter["unit"] == 3
+
+    def test_each_value_given_several_times_is_converted(
+        self, content: ContentService, workspace: ConceptId
+    ) -> None:
+        created = content.create_concept(
+            "course_unit",
+            "Sets and Logic",
+            workspace=workspace,
+            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Units"),
+            fields={"unit": ["3", "Final"]},
+        )
+        assert created.document.frontmatter["unit"] == [3, "Final"]
+
 
 class TestCreatingIntoALifeArea:
     """An area holds documents, scoped by `area` (core/01 section 7, core/02 section 16.3).
