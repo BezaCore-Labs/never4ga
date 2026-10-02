@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="docs/assets/banner.svg" alt="Never4gA, by BezaCore Labs: the right context for every AI session, assembled without spending a token" width="100%">
+  <img src="https://raw.githubusercontent.com/BezaCore-Labs/never4ga/main/docs/assets/banner.svg" alt="Never4gA, by BezaCore Labs: the right context for every AI session, assembled without spending a token" width="100%">
 </p>
 
 <p align="center">
   <a href="https://github.com/BezaCore-Labs/never4ga/actions/workflows/gate.yml"><img src="https://github.com/BezaCore-Labs/never4ga/actions/workflows/gate.yml/badge.svg" alt="gate"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-483BBA" alt="Apache-2.0"></a>
+  <a href="https://github.com/BezaCore-Labs/never4ga/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-483BBA" alt="Apache-2.0"></a>
 </p>
 
 Never4gA, short for *never forget again*, is memory for you and every AI agent you
@@ -22,7 +22,7 @@ time. Your agent spends its budget on the work, not on searching for what it sho
 already know.
 
 <p align="center">
-  <img src="docs/assets/demo.svg" alt="A terminal: never4ga init over a folder of notes, index, search, then a context pack for a repository" width="100%">
+  <img src="https://raw.githubusercontent.com/BezaCore-Labs/never4ga/main/docs/assets/demo.svg" alt="A terminal: never4ga init over a folder of notes, index, search, then a context pack for a repository" width="100%">
 </p>
 
 ## Why it's built this way
@@ -80,13 +80,13 @@ published yet, so there's nothing to install today. This is what it looks
 like:
 
 <p align="center">
-  <img src="docs/assets/obsidian.png" alt="Obsidian with the Never4gA Companion's context panel beside a decision note: scope, budget, items with their reasons, and Git signals. It notes that no LLM stage ran." width="100%">
+  <img src="https://raw.githubusercontent.com/BezaCore-Labs/never4ga/main/docs/assets/obsidian.png" alt="Obsidian with the Never4gA Companion's context panel beside a decision note: scope, budget, items with their reasons, and Git signals. It notes that no LLM stage ran." width="100%">
 </p>
 
 ## Quick start
 
 ```bash
-uv tool install git+https://github.com/BezaCore-Labs/never4ga
+uv tool install never4ga
 export NEVER4GA_VAULT=~/notes
 ```
 
@@ -145,16 +145,16 @@ If something didn't make sense, or didn't work the way this page says it does,
 useful thing you can send.
 
 GitHub is Never4gA's only public home. Issues and pull requests go there.
-To report a security problem, see [SECURITY.md](SECURITY.md) rather than
+To report a security problem, see [SECURITY.md](https://github.com/BezaCore-Labs/never4ga/blob/main/SECURITY.md) rather than
 opening an issue.
 
 ## Working on Never4gA
 
-The design is written down. [`docs/specs/`](docs/specs/) holds the
+The design is written down. [`docs/specs/`](https://github.com/BezaCore-Labs/never4ga/tree/main/docs/specs) holds the
 specifications; start with
-[`00-spec-index.md`](docs/specs/00-spec-index.md). They're generated from the
+[`00-spec-index.md`](https://github.com/BezaCore-Labs/never4ga/blob/main/docs/specs/00-spec-index.md). They're generated from the
 maintainer's notes, so propose a change in an issue rather than editing them.
-[`AGENTS.md`](AGENTS.md) is the contract for AI agents working in this
+[`AGENTS.md`](https://github.com/BezaCore-Labs/never4ga/blob/main/AGENTS.md) is the contract for AI agents working in this
 repository, and a fair summary of the rules for people too.
 
 ```bash
@@ -167,4 +167,4 @@ That last line is the gate, and every pull request runs it.
 
 ## License
 
-[Apache License 2.0](LICENSE). Never4gA, by [BezaCore Labs](https://github.com/BezaCore-Labs).
+[Apache License 2.0](https://github.com/BezaCore-Labs/never4ga/blob/main/LICENSE). Never4gA, by [BezaCore Labs](https://github.com/BezaCore-Labs).

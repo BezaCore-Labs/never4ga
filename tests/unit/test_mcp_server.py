@@ -11,6 +11,7 @@ from __future__ import annotations
 import io
 import json
 from collections.abc import Mapping
+from importlib.metadata import version
 from typing import Any
 
 import pytest
@@ -65,6 +66,11 @@ class TestHandshake:
         assert result is not None
         assert result["result"]["protocolVersion"] == MCP_PROTOCOL_VERSION
         assert result["result"]["serverInfo"]["name"] == "never4ga"
+
+    def test_it_reports_the_installed_version(self) -> None:
+        result = server().handle(call("initialize"))
+        assert result is not None
+        assert result["result"]["serverInfo"]["version"] == version("never4ga")
 
     def test_only_tools_are_advertised(self) -> None:
         # Resources would restate what a tool already answers, and advertising

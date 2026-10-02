@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Iterator
+from importlib.metadata import version
 from pathlib import Path, PurePath
 from typing import Any, ClassVar
 
@@ -36,6 +37,9 @@ class TestHealth:
         response = anonymous.get("/v1/health")
         assert response.status_code == 200
         assert response.json()["status"] == "ok"
+
+    def test_it_reports_the_installed_version(self, anonymous: TestClient) -> None:
+        assert anonymous.get("/v1/health").json()["version"] == version("never4ga")
 
     def test_it_ignores_a_wrong_credential_rather_than_refusing(
         self, anonymous: TestClient
