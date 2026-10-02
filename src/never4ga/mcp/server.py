@@ -29,6 +29,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import IO, Any, Final
 
+from never4ga import __version__
 from never4ga.errors import Never4gaError, StructuredError
 from never4ga.mcp.jsonrpc import (
     INTERNAL_ERROR,
@@ -65,7 +66,7 @@ class ToolFailureError(Exception):
 class McpServer:
     """One vault's tools, over one pair of streams."""
 
-    def __init__(self, tools: Sequence[Tool], *, version: str = "0.1.0.dev0") -> None:
+    def __init__(self, tools: Sequence[Tool], *, version: str = __version__) -> None:
         self._tools = {tool.name: tool for tool in tools}
         self._version = version
 

@@ -45,7 +45,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from never4ga import rendering
+from never4ga import __version__, rendering
 from never4ga.api.errors import status_for
 from never4ga.api.models import (
     ConceptAdoptRequest,
@@ -162,7 +162,7 @@ def create_app(
     #: available: a connection may be configured read-only, and a plugin that
     #: lists work should not need write credentials to do it.
     work_reader: Callable[[VaultSession], WorkReadService] | None = None,
-    version: str = "0.1.0.dev0",
+    version: str = __version__,
     monotonic: Callable[[], float] = time.monotonic,
 ) -> FastAPI:
     """Build the app for one vault.
