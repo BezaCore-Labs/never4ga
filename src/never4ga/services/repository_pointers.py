@@ -209,9 +209,8 @@ def gitignore_block() -> str:
     return "\n".join(
         [
             GITIGNORE_BEGIN,
-            "# These are generated pointers, not content. What they used to carry",
-            "# lives in the Never4gA vault and reaches a session through the",
-            "# Context Pack.",
+            "# Agent instruction files are generated on each machine and never",
+            "# committed.",
             *AGENT_FILENAMES,
             GITIGNORE_END,
         ]
