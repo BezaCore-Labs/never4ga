@@ -120,6 +120,7 @@ class TestCriterion1Init:
             {"directory": "Projects", "files": 3},
             {"directory": "Reading", "files": 1},
         ]
+        assert result.json["foreign_notes"] == ["README.md"]
 
     def test_preserved_counts_what_was_already_there(self, run: Run) -> None:
         preserved = run("init").json["preserved"]
@@ -141,7 +142,7 @@ class TestCriterion1Init:
 class TestCriterion2Registration:
     def test_the_manifest_records_the_registration(self, initialised: Run) -> None:
         status = initialised("status").json
-        assert status["foreign_material"] == ["Projects", "Reading"]
+        assert status["foreign_material"] == ["Projects", "README.md", "Reading"]
 
     def test_a_directory_added_later_is_noticed_not_indexed(
         self, indexed: Run, vault: Path
@@ -178,7 +179,7 @@ class TestCriterion3Doctor:
 
 class TestCriterion4Search:
     def test_index_reports_the_foreign_notes(self, initialised: Run) -> None:
-        assert initialised("index").json["foreign"]["indexed"] == 4
+        assert initialised("index").json["foreign"]["indexed"] == 5
 
     def test_search_returns_one_with_a_path_an_excerpt_and_no_id(self, indexed: Run) -> None:
         (result,) = indexed("search", "quillwort").json["results"]

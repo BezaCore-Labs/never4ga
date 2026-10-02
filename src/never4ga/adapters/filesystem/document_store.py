@@ -39,7 +39,7 @@ from never4ga.adapters.filesystem.frontmatter import (
 from never4ga.domain.document import ForeignNote, StoredDocument, UntrackedMarkdown, VaultPath
 from never4ga.domain.identity import ConceptId
 from never4ga.errors import DuplicateConceptIdError, VaultIntegrityError, VaultPathError
-from never4ga.layout import DocumentRole, foreign_directories, is_foreign_note, role_of
+from never4ga.layout import DocumentRole, foreign_names, is_foreign_note, role_of
 from never4ga.ports.document_store import FileStat, StoreProblem
 
 __all__ = ["FileSystemMarkdownStore", "StoreProblem"]
@@ -249,17 +249,24 @@ class FileSystemMarkdownStore:
             yield FileStat(path=path, size=stat.st_size, modified_at=stat.st_mtime)
 
     def _foreign_paths(self, directories: Collection[str]) -> Iterator[VaultPath]:
-        """Markdown under the registered directories, in path order.
+        """The registered loose notes, and Markdown under the registered directories.
 
         The same walk :meth:`_concept_eligible_paths` makes, confined to the
-        directories named: dot directories and symlinks are not followed, and
-        a registered directory that is gone yields nothing.
+        names registered: dot directories and symlinks are not followed, and
+        a registered name that is gone yields nothing.
         """
-        usable = foreign_directories(directories)
+        usable = foreign_names(directories)
         found: list[VaultPath] = []
         for name in sorted(usable):
             top = self._root / name
-            if top.is_symlink() or not top.is_dir():
+            if top.is_symlink():
+                continue
+            if top.is_file():
+                loose = VaultPath.parse(name)
+                if is_foreign_note(loose, usable):
+                    found.append(loose)
+                continue
+            if not top.is_dir():
                 continue
             for directory, subdirectories, filenames in os.walk(top, followlinks=False):
                 subdirectories[:] = [

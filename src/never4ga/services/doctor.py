@@ -1713,7 +1713,14 @@ class Doctor:
                     "search and every Context Pack",
                     Severity.WARNING,
                     path,
-                    "run `never4ga adopt` on it to make it a tracked concept where "
+                    # A loose note at the top level was added after `init`,
+                    # which registers one as foreign material (core/01
+                    # section 1), as it does a directory.
+                    "run `never4ga init`; it registers the note as foreign material "
+                    "so search reaches it, or `never4ga adopt --type <type>` to move "
+                    "it into its type's home"
+                    if len(path.segments) == 1
+                    else "run `never4ga adopt` on it to make it a tracked concept where "
                     "it sits, or leave it: prose is legitimate vault content",
                 )
             )

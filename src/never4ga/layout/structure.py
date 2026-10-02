@@ -34,7 +34,7 @@ __all__ = [
     "FlatArea",
     "VaultRoot",
     "flat_area_of",
-    "foreign_directories",
+    "foreign_names",
     "is_foreign_format",
     "is_foreign_note",
     "is_life_area_content",
@@ -99,9 +99,10 @@ SYSTEM_MANIFEST: Final = VaultPath.parse(f"{VaultRoot.SYSTEM}/system.md")
 #: and curating it means editing Markdown rather than Python.
 DOMAIN_REGISTRY: Final = VaultPath.parse(f"{VaultRoot.SYSTEM}/Schemas/domain-registry.md")
 
-#: The system manifest's record of which top-level directories `init` found
-#: already there and registered as foreign material (core/01 section 1).
-#: Directory names, not paths: they are always top-level. This is
+#: The system manifest's record of which top-level directories and loose
+#: top-level Markdown notes `init` found already there and registered as
+#: foreign material (core/01 section 1). Names, not paths: they are always
+#: top-level. This is
 #: the first form of the foreign-format registry core/02 section 3.3 calls
 #: "future", and it lives in the manifest so it survives a reindex and travels
 #: with the vault.
@@ -243,13 +244,21 @@ def role_of(path: VaultPath) -> DocumentRole:
     return DocumentRole.CONCEPT
 
 
-def foreign_directories(names: Iterable[str]) -> frozenset[str]:
+#: The top-level files Never4gA reserves at the vault root (core/01 sections
+#: 2, 4 and 13). A writer's note by one of these names is never foreign
+#: material, because the vault root already gives the name a meaning.
+RESERVED_ROOT_NAMES: Final = (RESERVED_INDEX, HOME.name, RESERVED_LOG)
+
+
+def foreign_names(names: Iterable[str]) -> frozenset[str]:
     """The names that can be foreign material: single segments that are not roots.
 
-    A root is Never4gA's own structure however the manifest describes it, and
-    a name with a separator, or a dot directory, is not a top-level directory
-    `init` could have registered. Dropping them here is what keeps a corrupt
-    manifest from turning a root's prose into a pile indexed by path.
+    A name is a top-level directory or a loose top-level Markdown note. A
+    root is Never4gA's own structure however the manifest describes it, a
+    name with a separator, or a dot name, is not something `init` could have
+    registered, and a reserved root file is Never4gA's. Dropping them here is
+    what keeps a corrupt manifest from turning a root's prose, or the root
+    index, into a pile indexed by path.
     """
     roots = {str(root) for root in VaultRoot}
     return frozenset(
@@ -260,26 +269,29 @@ def foreign_directories(names: Iterable[str]) -> frozenset[str]:
         and "\\" not in name
         and not name.startswith(".")
         and name not in roots
+        and name not in RESERVED_ROOT_NAMES
     )
 
 
 def registered_foreign_material(manifest: Mapping[str, Any]) -> frozenset[str]:
-    """The top-level directories the system manifest registers (core/01 section 1).
+    """The top-level names the system manifest registers (core/01 section 1).
 
     ``manifest`` is the frontmatter of `50_System/system.md`. The
-    registration is the exemption, never the location: a directory nobody
-    registered is judged like anywhere else, and `doctor` says so.
+    registration is the exemption, never the location: a directory or a
+    loose note nobody registered is judged like anywhere else, and `doctor`
+    says so.
     """
     recorded = manifest.get(FOREIGN_MATERIAL_FIELD) or ()
     if isinstance(recorded, str) or not isinstance(recorded, Iterable):
         return frozenset()
-    return foreign_directories(str(name) for name in recorded)
+    return foreign_names(str(name) for name in recorded)
 
 
-def is_foreign_note(path: VaultPath, directories: Collection[str]) -> bool:
-    """Would a walk of the registered ``directories`` read ``path`` as a note?
+def is_foreign_note(path: VaultPath, names: Collection[str]) -> bool:
+    """Would a walk of the registered ``names`` read ``path`` as a note?
 
-    Markdown under one of them and not in a dot directory. **A pile's own
+    A registered loose note itself, or Markdown under a registered directory
+    and not in a dot directory. **A pile's own
     `index.md` or `log.md` is one**: the two names are
     reserved in Never4gA's structure (core/01 sections 4 and 13), and a pile
     is not that structure -- it is the writer's, and their `Projects/index.md`
@@ -287,8 +299,7 @@ def is_foreign_note(path: VaultPath, directories: Collection[str]) -> bool:
     of the pile is what has to find it a name that is not reserved.
     """
     return (
-        len(path.segments) > 1
-        and path.segments[0] in foreign_directories(directories)
+        path.segments[0] in foreign_names(names)
         and path.name.endswith(".md")
         and not any(segment.startswith(".") for segment in path.segments)
     )

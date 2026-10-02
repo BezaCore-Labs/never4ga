@@ -27,8 +27,10 @@ from never4ga.layout import (
     VaultRoot,
     flat_area_of,
     is_foreign_format,
+    is_foreign_note,
     is_life_area_content,
     life_area_directory_of,
+    registered_foreign_material,
     role_of,
     workspace_directory_of,
     workspace_section_of,
@@ -385,6 +387,33 @@ class TestForeignFormatFiles:
     def test_a_reserved_index_wins_over_foreign_classification(self) -> None:
         # index.md stays navigation wherever it is.
         assert role_of(p("50_System/Templates/index.md")) is DocumentRole.DIRECTORY_INDEX
+
+
+class TestForeignMaterial:
+    """What a registration in the system manifest makes foreign (core/01 section 1)."""
+
+    def test_markdown_under_a_registered_directory_is_a_foreign_note(self) -> None:
+        assert is_foreign_note(p("Projects/garden/beds.md"), {"Projects"})
+
+    def test_a_registered_loose_note_is_a_foreign_note(self) -> None:
+        assert is_foreign_note(p("loose.md"), {"loose.md"})
+
+    def test_an_unregistered_loose_note_is_not(self) -> None:
+        assert not is_foreign_note(p("other.md"), {"loose.md", "Projects"})
+
+    def test_a_dot_directory_is_never_read(self) -> None:
+        assert not is_foreign_note(p("Projects/.trash/old.md"), {"Projects"})
+
+    @pytest.mark.parametrize("name", [RESERVED_INDEX, HOME.name, RESERVED_LOG])
+    def test_a_manifest_naming_a_reserved_root_file_registers_nothing(self, name: str) -> None:
+        # A corrupt or hand-edited manifest must never make the root index a
+        # pile indexed by path.
+        registered = registered_foreign_material({"foreign_material": [name, "Projects"]})
+        assert registered == {"Projects"}
+        assert not is_foreign_note(p(name), registered)
+
+    def test_a_manifest_naming_a_root_registers_nothing(self) -> None:
+        assert registered_foreign_material({"foreign_material": ["30_Knowledge"]}) == set()
 
 
 class TestNoSpacesInPaths:

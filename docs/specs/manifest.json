@@ -3,8 +3,8 @@
   "files": {
     "00-spec-index.md": "dae4ef7f8b1113c3b4d89579f5405efa4e18f0d624c40d1d6890b123e56ce756",
     "core/00-constitution.md": "401a979d375abcd7e7758a3f701acfad8762e312c2869029fabf5deb6f455ddf",
-    "core/01-vault-specification.md": "1f439e0c8d085b22dfa976f074b3fe7114fb9e8e30e2ec2346337b107159f719",
-    "core/02-formal-schema.md": "7caa0a97b8542b24c8be6485de7a6a4342a431d579cc3c25b39a4003e9384784",
+    "core/01-vault-specification.md": "1fb94657e05e42bcc0c3efb301488b6d679f4b83856cbddc3b3a1e9b2b22f23a",
+    "core/02-formal-schema.md": "00c67e7b899b9dd60bb355764242835c32ec75bd60befdd3e2953afe23d32971",
     "core/03-workspace-specification.md": "1e0da1f5d8589780abe1de7beaabafae97da0bb3e6475a80102cf53587505db9",
     "core/04-agent-and-skills-architecture.md": "1a0ca8a30c168a5bbce355de222d8f50ff7346f3f6b4728bb9785724f834d00e",
     "core/05-runtime-architecture.md": "ec97e45a629298921cc0a28590456df9314188cae822419795f02f6c1484808c",
