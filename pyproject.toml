@@ -11,6 +11,26 @@ requires-python = ">=3.14"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [{ name = "Joseph Soper", email = "joseph.soper.dev@gmail.com" }]
+keywords = [
+    "markdown",
+    "obsidian",
+    "knowledge-management",
+    "local-first",
+    "context-engineering",
+    "mcp",
+    "ai-agents",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Text Processing :: Markup :: Markdown",
+    "Topic :: Software Development",
+]
 
 # Every runtime dependency is a recorded decision (AGENTS.md, "Dependencies").
 #
@@ -48,6 +68,12 @@ dependencies = [
 # The two interfaces a person or a client actually starts. The API is not here:
 # it is not a process anybody launches -- the daemon is, and the daemon is
 # `never4ga serve`. Pinned by test_milestone_boundary.py.
+[project.urls]
+Homepage = "https://github.com/BezaCore-Labs/never4ga"
+Repository = "https://github.com/BezaCore-Labs/never4ga"
+Issues = "https://github.com/BezaCore-Labs/never4ga/issues"
+Changelog = "https://github.com/BezaCore-Labs/never4ga/releases"
+
 [project.scripts]
 never4ga = "never4ga.cli:main"
 never4ga-mcp = "never4ga.mcp.__main__:main"
@@ -61,6 +87,13 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/never4ga"]
+
+# The source distribution names what it ships. Otherwise it takes every file
+# this repository's .gitignore does not exclude, including one kept out of Git
+# only by a machine's own ignore rules. tests/architecture/test_packaging.py
+# holds every entry to a tracked path.
+[tool.hatch.build.targets.sdist]
+only-include = ["src/never4ga", "README.md", "LICENSE", "SECURITY.md", "pyproject.toml"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
