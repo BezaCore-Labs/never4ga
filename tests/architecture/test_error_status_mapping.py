@@ -61,9 +61,10 @@ def descendants(cls: type) -> set[type]:
     including the throwaway one below. Those are not the product's hierarchy and
     holding them to it makes this test depend on execution order.
     """
+    subclasses: list[type] = cls.__subclasses__()
     found = {
         child
-        for child in cls.__subclasses__()
+        for child in subclasses
         if child.__module__.startswith("never4ga.")
         and not child.__module__.startswith(_UNREACHABLE)
     }

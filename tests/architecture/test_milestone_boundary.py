@@ -102,7 +102,7 @@ class TestRequiredPortsExist:
     @pytest.mark.parametrize(("module_name", "port_name"), sorted(REQUIRED_PORTS.items()))
     def test_port_is_a_protocol(self, module_name: str, port_name: str) -> None:
         port = getattr(importlib.import_module(module_name), port_name)
-        assert issubclass(port, typing.Protocol)  # type: ignore[arg-type]
+        assert issubclass(port, typing.Protocol)  # type: ignore[arg-type, unused-ignore]
 
     def test_every_port_module_is_covered(self) -> None:
         """The table names every port module.
