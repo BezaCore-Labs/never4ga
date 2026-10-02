@@ -192,6 +192,21 @@ class TestTheGitignoreBlock:
         s.apply(s.plan())
         assert body(locator, ".gitignore").startswith(GITIGNORE_BEGIN)
 
+    def test_its_comments_say_nothing_about_where_knowledge_is_kept(self) -> None:
+        # The block lands in a tracked file, so it is published by every mapped
+        # repository, public ones included (`details/agent-instruction-layering.md`,
+        # "Nothing published"). It may say what the ignored files are; where
+        # the knowledge behind them lives is not the repository's to say.
+        comments = [
+            line
+            for line in with_gitignore_block(None).splitlines()
+            if line.startswith("#") and line not in (GITIGNORE_BEGIN, GITIGNORE_END)
+        ]
+        assert comments
+        for line in comments:
+            assert "vault" not in line.lower()
+            assert "context pack" not in line.lower()
+
     def test_a_block_that_differs_only_in_wording_is_left_alone(
         self, locator: FakeRepositoryLocator
     ) -> None:
