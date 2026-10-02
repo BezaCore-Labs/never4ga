@@ -8,6 +8,7 @@ loosened by accident".
 
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from pathlib import PurePath
 
@@ -29,9 +30,14 @@ from never4ga.services.repository_pointers import (
     PointerAction,
     RepositoryPointerSync,
     content_hash,
+    gitignore_block,
     with_gitignore_block,
 )
 from never4ga.services.startup_command import DOCUMENTED_STARTUP_COMMAND
+
+#: The begin line earlier versions wrote. Repositories still carry it, so it
+#: must go on being recognised, and replaced.
+LEGACY_BEGIN = "# BEGIN never4ga agent instruction files (ADR-0025)"
 
 REPO = PurePath("/src/thing")
 OTHER = PurePath("/src/other")
@@ -229,6 +235,25 @@ class TestTheGitignoreBlock:
         locator.put_file(REPO, ".gitignore", f"{GITIGNORE_BEGIN}\n{AGENT_FILENAMES[0]}\n")
         (plan,) = [p for p in sync(locator).plan() if p.relative == ".gitignore"]
         assert plan.action is PointerAction.WRITE
+
+    def test_no_line_of_it_cites_a_record(self) -> None:
+        # Every mapped repository publishes this block, so it cannot point a
+        # reader at a decision record they have no way to open.
+        assert re.search(r"\b(?:ADR|Q)-\d+", with_gitignore_block(None)) is None
+
+    def test_a_block_under_the_older_begin_line_is_rewritten_once(
+        self, locator: FakeRepositoryLocator
+    ) -> None:
+        older = "\n".join([LEGACY_BEGIN, "# older wording", *AGENT_FILENAMES, GITIGNORE_END])
+        locator.put_file(REPO, ".gitignore", f".venv/\n\n{older}\n")
+        (plan,) = [p for p in sync(locator).plan() if p.relative == ".gitignore"]
+        assert plan.action is PointerAction.WRITE
+        s = sync(locator)
+        s.apply(s.plan())
+        text = body(locator, ".gitignore")
+        assert text == f".venv/\n\n{gitignore_block()}\n"
+        (again,) = [p for p in sync(locator).plan() if p.relative == ".gitignore"]
+        assert again.action is PointerAction.NOOP
 
     def test_replacing_an_old_block_keeps_the_rest(self) -> None:
         existing = f"a\n{GITIGNORE_BEGIN}\nstale\n{GITIGNORE_END}\nb\n"

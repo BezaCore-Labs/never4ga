@@ -84,8 +84,16 @@ AGENT_FILENAMES: Final = ("AGENTS.md", "CLAUDE.md", "GEMINI.md")
 #: the file should not have to guess where it came from.
 POINTER_MARKER: Final = "<!-- never4ga:pointer -->"
 
-GITIGNORE_BEGIN: Final = "# BEGIN never4ga agent instruction files (ADR-0025)"
+GITIGNORE_BEGIN: Final = "# BEGIN never4ga agent instruction files"
 GITIGNORE_END: Final = "# END never4ga agent instruction files"
+
+#: The begin line earlier versions wrote. A repository may still carry it, so
+#: a block under it is found, replaced rather than repeated, and rewritten by
+#: the next sync even when it ignores the same files.
+_LEGACY_GITIGNORE_BEGIN: Final = f"{GITIGNORE_BEGIN} (ADR-0025)"
+
+#: Either begin line, the longer first so the shorter cannot match its prefix.
+_BEGIN: Final = rf"(?:{re.escape(_LEGACY_GITIGNORE_BEGIN)}|{re.escape(GITIGNORE_BEGIN)})"
 
 #: What counts as documentation a session should be told to read. Ordered, so
 #: the pointer is stable rather than dependent on directory order.
@@ -229,9 +237,10 @@ def with_gitignore_block(existing: str | None) -> str:
     if existing is None:
         return block + "\n"
     without = re.sub(
-        rf"{re.escape(GITIGNORE_BEGIN)}\n(?:.*\n)*?{re.escape(GITIGNORE_END)}\n?",
+        rf"^{_BEGIN}\n(?:.*\n)*?{re.escape(GITIGNORE_END)}\n?",
         "",
         existing,
+        flags=re.MULTILINE,
     ).rstrip("\n")
     # An empty remainder means the block was the whole file, which is the
     # ordinary case on the second run. Falling through to the join below would
@@ -249,7 +258,7 @@ def _ignored_by_block(text: str) -> tuple[str, ...] | None:
     marker with no end, is always rewritten.
     """
     match = re.search(
-        rf"^{re.escape(GITIGNORE_BEGIN)}\n((?:.*\n)*?){re.escape(GITIGNORE_END)}$",
+        rf"^{_BEGIN}\n((?:.*\n)*?){re.escape(GITIGNORE_END)}$",
         text,
         re.MULTILINE,
     )
@@ -260,6 +269,11 @@ def _ignored_by_block(text: str) -> tuple[str, ...] | None:
         for line in match.group(1).splitlines()
         if line.strip() and not line.lstrip().startswith("#")
     )
+
+
+def _has_legacy_begin(text: str) -> bool:
+    """Whether the block in `text` opens with the begin line earlier versions wrote."""
+    return re.search(rf"^{re.escape(_LEGACY_GITIGNORE_BEGIN)}$", text, re.MULTILINE) is not None
 
 
 def is_generated(content: str | None) -> bool:
@@ -425,8 +439,10 @@ class RepositoryPointerSync:
 
     def _plan_gitignore(self, root: PurePath) -> PointerPlan:
         existing = self._locator.read_text(root, ".gitignore")
-        if existing is not None and _ignored_by_block(existing) == _ignored_by_block(
-            gitignore_block()
+        if (
+            existing is not None
+            and _ignored_by_block(existing) == _ignored_by_block(gitignore_block())
+            and not _has_legacy_begin(existing)
         ):
             # A tracked file rewritten for its comments alone leaves the
             # repository with an uncommitted change and nothing gained.
