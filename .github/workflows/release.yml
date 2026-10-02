@@ -1,0 +1,143 @@
+# Builds the package and publishes it.
+#
+# Pushing a tag `v<version>` publishes that version to PyPI. Running the
+# workflow by hand publishes a dry run to TestPyPI instead, from whatever ref
+# it is run on, under a development version unique to the run, so it can be
+# repeated without colliding with an earlier upload.
+#
+# Both indexes are reached by trusted publishing: each one trusts this
+# repository, this workflow and a named environment, and issues a short-lived
+# upload credential to a run that matches. No token is stored here or in the
+# repository's secrets. tests/architecture/test_packaging.py holds this file
+# to that.
+
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Two releases racing to the same index would publish in whichever order they
+# finished. One at a time, and never cancelled part way through an upload.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install the build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      # A release tag must name the version the package says it is, or PyPI
+      # would carry a version whose tag points somewhere else.
+      - name: Check the tag against the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+          if [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
+            echo "tag $GITHUB_REF_NAME does not match the package version $version" >&2
+            exit 1
+          fi
+
+      # TestPyPI accepts each version once, so a dry run publishes the
+      # release it is heading for as a development version numbered by run.
+      - name: Number the dry run
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'EOF'
+          import os
+          import re
+          from pathlib import Path
+
+          path = Path("pyproject.toml")
+          text = path.read_text(encoding="utf-8")
+          match = re.search(r'^version = "([^"]+)"$', text, re.MULTILINE)
+          release = re.sub(r"\.dev\d+$", "", match.group(1))
+          version = f"{release}.dev{os.environ['GITHUB_RUN_NUMBER']}"
+          path.write_text(text.replace(match.group(0), f'version = "{version}"', 1), encoding="utf-8")
+          print(f"dry run version {version}")
+          EOF
+
+      - name: Build
+        run: python -m build
+
+      - name: Check the distributions
+        run: twine check --strict dist/*
+
+      # The wheel, installed alone into a clean environment, runs: it has
+      # every file it needs and every dependency it declares.
+      - name: Try the wheel
+        run: |
+          python -m venv "$RUNNER_TEMP/try"
+          "$RUNNER_TEMP/try/bin/pip" install dist/*.whl
+          vault="$RUNNER_TEMP/vault"
+          mkdir -p "$vault/Projects"
+          printf '# Garden\n\nThe quillwort drip kit.\n' > "$vault/garden.md"
+          printf '# Auth\n\nTokens rotate weekly.\n' > "$vault/Projects/auth.md"
+          "$RUNNER_TEMP/try/bin/never4ga" --vault "$vault" init
+          "$RUNNER_TEMP/try/bin/never4ga" --vault "$vault" index
+          "$RUNNER_TEMP/try/bin/never4ga" --vault "$vault" search quillwort | grep -q garden.md
+          "$RUNNER_TEMP/try/bin/never4ga-mcp" --help > /dev/null
+
+      - name: Keep the distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  test-pypi:
+    if: github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/never4ga
+    permissions:
+      id-token: write
+    steps:
+      - name: Fetch the distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  pypi:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/never4ga
+    permissions:
+      id-token: write
+    steps:
+      - name: Fetch the distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
