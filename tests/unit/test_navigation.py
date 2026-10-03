@@ -26,6 +26,7 @@ from never4ga.services.navigation import (
     lineage_of,
     matches,
     missing_indexes,
+    outdated,
     refresh,
     spliced,
 )
@@ -359,6 +360,43 @@ class TestEveryDirectoryGetsAnIndex:
         concepts = [doc("10_Workspaces/Demo/Decisions/adr-0001.md", "ADR-0001")]
         refresh(files, concepts)
         assert refresh(files, concepts) == 0
+
+
+class TestAFolderThatWasEmptied:
+    """An index stays honest when everything it listed moves away.
+
+    A folder's documents can all leave it: moved to where their type now
+    lives, or adopted out of it. Its `index.md` stays behind, and it must stop
+    linking to files that are gone. A hand-written index carries no generated
+    block, and is left alone.
+    """
+
+    RUNBOOKS = "10_Workspaces/Demo/Runbooks"
+
+    def emptied(self) -> tuple[InMemoryVaultFileStore, list[StoredDocument]]:
+        files = InMemoryVaultFileStore()
+        before = [doc(f"{self.RUNBOOKS}/phase-1.md", "Phase 1"), doc("10_Workspaces/Demo/x.md")]
+        refresh(files, before)
+        return files, [doc("10_Workspaces/Demo/Walkthroughs/phase-1.md", "Phase 1"), before[1]]
+
+    def test_doctor_sees_it(self) -> None:
+        files, after = self.emptied()
+        assert VaultPath.parse(f"{self.RUNBOOKS}/index.md") in outdated(files, after)
+
+    def test_refresh_says_it_is_empty(self) -> None:
+        files, after = self.emptied()
+        refresh(files, after)
+        text = files.read_text(VaultPath.parse(f"{self.RUNBOOKS}/index.md")) or ""
+        assert "phase-1.md" not in text
+        assert "_Nothing here yet._" in text
+        assert refresh(files, after) == 0
+
+    def test_a_hand_written_index_is_left_alone(self) -> None:
+        files = InMemoryVaultFileStore()
+        hand = VaultPath.parse("10_Workspaces/Demo/Notes/index.md")
+        files.write_text(hand, "# Notes\n\n- [Old](old.md)\n")
+        refresh(files, [doc("10_Workspaces/Demo/x.md")])
+        assert files.read_text(hand) == "# Notes\n\n- [Old](old.md)\n"
 
 
 class TestARefreshCanBeScopedToOneLineage:

@@ -457,4 +457,28 @@ def _stale(
         text = files.read_text(index)
         if text is None or not matches(text, block):
             found.append((index, block))
+    if within is None:
+        found.extend(_emptied(files, directories))
+    return found
+
+
+def _emptied(files: VaultFileStore, navigable: set[VaultPath]) -> list[tuple[VaultPath, str]]:
+    """Generated indexes left in a directory that no longer holds a concept.
+
+    Everything a directory held can move away -- retyped to where its type
+    lives, or adopted out of it -- and its index stays behind, linking to files
+    that are gone. Only a sweep looks for these, because finding them walks the
+    vault; a creation's scoped pass never empties a directory. An index with no
+    generated block was written by a person and is not ours to rewrite.
+    """
+    empty = block_for([])
+    found = []
+    for path in sorted(files.iter_paths(), key=str):
+        if path.name != RESERVED_INDEX or len(path.segments) < 2:
+            continue
+        if VaultPath(path.segments[:-1]) in navigable:
+            continue
+        text = files.read_text(path)
+        if text is not None and current_block(text) is not None and not matches(text, empty):
+            found.append((path, empty))
     return found
