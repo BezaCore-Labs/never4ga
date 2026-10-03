@@ -62,6 +62,8 @@ STARTUP_CATEGORY_LIMITS: Final[Mapping[str, int]] = MappingProxyType(
         # The current milestone plan is what a session most often needs, and a
         # workspace rarely has many in play at once.
         PackCategory.PLAN.value: 6,
+        # A workspace rarely runs more than one phase at once.
+        PackCategory.WALKTHROUGH.value: 3,
         PackCategory.TASK.value: 10,
         PackCategory.ACTIVITY.value: 3,
         # Empty unless core/04 section 16's `--task` named one. Short on
@@ -93,6 +95,7 @@ DEEP_CATEGORY_LIMITS: Final[Mapping[str, int]] = MappingProxyType(
         PackCategory.GOAL.value: 15,
         PackCategory.DECISION.value: 30,
         PackCategory.PLAN.value: 15,
+        PackCategory.WALKTHROUGH.value: 10,
         PackCategory.TASK.value: 40,
         PackCategory.ACTIVITY.value: 15,
         PackCategory.RETRIEVED.value: 30,

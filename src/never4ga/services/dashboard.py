@@ -240,6 +240,14 @@ EMBEDS: Final[tuple[_Embed, ...]] = (
         (_View("Runbooks", ("description", "lifecycle")),),
     ),
     _Embed(
+        # How each phase of a plan was done. Listed by phase and status, so the
+        # one in progress is found at a glance.
+        "Walkthroughs",
+        "walkthrough",
+        "Walkthrough",
+        (_View("Walkthroughs", ("phase", "lifecycle")),),
+    ),
+    _Embed(
         "Recent Activity",
         "activity_log",
         "Log",

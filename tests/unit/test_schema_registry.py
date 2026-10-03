@@ -65,6 +65,7 @@ EXPECTED_TYPES: Final = frozenset(
         "course_unit",
         "course_assignment",
         "runbook",
+        "walkthrough",
     }
 )
 
@@ -73,11 +74,11 @@ class TestTypeRegistry:
     def test_every_registered_type_is_present(self) -> None:
         assert set(TYPE_REGISTRY) == EXPECTED_TYPES
 
-    def test_there_are_twenty_five_of_them(self) -> None:
-        # core/02 sections 21.1 to 21.26, less the retired 21.6 `entity`.
+    def test_there_are_twenty_six_of_them(self) -> None:
+        # core/02 sections 21.1 to 21.27, less the retired 21.6 `entity`.
         # Registration and retirement are both deliberate, so this count only
         # changes when section 21 does.
-        assert len(TYPE_REGISTRY) == 25
+        assert len(TYPE_REGISTRY) == 26
 
     @pytest.mark.parametrize("name", sorted(EXPECTED_TYPES))
     def test_every_type_name_is_snake_case(self, name: str) -> None:

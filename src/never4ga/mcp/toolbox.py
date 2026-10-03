@@ -355,6 +355,11 @@ class Toolbox:
                             "id or vault path, as '<ref>: what changed'. Update the "
                             "document itself: wrap reports one whose content did not move."
                         ),
+                        "walkthroughs": _strings(
+                            "A phase walkthrough this session wrote a step into, by id or "
+                            "vault path, as '<ref>: step N'. Write the step itself: wrap "
+                            "reports one whose content did not move."
+                        ),
                     },
                     required=("session_id", "note"),
                 ),
@@ -826,6 +831,7 @@ class Toolbox:
             memories=tuple(str(one) for one in arguments.get("memories") or ()),
             work=tuple(str(one) for one in arguments.get("work") or ()),
             context=tuple(str(one) for one in arguments.get("context") or ()),
+            walkthroughs=tuple(str(one) for one in arguments.get("walkthroughs") or ()),
         )
         return rendering.checkpoint(recorded)
 

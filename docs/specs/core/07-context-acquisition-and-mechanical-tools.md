@@ -474,6 +474,12 @@ the reader knows what it governs and when to read it. Every startup pack
 reports the required-reading total against a ceiling of 200,000 characters, and
 `doctor` reports a workspace over it. Neither of them cuts anything.
 
+Every walkthrough in progress in the workspace (`core/02` §21.27) is named in a
+startup pack, with the reason *current phase walkthrough* and its phase. It is
+carried as a reference and read on demand, never as a body and never as
+required reading, because one can run to tens of thousands of characters
+(ADR-0051).
+
 A reference substitution states which of these caused it (ADR-0042): the body
 alone is larger than the pack's character budget (`larger_than_budget`), the
 higher-priority bodies used the room first (`budget_spent`), or the pack's

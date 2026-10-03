@@ -52,12 +52,17 @@ class SessionService:
         memories: Sequence[str] = (),
         work: Sequence[str] = (),
         context: Sequence[str] = (),
+        walkthroughs: Sequence[str] = (),
     ) -> Checkpoint:
         """Record what has happened since the last checkpoint.
 
         Stamped from this machine's clock, not from anything the caller passes.
         A checkpoint is evidence about when something happened, and evidence a
         caller can set is not evidence.
+
+        A walkthrough step is declared like a changed context document, and
+        kept with them: `wrap` holds both to having changed and tells them
+        apart by the type of document each names (core/04 section 37).
         """
         recorded = Checkpoint(
             session=session,
@@ -69,7 +74,7 @@ class SessionService:
             decisions=tuple(decisions),
             memories=tuple(memories),
             work=tuple(work),
-            context=tuple(context),
+            context=(*context, *walkthroughs),
         )
         self._store.append(recorded)
         return recorded

@@ -54,6 +54,7 @@ A workspace directory is:
 ├── Context/
 ├── Goals/
 ├── Plans/
+├── Walkthroughs/
 ├── Tasks/
 ├── Decisions/
 ├── Research/
@@ -208,6 +209,10 @@ lifecycle: active
 ```
 
 Plans may implement one or more Goals through typed relationships.
+
+**Amended 2026-10-02 by ADR-0051.** A plan's phases each have a walkthrough in
+the workspace's `Walkthroughs/` (`core/02` §21.27), recording step by step how
+the phase was done.
 
 ---
 

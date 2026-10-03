@@ -323,15 +323,50 @@ _SHAPES: Final[dict[str, _Shape]] = {
     ),
     # "Done when" comes before the steps so the end is stated before the
     # means. "Not in scope" says what the plan deliberately leaves alone.
+    # A plan is also a project's roadmap: "Phases" names each phase, and
+    # each phase links the walkthrough that records how it was done
+    # (core/02 sections 21.9 and 21.27).
     "plan": _Shape(
         template_note=(
-            "A plan that carries out a goal says so with `relations: implements` naming the goal."
+            "A plan that carries out a goal says so with `relations: implements` naming the goal. "
+            'Start a phase with `never4ga walkthrough start <plan> "<phase>"`, which creates its '
+            "walkthrough and prints the line to add under the phase."
         ),
         sections=(
             ("Objective", "What this plan changes, in one paragraph a stranger could act on."),
             ("Done when", "The observable condition that closes this plan."),
             ("Steps", "Numbered, each one checkable, with what it depends on."),
+            (
+                "Phases",
+                "For work done in phases: one `### N. Title` per phase, each with what it "
+                "delivers, its done-when, and a link to its walkthrough once it starts.",
+            ),
             ("Not in scope", "What this plan deliberately leaves to another."),
+        ),
+    ),
+    # A walkthrough is read by somebody recreating or following the work, so
+    # every step carries what was done, the files, the exact commands, why,
+    # and how it was checked. "Decided before starting" holds the choices the
+    # steps assume; "What is left" is what the next session picks up.
+    "walkthrough": _Shape(
+        template_note=(
+            "Link the plan with `relations: implements` naming it, set `phase` to the phase as "
+            "the plan names it, and keep `lifecycle` current: `in_progress` while the phase "
+            "runs, `complete` when its done-when is met. Declare each step you write with "
+            '`never4ga checkpoint --walkthrough "<ref>: step N"`.'
+        ),
+        sections=(
+            ("Decided before starting", "The choices the steps below assume, and who made them."),
+            (
+                "Steps",
+                "One `### N. <step>` per step, in the order it was done, each with:\n\n"
+                "**What:** what this step changed.\n\n"
+                "**Files:** the files it created or edited.\n\n"
+                "**Commands:** the exact commands, in a fenced block.\n\n"
+                "**Why:** the reason for doing it this way.\n\n"
+                "**Checked by:** how it was verified, as something observable.",
+            ),
+            ("What is left", "What remains of this phase, so the next session starts there."),
         ),
     ),
     # A runbook is read by somebody who is not calm: the thing is down, or
@@ -1280,6 +1315,12 @@ with `never4ga concept get <id>` when it turns out to matter.
 under it says what it governs. Before work that touches that -- a palette, the
 books, a release -- fetch it and follow it.
 
+**A walkthrough listed as the current phase is the record you add to.** It is
+listed by reference because it is long. Before working on that phase, read
+its `## What is left` and the last step, and add each step you complete to it
+(`never4ga-checkpoint` says how). A phase about to start has none yet: create
+it with `never4ga walkthrough start <plan> "<phase>"`.
+
 **Do not run startup a second time to read the pack** -- not with `--json`, not
 to see it again. Every startup opens a new session, and the second one is a
 stray: empty, never wrapped, and in the way of the ones that are real. If you
@@ -1392,7 +1433,7 @@ never4ga workspace resolve --path "$PWD"
 never4ga workspace map <workspace-id> --repo "$PWD"
 ```
 """,
-        version="0.11.0",
+        version="0.12.0",
     ),
     "never4ga-context": _skill(
         "never4ga-context",
@@ -1607,7 +1648,7 @@ one, which is the honest outcome.
 
 ## Saying more than what happened
 
-Five flags, and the distinction between them matters:
+Six flags, and the distinction between them matters:
 
 ```bash
 never4ga checkpoint "cleared two defects" --session <id> \\
@@ -1615,7 +1656,8 @@ never4ga checkpoint "cleared two defects" --session <id> \\
   --decision "the date prefix is decided by the folder, not the caller" \\
   --memory "GitHub Actions on this repo runs about fifteen minutes behind" \\
   --work "840: ready to close, the read-back discipline is in" \\
-  --context "10_Workspaces/Acme/Context/project-state.md: Milestone 13 closed"
+  --context "10_Workspaces/Acme/Context/project-state.md: Milestone 13 closed" \\
+  --walkthrough "10_Workspaces/Acme/Walkthroughs/build-plan_3.-launch.md: step 4, the deploy"
 ```
 
 - `--action` is a fact: a merged PR, a written concept, a deleted file.
@@ -1643,6 +1685,12 @@ never4ga checkpoint "cleared two defects" --session <id> \\
   the declaration is a claim, and `wrap` exits non-zero while a declared
   document's content has not moved. Correct the sentence that is now wrong;
   never add a dated entry to it (`core/07` §10).
+- `--walkthrough` is the phase walkthrough you wrote a step into. **Write the
+  step itself** -- what, files, the exact commands, why, and how it was
+  checked, under the walkthrough's `## Steps` -- then declare it here, by id or
+  vault path and `: step N`. `wrap` holds it exactly as it holds `--context`.
+  A phase that has no walkthrough yet gets one first:
+  `never4ga walkthrough start <plan> "<phase>"`.
 
 Never4gA cannot work any of this out for itself. It never reads a transcript,
 and it makes no model call, so what you declare is exactly what it knows.
@@ -1653,7 +1701,7 @@ When something durable happens, not on a timer. A checkpoint per merged PR or
 per resolved question is about right; one per message is noise that makes the
 session log unreadable.
 """,
-        version="0.6.0",
+        version="0.7.0",
     ),
     "never4ga-wrap": _skill(
         "never4ga-wrap",
@@ -1807,12 +1855,28 @@ costs every later session its full length. `doctor` reports a workspace whose
 required reading passes its ceiling as `required_reading_too_large`. If yours
 does, say so rather than adding to it.
 
+## Bring the walkthrough up to date
+
+If the session did a step of a plan's phase, the phase's walkthrough carries
+it: what, files, the exact commands, why, and how it was checked. Write it
+before you wrap -- you have the commands now, and nobody will later -- and
+declare it:
+
+```bash
+never4ga checkpoint --session <id> --walkthrough "<id or path>: step N" "..."
+```
+
+`wrap` holds a declared walkthrough exactly as it holds a declared context
+document, and the log lists the steps apart, under *Walkthrough steps this
+session wrote*. When the phase's done-when is met, set its `lifecycle` to
+`complete`.
+
 ## Before you finish
 
 Say what you left undone. A handoff that omits the unfinished part is worse
 than no handoff, and `wrap` cannot know what it is -- the log records what you
 told it happened, not what did not.
 """,
-        version="0.8.0",
+        version="0.9.0",
     ),
 }

@@ -78,6 +78,9 @@ _OPEN_GOAL_LIFECYCLES: Final = frozenset({"proposed", "active"})
 #: written is exactly what a session may be there to continue.
 _OPEN_PLAN_LIFECYCLES: Final = frozenset({"draft", "active"})
 
+#: core/02 section 21.27: the phase a session is most likely there to continue.
+_IN_PROGRESS: Final = "in_progress"
+
 #: core/02 section 21.10. Work that is finished is not work in flight.
 _CLOSED_TASK_LIFECYCLES: Final = frozenset({"done", "cancelled"})
 
@@ -92,7 +95,7 @@ _CLOSED_TASK_LIFECYCLES: Final = frozenset({"done", "cancelled"})
 #: broken -- `knowledge`, `resource` and `entity` are reference material, reached
 #: by searching for them, and were never promised to arrive on their own.
 WORKSPACE_SCOPED_PACK_TYPES: Final = frozenset(
-    {"context", "decision", "goal", "plan", "task", "activity_log"}
+    {"context", "decision", "goal", "plan", "walkthrough", "task", "activity_log"}
 )
 
 #: Carried without a workspace filter. A standard binds the whole lineage, so
@@ -261,6 +264,7 @@ class StructuralContext:
             *self._goal_items(scope),
             *self._decision_items(scope),
             *self._plan_items(scope),
+            *self._walkthrough_items(scope),
             *self._task_items(scope),
             *self._activity_items(scope),
         ]
@@ -516,6 +520,37 @@ class StructuralContext:
             for rank, record in enumerate(_newest_first(records))
         ]
 
+    def _walkthrough_items(self, scope: ResolvedScope) -> list[ContextItem]:
+        """The walkthrough of each phase in progress, named and read on demand.
+
+        A walkthrough is the step-by-step record of the phase a session is
+        most likely there to continue, so it is named in every startup with
+        the reason it is there. It is carried as a reference, never a body:
+        one can run to tens of thousands of characters, and the session reads
+        it when its work touches the phase (core/02 section 21.27).
+        """
+        records = [
+            record
+            for record in self._metadata_index.query(
+                MetadataQuery(
+                    types=("walkthrough",), workspace_ids=self._sectioned_workspaces(scope)
+                )
+            )
+            if not is_detached(record) and record.lifecycle == _IN_PROGRESS
+        ]
+        return [
+            self._item(
+                record,
+                category=PackCategory.WALKTHROUGH,
+                priority=PLAN_BAND + min(rank, BAND_SPAN - 1),
+                reason=AcquisitionReason.of(
+                    ReasonCode.METADATA_FILTER,
+                    detail=_phase_detail(record),
+                ),
+            ).as_reference()
+            for rank, record in enumerate(_newest_first(records))
+        ]
+
     def _task_items(self, scope: ResolvedScope) -> list[ContextItem]:
         """Work still open in this workspace.
 
@@ -624,6 +659,12 @@ class StructuralContext:
         if self._document_store is None:
             return None
         return self._document_store.get(record.concept_id)
+
+
+def _phase_detail(record: MetadataRecord) -> str:
+    phase = record.extra.get("phase")
+    named = f", phase {phase}" if isinstance(phase, str) and phase.strip() else ""
+    return f"current phase walkthrough{named}"
 
 
 def _description(record: MetadataRecord) -> str | None:

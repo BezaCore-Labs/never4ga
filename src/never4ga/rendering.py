@@ -262,6 +262,10 @@ def created(new: Created) -> dict[str, Any]:
     }
     if new.placement_reason:
         payload["placement"] = new.placement_reason
+    if new.plan_link:
+        # A started walkthrough's link, for the session to add under its phase
+        # in the hand-written plan.
+        payload["plan_link"] = new.plan_link
     if new.moved_from is not None:
         # Adoption out of foreign material is the one write that relocates a
         # file, and a caller holding the old path needs to know it no longer

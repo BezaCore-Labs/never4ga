@@ -1328,6 +1328,11 @@ relations:
     target: <goal-id>
 ```
 
+**Amended 2026-10-02 by ADR-0051.** A plan is also a project's roadmap. Work
+done in phases lists them under `## Phases`, one heading per phase, and each
+phase links the walkthrough that records how it was done (§21.27). A large
+project may give a phase a plan of its own; there is no separate roadmap type.
+
 ---
 
 ## 21.10 `task`
@@ -1983,6 +1988,61 @@ discussion question -- living beside the unit page it belongs to. It opens,
 is due, is submitted and is graded, none of which `resource` carries. The
 syllabus, companion articles and reading lists stay `resources`: they support
 the work; this *is* the work's record.
+
+---
+
+## 21.27 `walkthrough`
+
+Registered 2026-10-02 by ADR-0051.
+
+Locations:
+
+```text
+<workspace>/Walkthroughs/
+<life-area>/
+```
+
+Required:
+
+```yaml
+workspace: <workspace-id>     (or `area`, by placement)
+lifecycle: <walkthrough-lifecycle>
+```
+
+Initial vocabulary:
+
+```text
+not_started
+in_progress
+complete
+```
+
+Optional:
+
+```yaml
+phase: <the phase as its plan names it>
+relations:
+  - type: implements
+    target: <plan-id>
+```
+
+Purpose:
+
+How one phase of a plan was actually done, step by step, so the work can be
+recreated or followed. Each step under `## Steps` gives what it changed, the
+files, the exact commands, why, and how it was checked. `## Decided before
+starting` holds the choices the steps assume, and `## What is left` is what
+the next session picks up.
+
+`never4ga walkthrough start <plan> "<phase>"` creates one from its template,
+`in_progress`, linked to the plan. With `--backfill` it records a phase
+already done: `complete`, and saying it was reconstructed after the fact. The
+plan is not edited; the verb prints the link to add under the phase.
+
+It is separate from `runbook` because it records one phase of one plan
+rather than a procedure to repeat, and it has a lifecycle. The startup pack
+names the walkthrough in progress (`core/07` §10), and `wrap` holds a declared
+one to having changed (`core/04` §37).
 
 ---
 
