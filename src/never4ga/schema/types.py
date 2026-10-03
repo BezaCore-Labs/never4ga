@@ -442,6 +442,26 @@ _SPECS: Final = (
         locations=(_section("Runbooks"), _IN_AN_AREA),
         required_fields=("workspace",),
     ),
+    # 21.27 -- how a plan's phase was actually done.
+    TypeSpec(
+        name="walkthrough",
+        # A plan says what to do and a log says what a session did, as events.
+        # Neither says, step by step, what was done for a phase, with the exact
+        # commands, why, and how it was checked -- which is what recreating
+        # the work, or following it, needs.
+        #
+        # Separate from `runbook` because it is a record of one phase of one
+        # plan rather than a procedure to repeat, and it has a lifecycle: it
+        # is written while the phase runs and closed when the phase is done.
+        # The startup pack names the one in progress (core/07 section 9), and
+        # `wrap` holds a declared one to having changed (core/04 section 37).
+        locations=(_section("Walkthroughs"), _IN_AN_AREA),
+        required_fields=("workspace", "lifecycle"),
+        lifecycle_values=("not_started", "in_progress", "complete"),
+        # The phase as its plan names it, such as "3. The journey". Its link to
+        # the plan is a relation, `implements`, not a field.
+        extra_fields=("phase",),
+    ),
     # 21.19 -- integration description/configuration.
     TypeSpec(
         name="integration",

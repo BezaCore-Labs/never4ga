@@ -1949,6 +1949,26 @@ def _map_create(context: _Context, arguments: argparse.Namespace) -> int:
     return _report_created(context, created, "map")
 
 
+def _walkthrough_start(context: _Context, arguments: argparse.Namespace) -> int:
+    """Start the walkthrough for one phase of a plan (core/02 section 21.27)."""
+    service = _content_service(context, arguments)
+    plan: ConceptId | VaultPath
+    try:
+        plan = ConceptId.parse(arguments.plan)
+    except IdentityError:
+        plan = _path_inside_the_vault(context.root, arguments.plan)
+    started = service.start_walkthrough(plan, arguments.phase, backfill=arguments.backfill)
+    summary = (
+        f"Started walkthrough {started.document.frontmatter['title']}\n"
+        f"  id:     {started.concept_id}\n"
+        f"  path:   {started.path}\n"
+        f"  status: {started.document.frontmatter['lifecycle']}\n"
+        f"  add under the phase in the plan:\n    {started.plan_link}"
+    )
+    context.reporter.emit(rendering.created(started), summary)
+    return EXIT_OK
+
+
 def _life_area_create(context: _Context, arguments: argparse.Namespace) -> int:
     service = _content_service(context, arguments)
     created = service.create_life_area(arguments.title, description=arguments.description)
@@ -2747,6 +2767,7 @@ def _checkpoint(context: _Context, arguments: argparse.Namespace) -> int:
             memories=tuple(arguments.memory),
             work=tuple(arguments.work),
             context=tuple(arguments.context),
+            walkthroughs=tuple(arguments.walkthrough),
         )
     except SessionStateError as error:
         # The generic handler's hint is "see `never4ga doctor`", which
@@ -3349,6 +3370,16 @@ def _add_index_commands(commands: Any) -> None:
         help=(
             "a context document this session changed something in, by id or vault path "
             "(`<ref>: what changed`); wrap reports it if its content did not move"
+        ),
+    )
+    checkpoint.add_argument(
+        "--walkthrough",
+        action="append",
+        default=[],
+        metavar="REF",
+        help=(
+            "a phase walkthrough this session wrote a step into, by id or vault path "
+            "(`<ref>: step N`); wrap reports it if its content did not move"
         ),
     )
     checkpoint.add_argument(
@@ -4215,6 +4246,24 @@ def _add_creation_commands(commands: Any) -> None:
     create_map.add_argument("--description")
     _add_producer_session(create_map)
     create_map.set_defaults(handler=_map_create)
+
+    walkthrough = commands.add_parser(
+        "walkthrough", help="record how a plan's phases are done, step by step"
+    )
+    walkthrough_actions = walkthrough.add_subparsers(dest="action", required=True)
+    start_walkthrough = walkthrough_actions.add_parser(
+        "start",
+        help="create the walkthrough for a phase of a plan, linked to it",
+    )
+    start_walkthrough.add_argument("plan", help="the plan, by id or vault path")
+    start_walkthrough.add_argument("phase", help='the phase as the plan names it, e.g. "3. Launch"')
+    start_walkthrough.add_argument(
+        "--backfill",
+        action="store_true",
+        help="the phase is already done: mark it complete and reconstructed after the fact",
+    )
+    _add_producer_session(start_walkthrough)
+    start_walkthrough.set_defaults(handler=_walkthrough_start)
 
     life = commands.add_parser("life-area", help="work with life areas")
     life_actions = life.add_subparsers(dest="action", required=True)

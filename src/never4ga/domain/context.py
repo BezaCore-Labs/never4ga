@@ -92,6 +92,11 @@ class PackCategory(enum.StrEnum):
     #: How it intends to get there. A lane of its own, so a current plan does
     #: not depend on lexical retrieval happening to find it.
     PLAN = "plan"
+    #: The record of a plan phase in progress (core/02 section 21.27). Carried
+    #: as a reference, read on demand: one can run to tens of thousands of
+    #: characters, and a session needs to know it is there more than it needs
+    #: all of it at startup.
+    WALKTHROUGH = "walkthrough"
     TASK = "task"
     ACTIVITY = "activity"
 

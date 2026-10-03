@@ -11,10 +11,11 @@ produce an invalid concept is a service that will.
 
 from __future__ import annotations
 
+import posixpath
 import re
 import unicodedata
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime
 from typing import Any, Final
 
@@ -144,6 +145,10 @@ class Created:
     #: concept does not carry them unchanged (core/02 section 3.3). Only adoption out of
     #: foreign material sets anything aside.
     set_aside: tuple[str, ...] = ()
+    #: The line that links a started walkthrough from its plan, relative to
+    #: the plan's folder. The plan is hand-written, so Never4gA prints it for
+    #: the session to add rather than editing the plan.
+    plan_link: str = ""
 
     @property
     def concept_id(self) -> ConceptId:
@@ -658,6 +663,67 @@ class ContentService:
         self._documents.put(document)
         self.refresh_generated(document.path)
         return Created(document, placement_reason=placement.reason)
+
+    def start_walkthrough(
+        self, plan: ConceptId | VaultPath, phase: str, *, backfill: bool = False
+    ) -> Created:
+        """Start the walkthrough for one phase of ``plan`` (core/02 section 21.27).
+
+        The walkthrough is created from its template beside the plan's
+        workspace, names the phase, and links the plan with `implements`. A
+        started phase is `in_progress`. ``backfill`` records a phase that is
+        already done: `complete`, and saying it was reconstructed after the
+        fact, so a reader knows its steps were pieced together rather than
+        written as they happened.
+
+        The plan is not edited. It is hand-written, so the result carries the
+        line that links the walkthrough from it, for the session to add under
+        the phase.
+        """
+        document = (
+            self._documents.get(plan)
+            if isinstance(plan, ConceptId)
+            else self._documents.get_by_path(plan)
+        )
+        if document is None:
+            raise ConceptCreationError(f"there is no plan {plan} in this vault")
+        concept_type = str(document.frontmatter.get("type", ""))
+        if concept_type != "plan":
+            raise ConceptCreationError(
+                f"{document.path} is {_a(concept_type or 'untyped document')}, not a plan; "
+                "a walkthrough records one phase of a plan"
+            )
+        phase = phase.strip()
+        if not phase:
+            raise ConceptCreationError("a walkthrough needs the phase it records")
+        plan_title = document.frontmatter.get("title", document.path.name.removesuffix(".md"))
+        title = f"{plan_title} — {phase}"
+        plan_directory = VaultPath(document.path.segments[:-1])
+        fields: dict[str, Any] = {
+            "lifecycle": "complete" if backfill else "in_progress",
+            "phase": phase,
+            "relations": [{"type": "implements", "target": str(document.concept_id)}],
+        }
+        workspace = document.frontmatter.get("workspace")
+        created = self.create_concept(
+            "walkthrough",
+            title,
+            workspace=ConceptId.parse(str(workspace)) if workspace else None,
+            # A plan in a life area has no workspace; its walkthrough sits
+            # beside it, in the same area.
+            in_directory=None if workspace else plan_directory,
+            fields=fields,
+        )
+        if backfill:
+            heading, _, rest = created.document.body.partition("\n")
+            reconstructed = replace(
+                created.document,
+                body=f"{heading}\n\n{_RECONSTRUCTED}\n{rest}",
+            )
+            self._documents.put(reconstructed)
+            created = replace(created, document=reconstructed)
+        link = posixpath.relpath(str(created.path), str(plan_directory))
+        return replace(created, plan_link=f"Walkthrough: [{title}]({link})")
 
     def adopt_concept(
         self,
@@ -1386,6 +1452,15 @@ def _homes_needing_no_workspace() -> list[TypeSpec]:
         ),
         key=lambda spec: spec.name,
     )
+
+
+#: What a backfilled walkthrough says first, so a reader knows its steps were
+#: pieced together after the phase rather than written as it ran.
+_RECONSTRUCTED: Final = (
+    "> Reconstructed after the fact, from the plan, the activity logs and the "
+    "repository's history. A detail nothing confirms is marked [inferred], and "
+    "one that could not be checked is marked [unverified]."
+)
 
 
 def _a(type_name: str) -> str:

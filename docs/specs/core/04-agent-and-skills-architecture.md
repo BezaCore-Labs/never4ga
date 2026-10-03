@@ -1154,6 +1154,13 @@ reported as `outstanding_context`, beside the outstanding work below. The log
 is still written. Never4gA never edits a context document itself and never
 infers from age which one is wrong.
 
+**Amended 2026-10-02 by ADR-0051.** A phase walkthrough (`core/02` §21.27) is
+held the same way. A checkpoint declares the walkthrough it wrote a step into
+(`--walkthrough`). A declared walkthrough whose content did not change is
+reported with the outstanding context documents, and the log lists the steps
+apart, under *Walkthrough steps this session wrote*. Nothing appends a step
+for the session: it writes the step itself.
+
 ## External work changes
 
 What PM work items may need an update.

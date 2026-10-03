@@ -193,8 +193,20 @@ class WrapService:
                 outstanding.append(item)
         return tuple(outstanding)
 
+    def _walkthrough_declarations(self, checkpoints: Sequence[Checkpoint]) -> frozenset[str]:
+        """The declarations that name a walkthrough, so the log lists them apart."""
+        return frozenset(
+            declaration
+            for declaration in _declared(checkpoints).context
+            if (document := self._declared_context(declaration)) is not None
+            and document.frontmatter.get("type") == "walkthrough"
+        )
+
     def _outstanding_context(self, session: Session, declared: Sequence[str]) -> tuple[str, ...]:
-        """Declared context documents that did not change (`core/04` section 37).
+        """Declared documents that did not change (`core/04` section 37).
+
+        A context document and a phase walkthrough are held alike: a session
+        that says it changed one must have changed it.
 
         A document the session was given is compared by the digest of its body
         at startup, so an edit to frontmatter alone is not a correction. One
@@ -220,7 +232,10 @@ class WrapService:
         return tuple(outstanding)
 
     def _declared_context(self, declaration: str) -> StoredDocument | None:
-        """The context document a declaration opens with, if it opens with one.
+        """The document a declaration opens with, if it is one wrap holds.
+
+        Context documents and walkthroughs (core/02 section 21.27): the two
+        kinds of document a session is expected to keep current as it works.
 
         The shape the checkpoint Skill teaches is ``"<id or path>: <what
         changed>"``, so the reference is the first token before a colon or
@@ -239,7 +254,7 @@ class WrapService:
                 document = self._documents.get_by_path(VaultPath.parse(reference))
             except VaultPathError:
                 return None
-        if document is None or document.frontmatter.get("type") != "context":
+        if document is None or document.frontmatter.get("type") not in _HELD_TYPES:
             return None
         return document
 
@@ -311,7 +326,13 @@ class WrapService:
             actor=self._producer(session),
         )
         document = replace(
-            created.document, body=_body(title, checkpoints, redirected_from=home.redirected_from)
+            created.document,
+            body=_body(
+                title,
+                checkpoints,
+                redirected_from=home.redirected_from,
+                walkthroughs=self._walkthrough_declarations(checkpoints),
+            ),
         )
         self._documents.put(document)
         self._sessions.mark_wrapped(session.id, created.concept_id)
@@ -380,7 +401,12 @@ class WrapService:
         frontmatter["title"] = retitled
         path = _retitled_path(existing.path, retitled, session.started_at.date())
         document = replace(
-            existing, path=path, frontmatter=frontmatter, body=_body(retitled, checkpoints)
+            existing,
+            path=path,
+            frontmatter=frontmatter,
+            body=_body(
+                retitled, checkpoints, walkthroughs=self._walkthrough_declarations(checkpoints)
+            ),
         )
         self._documents.put(document)
         moved = path != existing.path
@@ -477,8 +503,17 @@ def _a(kind: str) -> str:
     return f"an {kind}" if kind[:1] in "aeiou" else f"a {kind}"
 
 
+#: The types a declaration holds a session to having changed (core/04
+#: section 37).
+_HELD_TYPES: Final = frozenset({"context", "walkthrough"})
+
+
 def _body(
-    title: str, checkpoints: Sequence[Checkpoint], *, redirected_from: ConceptId | None = None
+    title: str,
+    checkpoints: Sequence[Checkpoint],
+    *,
+    redirected_from: ConceptId | None = None,
+    walkthroughs: frozenset[str] = frozenset(),
 ) -> str:
     """The `activity_log` body shape, filled from what the session recorded.
 
@@ -517,7 +552,21 @@ def _body(
         )
         lines.append("")
         lines.extend(f"- {item}" for item in declared.work)
-    if declared.context:
+    steps = [item for item in declared.context if item in walkthroughs]
+    if steps:
+        lines.extend(
+            [
+                "",
+                "## Walkthrough steps this session wrote",
+                "",
+                "_Declared during the session. Each walkthrough should now carry the "
+                "step; `wrap` reports any whose content did not move._",
+                "",
+            ]
+        )
+        lines.extend(f"- {_as_prose(item)}" for item in steps)
+    changed = [item for item in declared.context if item not in walkthroughs]
+    if changed:
         lines.extend(
             [
                 "",
@@ -528,7 +577,7 @@ def _body(
                 "",
             ]
         )
-        lines.extend(f"- {_as_prose(item)}" for item in declared.context)
+        lines.extend(f"- {_as_prose(item)}" for item in changed)
     if declared.decisions:
         # Present because the agent said so, not because `wrap` inferred it.
         # The note under the heading is load-bearing: a decision in a
