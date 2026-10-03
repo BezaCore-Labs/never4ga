@@ -74,10 +74,11 @@ finds, what those documents link to, and what Git and your tracker say right now
 A pack never grows past its budget. A model gets involved when you ask for
 judgment, and never for work a lookup can do.
 
-**Coming soon:** an Obsidian companion plugin that shows the same pack beside
-the note you're reading, with the reason each item is there. It isn't
-published yet, so there's nothing to install today. This is what it looks
-like:
+**In Obsidian:** the [Never4gA Companion](https://github.com/BezaCore-Labs/never4ga-obsidian)
+plugin shows the same pack beside the note you're reading, with the reason each
+item is there. Install it from its
+[latest release](https://github.com/BezaCore-Labs/never4ga-obsidian/releases/latest)
+or with BRAT; it isn't in Obsidian's community plugin list yet.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/BezaCore-Labs/never4ga/main/docs/assets/obsidian.png" alt="Obsidian with the Never4gA Companion's context panel beside a decision note: scope, budget, items with their reasons, and Git signals. It notes that no LLM stage ran." width="100%">
@@ -133,8 +134,8 @@ Your next agent session in that repository starts with its context pack.
 - **Platforms.** Built and tested on Linux, where the background service runs
   under systemd. On macOS and Windows, run `never4ga serve` in a terminal instead.
 - **Four ways in.** The `never4ga` CLI, an MCP server (`never4ga-mcp`), a local
-  HTTP API, and an Obsidian plugin that isn't published yet. All four run the
-  same code.
+  HTTP API, and the [Obsidian companion](https://github.com/BezaCore-Labs/never4ga-obsidian).
+  All four run the same code.
 
 </details>
 
