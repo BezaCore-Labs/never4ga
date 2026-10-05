@@ -1430,6 +1430,14 @@ unless a number is asked for, and the first is then 0001. A folder carrying
 more than one series requires the series to be named. Gaps are permitted.
 Adoption does not renumber.
 
+**Amended 2026-10-04 (ADR-0044, amendment 1).** A number is never reused. The
+highest present is counted across the folder and its archived counterpart,
+`90_Archive/Workspaces/<same path>/Decisions/`, so a record that was archived
+still holds its number. A decision SHOULD NOT be deleted: one that no longer
+holds stays in place as `rejected` or `superseded`, or is archived. Nothing
+detects the deletion of a folder's highest record, and its number is then
+allocated again.
+
 ---
 
 ## 21.12 `research_note`

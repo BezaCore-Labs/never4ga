@@ -95,6 +95,72 @@ class TestAFolderThatNumbers:
         assert created.document.frontmatter["title"] == "ADR-0012 — Next"
 
 
+ARCHIVED = "90_Archive/Workspaces/BezaCore/Decisions"
+
+
+class TestAnArchivedRecordKeepsItsNumber:
+    """Archiving moves a record out of its folder. Its number is still taken."""
+
+    def test_the_highest_record_archived_is_not_reissued(
+        self, root: Path, content: ContentService, workspace: ConceptId
+    ) -> None:
+        existing(root, "adr-0001_first.md", "adr-0002_second.md")
+        existing(root, "adr-0003_withdrawn.md", folder=ARCHIVED)
+        created = content.create_concept("decision", "Next", workspace=workspace)
+        assert created.document.frontmatter["title"] == "ADR-0004 — Next"
+
+    def test_a_lower_archived_record_changes_nothing(
+        self, root: Path, content: ContentService, workspace: ConceptId
+    ) -> None:
+        existing(root, "adr-0005_live.md")
+        existing(root, "adr-0002_withdrawn.md", folder=ARCHIVED)
+        created = content.create_concept("decision", "Next", workspace=workspace)
+        assert created.document.frontmatter["title"] == "ADR-0006 — Next"
+
+    def test_stating_an_archived_record_s_number_is_refused(
+        self, root: Path, content: ContentService, workspace: ConceptId
+    ) -> None:
+        existing(root, "adr-0001_first.md")
+        existing(root, "adr-0002_withdrawn.md", folder=ARCHIVED)
+        with pytest.raises(ConceptCreationError, match="ADR-0003"):
+            content.create_concept("decision", "ADR-0002 — Again", workspace=workspace)
+
+    def test_a_folder_whose_every_record_was_archived_goes_on_counting(
+        self, root: Path, content: ContentService, workspace: ConceptId
+    ) -> None:
+        existing(root, "adr-0001_withdrawn.md", "adr-0002_withdrawn.md", folder=ARCHIVED)
+        created = content.create_concept("decision", "Next", workspace=workspace)
+        assert created.document.frontmatter["title"] == "ADR-0003 — Next"
+
+    def test_series_are_counted_apart_in_the_archive_too(
+        self, root: Path, content: ContentService, workspace: ConceptId
+    ) -> None:
+        existing(root, "adr-infra-0001_a.md", "adr-app-0004_b.md")
+        existing(root, "adr-infra-0002_withdrawn.md", folder=ARCHIVED)
+        created = content.create_concept("decision", "Next", workspace=workspace, series="infra")
+        assert created.document.frontmatter["title"] == "ADR-INFRA-0003 — Next"
+
+    def test_another_workspace_s_archive_is_not_this_folder_s(
+        self, root: Path, content: ContentService, workspace: ConceptId
+    ) -> None:
+        existing(root, "adr-0001_first.md")
+        existing(
+            root,
+            "adr-0016_elsewhere.md",
+            folder="90_Archive/Workspaces/BezaCore/Workspaces/Marketing/Decisions",
+        )
+        created = content.create_concept("decision", "Next", workspace=workspace)
+        assert created.document.frontmatter["title"] == "ADR-0002 — Next"
+
+    def test_the_report_says_the_archive_was_counted(
+        self, root: Path, content: ContentService, workspace: ConceptId
+    ) -> None:
+        existing(root, "adr-0001_first.md")
+        existing(root, "adr-0002_withdrawn.md", folder=ARCHIVED)
+        created = content.create_concept("decision", "Next", workspace=workspace)
+        assert ARCHIVED in created.placement_reason
+
+
 class TestAStatedNumber:
     def test_the_allocated_number_stated_by_hand_is_kept_as_written(
         self, root: Path, content: ContentService, workspace: ConceptId

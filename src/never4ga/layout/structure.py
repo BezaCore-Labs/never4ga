@@ -33,6 +33,7 @@ __all__ = [
     "DocumentRole",
     "FlatArea",
     "VaultRoot",
+    "archived_counterpart",
     "flat_area_of",
     "foreign_names",
     "is_foreign_format",
@@ -312,6 +313,21 @@ def _names_a_document(segments: tuple[str, ...], index: int) -> bool:
     separates `10_Workspaces/index.md` from a workspace directory.
     """
     return index == len(segments) - 1 and segments[index].endswith(".md")
+
+
+def archived_counterpart(directory: VaultPath) -> VaultPath | None:
+    """Where a workspace directory's contents sit once they are archived.
+
+    ``10_Workspaces/<Name>/Decisions`` archives to
+    ``90_Archive/Workspaces/<Name>/Decisions``: the path below the root is kept
+    whole, so an archived record is found beside where it used to be (core/01
+    section 11). ``None`` for a directory outside ``10_Workspaces/``, which
+    has no counterpart defined.
+    """
+    segments = directory.segments
+    if segments[0] != VaultRoot.WORKSPACES or len(segments) < 2:
+        return None
+    return VaultPath((VaultRoot.ARCHIVE, CHILD_WORKSPACE_DIRECTORY, *segments[1:]))
 
 
 def workspace_directory_of(path: VaultPath) -> VaultPath | None:
