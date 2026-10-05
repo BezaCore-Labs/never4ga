@@ -39,8 +39,13 @@ from never4ga.layout import (
     role_of,
     workspace_directory_of,
 )
-from never4ga.layout.decision_numbers import next_number, number_in_filename, number_in_title
-from never4ga.layout.structure import LOGS_DIRECTORY
+from never4ga.layout.decision_numbers import (
+    DecisionNumber,
+    next_number,
+    number_in_filename,
+    number_in_title,
+)
+from never4ga.layout.structure import LOGS_DIRECTORY, archived_counterpart
 from never4ga.ports.document_store import DocumentStore
 from never4ga.ports.vault_files import VaultFileStore
 from never4ga.schema import (
@@ -1145,20 +1150,30 @@ class ContentService:
         """Give a decision the next number in its folder, or refuse the one it states.
 
         core/02 section 21.11. The folder is the scope, not the workspace
-        family, so nothing outside ``placement.directory`` is read. A folder
-        with no numbered records is left unnumbered unless a number is asked
-        for, because some folders never number their decisions at all.
+        family. Its archived counterpart is read with it, because archiving
+        moves a record out of the folder and its number is still taken:
+        without that, archiving the highest record would hand its number to
+        the next decision. A folder with no numbered records, live or
+        archived, is left unnumbered unless a number is asked for, because
+        some folders never number their decisions at all.
 
         Two sessions can still both take the same number at the same moment.
         That is ``decision_number_duplicate``, which `doctor` reports.
         """
         directory = placement.directory
-        existing = [
-            number
-            for path in self._files.iter_paths()
-            if path.segments[:-1] == directory.segments
-            and (number := number_in_filename(path.name)) is not None
-        ]
+        archive = archived_counterpart(directory)
+        folders = {directory.segments: False}
+        if archive is not None:
+            folders[archive.segments] = True
+        existing: list[DecisionNumber] = []
+        archived: list[DecisionNumber] = []
+        for path in self._files.iter_paths():
+            is_archived = folders.get(path.segments[:-1])
+            if is_archived is None or (number := number_in_filename(path.name)) is None:
+                continue
+            existing.append(number)
+            if is_archived:
+                archived.append(number)
         stated = number_in_title(title)
         named = series.strip().casefold() if series is not None else None
         if stated is not None and named is not None and stated.series != named:
@@ -1187,10 +1202,12 @@ class ContentService:
                 "leave the number out and it is allocated"
             )
         numbered_title = title if stated is not None else f"{allocated.title_prefix} — {title}"
+        reason = f"{placement.reason}; numbered {allocated.title_prefix}, the next in that folder"
+        if any(one.series == chosen for one in archived):
+            # Said because the folder alone no longer explains the number.
+            reason += f", counting the records archived to {archive}"
         return numbered_title, _Placement(
-            _child(directory, filename_for(numbered_title)),
-            directory,
-            f"{placement.reason}; numbered {allocated.title_prefix}, the next in that folder",
+            _child(directory, filename_for(numbered_title)), directory, reason
         )
 
     def _concept_fields(

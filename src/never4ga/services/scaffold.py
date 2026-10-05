@@ -1605,6 +1605,11 @@ The process, and every step of it matters:
    yet gets one only with `--number`; one with two series needs `--series`. A
    title stating a number other than the next is refused.
 
+   **Never delete a decision.** A number is never reused, and the record is
+   what holds it: one that no longer stands stays in place as `rejected` or
+   `superseded`, or is archived, where it is still counted. Deleting a
+   folder's highest record hands its number to the next decision.
+
 2. **Say plainly that it is not in effect.** A draft that reads as settled is
    worse than no draft, because the next session will build on it.
 

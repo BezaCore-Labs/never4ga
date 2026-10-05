@@ -25,6 +25,7 @@ from never4ga.layout import (
     DocumentRole,
     FlatArea,
     VaultRoot,
+    archived_counterpart,
     flat_area_of,
     is_foreign_format,
     is_foreign_note,
@@ -450,3 +451,27 @@ class TestNoSpacesInPaths:
 
     def test_no_flat_area_path_contains_a_space(self) -> None:
         assert not [area for area in FlatArea if " " in area.value]
+
+
+class TestArchivedCounterpart:
+    """Where a workspace directory's contents sit once archived (core/01 section 11)."""
+
+    def test_a_workspace_directory_keeps_its_path_below_the_root(self) -> None:
+        found = archived_counterpart(p("10_Workspaces/BezaCore/Decisions"))
+        assert found == p("90_Archive/Workspaces/BezaCore/Decisions")
+
+    def test_a_child_workspace_keeps_its_nesting(self) -> None:
+        found = archived_counterpart(p("10_Workspaces/BezaCore/Workspaces/Tools/Decisions"))
+        assert found == p("90_Archive/Workspaces/BezaCore/Workspaces/Tools/Decisions")
+
+    @pytest.mark.parametrize(
+        "directory",
+        [
+            "10_Workspaces",
+            "20_Life/Health/Decisions",
+            "30_Knowledge/Notes",
+            "90_Archive/Workspaces",
+        ],
+    )
+    def test_anything_else_has_none(self, directory: str) -> None:
+        assert archived_counterpart(p(directory)) is None

@@ -13,6 +13,10 @@ stale.
 A folder may run more than one series side by side -- `adr-infra-` and
 `adr-app-`, say -- and each counts on its own. The unprefixed series is the
 empty string. Gaps are legitimate.
+
+A number is never reused. The record is what holds it, so a decision that no
+longer stands is kept as rejected or superseded, or archived, and the caller
+counts the folder's archived counterpart along with the folder.
 """
 
 from __future__ import annotations
