@@ -149,3 +149,45 @@ class TestFtsRowidBackfill:
     def test_a_fresh_database_has_the_column(self, connection: sqlite3.Connection) -> None:
         columns = {row["name"] for row in connection.execute("PRAGMA table_info(chunks)")}
         assert "fts_rowid" in columns
+
+
+class TestWordFormMigration:
+    """Migration 10: the lexical index matches by stem, and an existing
+    database keeps every row it had, under the row id `chunks.fts_rowid`
+    already points at.
+    """
+
+    def test_an_old_database_keeps_its_rows_and_matches_by_stem(self, tmp_path: Path) -> None:
+        from never4ga.adapters.sqlite.connection import MIGRATIONS, connect, migrate
+
+        database = tmp_path / "old.sqlite3"
+        with closing(connect(database)) as connection:
+            migrate(connection, MIGRATIONS[:9])
+            with connection:
+                connection.execute(
+                    "INSERT INTO chunks_fts (chunk_id, title, heading_path, text, keywords)"
+                    " VALUES ('k0', 't', 'H', 'filler', '')"
+                )
+                connection.execute("DELETE FROM chunks_fts WHERE chunk_id = 'k0'")
+                connection.execute(
+                    "INSERT INTO chunks_fts (chunk_id, title, heading_path, text, keywords)"
+                    " VALUES ('k1', 't', 'H', 'triage of the storage alert', '')"
+                )
+                fts_rowid = connection.execute(
+                    "SELECT rowid FROM chunks_fts WHERE chunk_id = 'k1'"
+                ).fetchone()[0]
+
+        with closing(open_index(database)) as connection:
+            rows = connection.execute(
+                "SELECT rowid, chunk_id FROM chunks_fts WHERE chunks_fts MATCH 'alerts'"
+            ).fetchall()
+            assert [(row["rowid"], row["chunk_id"]) for row in rows] == [(fts_rowid, "k1")]
+
+    def test_a_fresh_database_matches_by_stem(self, connection: sqlite3.Connection) -> None:
+        connection.execute(
+            "INSERT INTO chunks_fts (chunk_id, title, heading_path, text, keywords)"
+            " VALUES ('k1', 't', 'H', 'three venues were contacted', '')"
+        )
+        assert connection.execute(
+            "SELECT 1 FROM chunks_fts WHERE chunks_fts MATCH 'venue'"
+        ).fetchone()
