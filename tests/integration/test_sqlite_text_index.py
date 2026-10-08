@@ -76,6 +76,34 @@ class TestNoEngineSyntaxLeaks:
         assert index.search(TextQuery(terms=("   ",))) == ()
 
 
+class TestWordForms:
+    """A question is rarely asked in the words the answer was written in.
+
+    The index matches a word by its stem, so the plural finds the singular and
+    one tense finds another.
+    """
+
+    def test_a_plural_finds_the_singular(self, index: SQLiteFTS5Index) -> None:
+        index.index_chunk(make_chunk("triage of the storage alert"))
+        assert index.search(TextQuery(terms=("alerts",)))
+
+    def test_the_singular_finds_a_plural(self, index: SQLiteFTS5Index) -> None:
+        index.index_chunk(make_chunk("three venues were contacted"))
+        assert index.search(TextQuery(terms=("venue",)))
+
+    def test_one_tense_finds_another(self, index: SQLiteFTS5Index) -> None:
+        index.index_chunk(make_chunk("the service kept crashing overnight"))
+        assert index.search(TextQuery(terms=("crashed",)))
+
+    def test_a_title_matches_by_stem_too(self, index: SQLiteFTS5Index) -> None:
+        index.index_chunk(with_fields("unrelated prose", title="Alert triage"))
+        assert index.search(TextQuery(terms=("alerts",)))
+
+    def test_a_shared_prefix_is_not_a_shared_stem(self, index: SQLiteFTS5Index) -> None:
+        index.index_chunk(make_chunk("workspace resolution"))
+        assert index.search(TextQuery(terms=("work",))) == ()
+
+
 class TestFieldWeighting:
     def test_a_title_hit_outranks_a_body_hit(self, index: SQLiteFTS5Index) -> None:
         index.index_chunk(

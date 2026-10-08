@@ -341,6 +341,36 @@ _INDEXED_PATHS: Final = (
     """,
 )
 
+#: Migration 10 -- the lexical index matches a word by its stem.
+#:
+#: A question is rarely asked in the words its answer was written in: with
+#: the plain tokenizer ``alerts`` does not find ``alert`` and ``crashed`` does
+#: not find ``crashing``. ``porter`` wraps the same ``unicode61`` tokenizer, so
+#: what counts as a token is unchanged and only its form is folded. It ships
+#: with FTS5 and adds no dependency.
+#:
+#: A tokenizer cannot be changed on an existing FTS5 table, so the table is
+#: rebuilt from its own rows. Each row keeps its row id, because
+#: ``chunks.fts_rowid`` points at it.
+_STEMMED_FULL_TEXT: Final = (
+    """
+    CREATE VIRTUAL TABLE chunks_fts_v10 USING fts5(
+        chunk_id UNINDEXED,
+        title,
+        heading_path,
+        text,
+        keywords,
+        tokenize = 'porter unicode61 remove_diacritics 2'
+    )
+    """,
+    """
+    INSERT INTO chunks_fts_v10 (rowid, chunk_id, title, heading_path, text, keywords)
+    SELECT rowid, chunk_id, title, heading_path, text, keywords FROM chunks_fts
+    """,
+    "DROP TABLE chunks_fts",
+    "ALTER TABLE chunks_fts_v10 RENAME TO chunks_fts",
+)
+
 #: Ordered and append-only. A released migration is never edited: the way to
 #: change the schema is to add the next one, so an existing database can always
 #: be brought forward -- and, failing that, deleted and rebuilt.
@@ -354,6 +384,7 @@ MIGRATIONS: Final[tuple[tuple[str, ...], ...]] = (
     _FTS_ROWID,
     _PATH_OWNED_CHUNKS,
     _INDEXED_PATHS,
+    _STEMMED_FULL_TEXT,
 )
 
 SCHEMA_VERSION: Final = len(MIGRATIONS)
