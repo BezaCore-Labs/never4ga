@@ -88,6 +88,9 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    # The suite takes a few minutes. A run that reaches this has hung, and
+    # the default limit would let it sit for six hours before saying so.
+    timeout-minutes: 25
     steps:
       - name: Check out
         uses: actions/checkout@v7
@@ -102,5 +105,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
 
+      # A test that blocks for five minutes prints every thread's stack and
+      # carries on, so a hang names itself in the log.
       - name: Tests
-        run: pytest
+        run: pytest -o faulthandler_timeout=300
