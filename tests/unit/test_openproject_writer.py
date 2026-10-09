@@ -144,6 +144,9 @@ class TestCapabilities:
             response = inner.handle_request(request)
             if request.method == "GET" and response.status_code == 200:
                 payload = json.loads(response.content)
+                # A token that may not comment is offered no `addComment`
+                # anywhere: not on the sampled item, and not on the one named.
+                payload.get("_links", {}).pop("addComment", None)
                 for element in payload.get("_embedded", {}).get("elements", []):
                     element.get("_links", {}).pop("addComment", None)
                 return httpx.Response(200, json=payload)
@@ -635,6 +638,63 @@ class TestCapabilityOnAnEmptyProject:
         assert WorkManagementCapability.UPDATE_WORK_ITEM in built.capabilities
 
 
+class TestAWriteIsJudgedByTheItemItTargets:
+    """Whether a work package may be changed is that work package's answer.
+
+    Capability discovery samples one work package from the connection's own
+    project. That sample is evidence about the instance, and no evidence at all
+    about an item in another project -- and when the connection's project has
+    nothing open in it, there is no sample. A write that names a work package
+    reads that work package's action links instead, which OpenProject sends
+    with every one: the links are the instance's answer about that item for
+    this token.
+
+    Found from a workspace whose tracker project was not the connection's: once
+    the connection's project had no open item left, every comment anywhere was
+    refused as unsupported while the instance offered `addComment` on the item.
+    """
+
+    def test_a_comment_goes_through_when_the_sampled_project_is_empty(self) -> None:
+        built = writer(_transport_with_no_work_packages())
+        assert WorkManagementCapability.COMMENT_WORK_ITEM not in built.capabilities
+        result = built.apply(built.propose_comment(REF, "why this closed"))
+        assert result.activity is not None
+
+    def test_an_update_goes_through_when_the_sampled_project_is_empty(self) -> None:
+        built = writer(_transport_with_no_work_packages())
+        result = built.apply(built.propose_update(REF, {"status": "Closed"}))
+        assert result.item is not None
+
+    def test_a_relation_goes_through_when_the_sampled_project_is_empty(self) -> None:
+        built = writer(_transport_with_no_work_packages())
+        result = built.apply(built.propose_relation(REF, OTHER, kind="relates"))
+        assert result.item is not None
+
+    def test_the_item_refusing_outranks_a_sample_that_permits(self) -> None:
+        # The other direction: the sampled work package offers `addComment`,
+        # and the one being commented on does not.
+        inner = writable_transport()
+
+        def handle(request: httpx.Request) -> httpx.Response:
+            response = inner.handle_request(request)
+            if request.method == "GET" and response.status_code == 200:
+                payload = json.loads(response.content)
+                if isinstance(payload, dict) and payload.get("_type") == "WorkPackage":
+                    payload.get("_links", {}).pop("addComment", None)
+                    return httpx.Response(200, json=payload)
+            return response
+
+        built = writer(httpx.MockTransport(handle))
+        assert WorkManagementCapability.COMMENT_WORK_ITEM in built.capabilities
+        with pytest.raises(CapabilityNotSupportedError, match=KNOWN_WORK_PACKAGE):
+            built.propose_comment(REF, "why this closed")
+
+    def test_a_proposal_made_elsewhere_is_judged_the_same_way_when_applied(self) -> None:
+        built = writer(_transport_with_no_work_packages())
+        result = built.apply(ProposedMutation.comment(REF, "why this closed"))
+        assert result.activity is not None
+
+
 class TestAnAssigneeResolvesLikeAnyOtherLink:
     """`assignee` and `responsible` resolve by name, like any other link.
 
@@ -898,6 +958,9 @@ class TestAnUnreachableInstanceIsNotAnIncapableOne:
             response = inner.handle_request(request)
             if request.method == "GET" and response.status_code == 200:
                 payload = json.loads(response.content)
+                # A token that may not comment is offered no `addComment`
+                # anywhere: not on the sampled item, and not on the one named.
+                payload.get("_links", {}).pop("addComment", None)
                 for element in payload.get("_embedded", {}).get("elements", []):
                     element.get("_links", {}).pop("addComment", None)
                 return httpx.Response(200, json=payload)
