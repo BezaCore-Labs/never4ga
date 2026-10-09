@@ -131,8 +131,9 @@ Your next agent session in that repository starts with its context pack.
 - **Context packs follow repositories.** A workspace is attached to a Git
   repository, and a pack is built for the repository you're in. Notes that aren't
   tied to one are fully searchable but don't get a pack yet.
-- **Platforms.** Built and tested on Linux, where the background service runs
-  under systemd. On macOS and Windows, run `never4ga serve` in a terminal instead.
+- **Platforms.** Built and tested on Linux and macOS. On Linux the background
+  service runs under systemd; on macOS, run `never4ga serve` in a terminal
+  instead. Windows is not supported yet.
 - **Four ways in.** The `never4ga` CLI, an MCP server (`never4ga-mcp`), a local
   HTTP API, and the [Obsidian companion](https://github.com/BezaCore-Labs/never4ga-obsidian).
   All four run the same code.
