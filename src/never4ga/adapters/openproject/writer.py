@@ -42,6 +42,7 @@ from never4ga.adapters.openproject.write import (
 from never4ga.domain.capabilities import WorkManagementCapability, require_capability
 from never4ga.domain.identity import ExternalId
 from never4ga.errors import (
+    CapabilityNotSupportedError,
     ProviderUnavailableError,
     WorkItemNotFoundError,
     WriteRejectedError,
@@ -119,6 +120,32 @@ class OpenProjectWriter(OpenProjectProvider):
             ) from self._unmeasured_because
         require_capability(self.provider_id, found, needed)
 
+    def _item(self, ref: ExternalId, needed: WorkManagementCapability) -> Mapping[str, Any]:
+        """Read a work package, and refuse a write its own links do not offer.
+
+        A write that names a work package is judged by that work package.
+        OpenProject sends every one with its action links and omits the link
+        for an action this token may not perform on it, so the item is the
+        instance's exact answer -- where :attr:`capabilities` is read off one
+        sampled item from the connection's own project, which says nothing
+        about an item in another project and nothing at all when that project
+        has no open item to sample.
+
+        An instance that does not answer raises as unreachable from the read
+        itself, so an outage is never reported as a refusal.
+        """
+        payload: Mapping[str, Any] | None = self._api.get_optional(
+            f"{API_ROOT}/work_packages/{ref.value}"
+        )
+        if payload is None:
+            raise WorkItemNotFoundError(f"{self.provider_id} has no work item {ref.value!r}")
+        if not set(_ITEM_LINKS[needed]) & set(payload.get("_links", {})):
+            raise CapabilityNotSupportedError(
+                f"{self.provider_id} does not support {needed.value!r} on work item "
+                f"{ref.value}: the instance offers this token no such action there"
+            )
+        return payload
+
     # -- proposing --------------------------------------------------------
 
     def propose_update(self, ref: ExternalId, fields: Mapping[str, Any]) -> ProposedMutation:
@@ -130,10 +157,7 @@ class OpenProjectWriter(OpenProjectProvider):
         is the moment a person is shown what would happen, and a draft of
         something that cannot succeed is worse than no draft.
         """
-        self._require(WorkManagementCapability.UPDATE_WORK_ITEM)
-        payload = self._api.get_optional(f"{API_ROOT}/work_packages/{ref.value}")
-        if payload is None:
-            raise WorkItemNotFoundError(f"{self.provider_id} has no work item {ref.value!r}")
+        payload = self._item(ref, WorkManagementCapability.UPDATE_WORK_ITEM)
         lock_version = int(payload["lockVersion"])
         body = self._body(fields, lock_version=lock_version)
         self._check_against_form(f"{API_ROOT}/work_packages/{ref.value}/form", body)
@@ -174,9 +198,7 @@ class OpenProjectWriter(OpenProjectProvider):
         nothing to check names against because a comment has one field, and it
         is not a field of the resource at all.
         """
-        self._require(WorkManagementCapability.COMMENT_WORK_ITEM)
-        if self._api.get_optional(f"{API_ROOT}/work_packages/{ref.value}") is None:
-            raise WorkItemNotFoundError(f"{self.provider_id} has no work item {ref.value!r}")
+        self._item(ref, WorkManagementCapability.COMMENT_WORK_ITEM)
         return ProposedMutation.comment(ref, body, amends=amends)
 
     def propose_relation(
@@ -196,17 +218,21 @@ class OpenProjectWriter(OpenProjectProvider):
         instance's own words rather than in a list this adapter would have to
         keep current.
         """
-        self._require(WorkManagementCapability.RELATE_WORK_ITEMS)
-        for end in (ref, to):
-            if self._api.get_optional(f"{API_ROOT}/work_packages/{end.value}") is None:
-                raise WorkItemNotFoundError(f"{self.provider_id} has no work item {end.value!r}")
+        self._item(ref, WorkManagementCapability.RELATE_WORK_ITEMS)
+        if self._api.get_optional(f"{API_ROOT}/work_packages/{to.value}") is None:
+            raise WorkItemNotFoundError(f"{self.provider_id} has no work item {to.value!r}")
         return ProposedMutation.relate(ref, to, kind=kind, description=description)
 
     # -- applying ---------------------------------------------------------
 
     def apply(self, proposal: ProposedMutation) -> WriteResult:
         """Send the proposal, and verify what came back against what was asked."""
-        self._require(_NEEDED[proposal.action])
+        if proposal.action is WriteAction.CREATE:
+            # Creation is the collection's to permit: no item exists to ask.
+            self._require(_NEEDED[proposal.action])
+        else:
+            assert proposal.ref is not None  # the value type guarantees it
+            self._item(proposal.ref, _NEEDED[proposal.action])
         if proposal.action is WriteAction.COMMENT:
             return self._comment(proposal)
         if proposal.action is WriteAction.RELATE:
@@ -478,6 +504,14 @@ class OpenProjectWriter(OpenProjectProvider):
 
 #: Which capability each action needs. A proposal is a value and can travel, so
 #: applying is gated as well as producing one.
+#: The action links a work package carries when this token may make each
+#: write to it. The same names discovery reads off its sample.
+_ITEM_LINKS: Final[Mapping[WorkManagementCapability, tuple[str, ...]]] = {
+    WorkManagementCapability.UPDATE_WORK_ITEM: ("update", "updateImmediately"),
+    WorkManagementCapability.COMMENT_WORK_ITEM: ("addComment",),
+    WorkManagementCapability.RELATE_WORK_ITEMS: ("addRelation",),
+}
+
 _NEEDED: Final[Mapping[WriteAction, WorkManagementCapability]] = {
     WriteAction.CREATE: WorkManagementCapability.CREATE_WORK_ITEM,
     WriteAction.UPDATE: WorkManagementCapability.UPDATE_WORK_ITEM,
