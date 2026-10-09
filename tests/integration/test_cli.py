@@ -190,13 +190,15 @@ class TestDoctor:
         assert result.json["healthy"] is True
         assert result.json["findings"] == []
 
-    def test_an_unhealthy_vault_exits_non_zero(self, run: Run) -> None:
-        result = run("doctor", as_json=True)
+    def test_an_unhealthy_vault_exits_non_zero(self, initialized: Run, vault: Path) -> None:
+        (vault / "00_Inbox").rename(vault / "elsewhere")
+        result = initialized("doctor", as_json=True)
         assert result.code == EXIT_FAILED
         assert result.json["healthy"] is False
 
-    def test_findings_carry_a_code_and_a_hint(self, run: Run) -> None:
-        findings = run("doctor", as_json=True).json["findings"]
+    def test_findings_carry_a_code_and_a_hint(self, initialized: Run, vault: Path) -> None:
+        (vault / "00_Inbox").rename(vault / "elsewhere")
+        findings = initialized("doctor", as_json=True).json["findings"]
         assert findings
         for finding in findings:
             assert finding["code"]
@@ -538,8 +540,8 @@ class TestOutputContract:
             result = initialized(*command, as_json=True)
             assert isinstance(result.json, dict), command
 
-    def test_errors_go_to_stderr_and_leave_stdout_clean(self, run: Run) -> None:
-        result = run(
+    def test_errors_go_to_stderr_and_leave_stdout_clean(self, initialized: Run) -> None:
+        result = initialized(
             "workspace",
             "create",
             "X",
@@ -696,3 +698,64 @@ class TestVaultResolution:
 
         main(["init"])
         assert (here / "50_System" / "system.md").is_file()
+
+
+class TestOutsideAVault:
+    """A command run where there is no vault says so, and names `init`.
+
+    The directory exists and holds no `50_System/system.md`. Nothing may be
+    written into it, and no answer may be given as though it were a vault.
+    """
+
+    @pytest.mark.parametrize(
+        "command",
+        [
+            ("doctor",),
+            ("search", "anything"),
+            ("context", "startup", "--client", "a-client"),
+            ("inbox", "list"),
+            ("scratch", "list"),
+            ("capture", "a thought"),
+            ("note", "A note"),
+            ("workspace", "list"),
+            ("workspace", "create", "A Project", "--type", "product"),
+        ],
+    )
+    def test_it_is_refused_and_init_is_named(
+        self, run: Run, vault: Path, command: tuple[str, ...]
+    ) -> None:
+        result = run(*command, as_json=True)
+        assert result.code == EXIT_FAILED
+        error = json.loads(result.err or result.out)["error"]
+        assert error["code"] == "vault_not_initialized"
+        assert "never4ga init" in error["repair_hint"]
+        assert list(vault.iterdir()) == []
+
+    def test_status_still_answers(self, run: Run) -> None:
+        assert run("status").code == EXIT_OK
+
+    def test_the_type_registry_still_answers(self, run: Run) -> None:
+        assert run("concept", "types").code == EXIT_OK
+
+
+class TestFirstStepsAreNamed:
+    def test_a_workspace_without_a_type_is_told_the_types(
+        self, initialized: Run, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        with pytest.raises(SystemExit):
+            initialized("workspace", "create", "A Project")
+        assert "personal_project" in capsys.readouterr().err
+
+    def test_a_concept_that_needs_a_workspace_names_the_flag(self, initialized: Run) -> None:
+        result = initialized("concept", "create", "decision", "Pick one", as_json=True)
+        assert "--workspace" in json.loads(result.err or result.out)["error"]["message"]
+
+    def test_an_unmapped_directory_is_told_how_to_get_a_workspace(
+        self, initialized: Run, tmp_path_factory: pytest.TempPathFactory
+    ) -> None:
+        elsewhere = tmp_path_factory.mktemp("repository")
+        initialized("index")
+        result = initialized("workspace", "resolve", "--path", str(elsewhere), as_json=True)
+        hint = json.loads(result.err or result.out)["error"]["repair_hint"]
+        assert "workspace create" in hint
+        assert "workspace map" in hint

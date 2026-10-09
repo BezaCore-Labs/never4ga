@@ -88,7 +88,11 @@ def scope_refusal(
         "scope_unresolved",
         str(error),
         {"path": str(where)},
-        repair_hint="map the repository with `never4ga workspace map <workspace-id>`",
+        repair_hint=(
+            "map the repository with `never4ga workspace map <workspace-id> --repo <path>`; "
+            "`never4ga workspace list` shows the ids, and "
+            "`never4ga workspace create <Name> --type <type>` makes a workspace"
+        ),
     )
 
 

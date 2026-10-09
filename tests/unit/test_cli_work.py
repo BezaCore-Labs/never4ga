@@ -398,6 +398,8 @@ class TestTheCliSaysATrackerDidNotAnswer:
         monkeypatch.setattr(cli, "_writing", lambda _: DOWN)
         monkeypatch.setattr(cli, "_bound", lambda _, arguments: DOWN.bind(applying=arguments.apply))
 
+        assert cli.main(["--vault", str(tmp_path), "init"]) == cli.EXIT_OK
+        capsys.readouterr()
         code = cli.main(["--vault", str(tmp_path), "--json", "work", *verb, "--apply"])
 
         assert code == cli.EXIT_FAILED
