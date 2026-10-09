@@ -1112,7 +1112,7 @@ class ContentService:
         if not candidates:
             raise ConceptCreationError(
                 f"{_a(spec.name)} belongs in {_describe(spec, None)}; "
-                "name the workspace it belongs to"
+                "name the workspace it belongs to with --workspace <id>"
             )
         if workspace_directory is not None:
             sections = [

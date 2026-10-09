@@ -104,7 +104,7 @@ from never4ga.platform_paths import PlatformPaths
 from never4ga.ports.service_manager import ServiceManager, ServiceState, ServiceStatus
 from never4ga.ports.session_store import SessionStore
 from never4ga.ports.work_management import ProviderHealth
-from never4ga.schema import Severity, ValidationLevel
+from never4ga.schema import WORKSPACE_TYPE_VALUES, Severity, ValidationLevel
 from never4ga.service_client import (
     ServiceClient,
     ServicePresence,
@@ -325,6 +325,24 @@ def _index_exists(context: _Context) -> bool:
     return PlatformPaths.resolve().index_database(vault_id).is_file()
 
 
+#: Commands that answer without a vault: the one that makes it, the one that
+#: says whether there is one, and the ones about the service and this build.
+_VAULTLESS_COMMANDS: Final = frozenset({"init", "status", "service", "serve"})
+
+
+def _needs_a_vault(arguments: argparse.Namespace) -> bool:
+    """Whether this command reads or writes a vault.
+
+    Asked before any handler runs, so that a command given a directory that
+    is not a vault refuses once, in one place, rather than answering as
+    though the directory were an empty vault or writing into it.
+    """
+    if arguments.command in _VAULTLESS_COMMANDS:
+        return False
+    # The Type Registry is the build's, not the vault's.
+    return not (arguments.command == "concept" and arguments.action == "types")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run one command. Returns the process exit code."""
     parser = _build_parser()
@@ -345,6 +363,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         )
         return EXIT_USAGE
+
+    if _needs_a_vault(arguments) and not (root / str(SYSTEM_MANIFEST)).is_file():
+        reporter.fail(
+            StructuredError(
+                "vault_not_initialized",
+                f"{root} is not a Never4gA vault: it has no {SYSTEM_MANIFEST}",
+                {"vault": str(root)},
+                repair_hint=(
+                    "run `never4ga init` here to make it one, or point --vault / "
+                    f"{VAULT_ENVIRONMENT_VARIABLE} at a vault"
+                ),
+            )
+        )
+        return EXIT_FAILED
 
     actor = OWNER_ACTOR if arguments.actor is None else arguments.actor.strip()
     if not actor:
@@ -3636,7 +3668,15 @@ def _add_workspace_commands(commands: Any) -> None:
 
     create = actions.add_parser("create", help="create a workspace")
     create.add_argument("title")
-    create.add_argument("--type", required=True, help="workspace_type (core/03 section 7.1)")
+    create.add_argument(
+        "--type",
+        required=True,
+        # A metavar rather than `choices`: the list is open (core/02 section
+        # 21.6), so an unlisted type is accepted, and the usage line still
+        # shows the registered ones to somebody who gave none.
+        metavar="{" + ",".join(sorted(WORKSPACE_TYPE_VALUES)) + "}",
+        help="workspace_type (core/03 section 7.1)",
+    )
     create.add_argument("--parent", help="id of the parent workspace")
     create.add_argument("--description")
     create.add_argument("--lifecycle", default="active")
