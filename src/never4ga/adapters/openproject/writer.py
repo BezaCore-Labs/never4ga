@@ -146,6 +146,36 @@ class OpenProjectWriter(OpenProjectProvider):
             )
         return payload
 
+    def _may_create_in(self, project: str) -> None:
+        """Refuse a creation the target project's own collection does not offer.
+
+        A creation names a project, and is judged by that project.
+        OpenProject sends a project's work package collection with
+        `createWorkPackage` and omits it when this token may not create
+        there, so the collection is the instance's exact answer -- where
+        :attr:`capabilities` is read off the connection's own project, which
+        says nothing about another one. A token that may only read the
+        connection's project and may write in the one named was refused
+        everywhere, and one that may write in the connection's project was
+        told yes about a project that would then refuse it.
+
+        The connection's own project is still answered from what discovery
+        already read, so it costs no second request. An instance that does
+        not answer raises as unreachable from the read itself.
+        """
+        if not project or project == self._project_ref:
+            self._require(WorkManagementCapability.CREATE_WORK_ITEM)
+            return
+        collection: Mapping[str, Any] = self._api.get(
+            self._work_packages_path(project), {"pageSize": 1}
+        )
+        if not set(_COLLECTION_CREATE_LINKS) & set(collection.get("_links", {})):
+            raise CapabilityNotSupportedError(
+                f"{self.provider_id} does not support "
+                f"{WorkManagementCapability.CREATE_WORK_ITEM.value!r} in project "
+                f"{project!r}: the instance offers this token no such action there"
+            )
+
     # -- proposing --------------------------------------------------------
 
     def propose_update(self, ref: ExternalId, fields: Mapping[str, Any]) -> ProposedMutation:
@@ -182,8 +212,8 @@ class OpenProjectWriter(OpenProjectProvider):
         answers 409. There is no version to be stale about yet. An omitted
         ``type`` is defaulted by the instance rather than refused.
         """
-        self._require(WorkManagementCapability.CREATE_WORK_ITEM)
         reference = project or self._project_ref or ""
+        self._may_create_in(reference)
         body = self._body(fields, lock_version=None)
         self._check_against_form(self._creation_path(reference, form=True), body)
         return ProposedMutation.create(reference, fields=fields)
@@ -229,7 +259,7 @@ class OpenProjectWriter(OpenProjectProvider):
         """Send the proposal, and verify what came back against what was asked."""
         if proposal.action is WriteAction.CREATE:
             # Creation is the collection's to permit: no item exists to ask.
-            self._require(_NEEDED[proposal.action])
+            self._may_create_in(str(proposal.project or ""))
         else:
             assert proposal.ref is not None  # the value type guarantees it
             self._item(proposal.ref, _NEEDED[proposal.action])
@@ -511,6 +541,13 @@ _ITEM_LINKS: Final[Mapping[WorkManagementCapability, tuple[str, ...]]] = {
     WorkManagementCapability.COMMENT_WORK_ITEM: ("addComment",),
     WorkManagementCapability.RELATE_WORK_ITEMS: ("addRelation",),
 }
+
+#: The links a project's work package collection carries when this token
+#: may create in it. The same names discovery reads off its sample.
+_COLLECTION_CREATE_LINKS: Final[tuple[str, ...]] = (
+    "createWorkPackage",
+    "createWorkPackageImmediate",
+)
 
 _NEEDED: Final[Mapping[WriteAction, WorkManagementCapability]] = {
     WriteAction.CREATE: WorkManagementCapability.CREATE_WORK_ITEM,
