@@ -695,6 +695,82 @@ class TestAWriteIsJudgedByTheItemItTargets:
         assert result.activity is not None
 
 
+def _another_project(
+    *, creation_offered_there: bool, creation_offered_here: bool
+) -> httpx.MockTransport:
+    """The captured instance, answering for a second project as well.
+
+    `elsewhere` is served from the captured project's answers, so it has a
+    collection, a creation form and a place to post. Which of the two
+    collections offers creation is the caller's to say.
+    """
+    inner = writable_transport()
+    create = ("createWorkPackage", "createWorkPackageImmediate")
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        path = urlparse(str(request.url)).path
+        elsewhere = "/projects/elsewhere/" in path
+        if elsewhere:
+            url = str(request.url).replace("/projects/elsewhere/", f"/projects/{PROJECT_REF}/")
+            request = httpx.Request(
+                request.method, url, headers=request.headers, content=request.content
+            )
+        response = inner.handle_request(request)
+        offered = creation_offered_there if elsewhere else creation_offered_here
+        if request.method != "GET" or response.status_code != 200 or offered:
+            return response
+        payload = json.loads(response.content)
+        if isinstance(payload, dict) and payload.get("_type") == "Collection":
+            for name in create:
+                payload.get("_links", {}).pop(name, None)
+            return httpx.Response(200, json=payload)
+        return response
+
+    return httpx.MockTransport(handle)
+
+
+class TestACreationIsJudgedByTheProjectItTargets:
+    """Whether a work package may be made in a project is that project's answer.
+
+    Capability discovery reads creation off the collection of the connection's
+    own project. That is no evidence about another project: a token may read
+    the one and write in the other, or the reverse. A creation names its
+    project, so that project's collection is asked, as a write that names a
+    work package asks the work package.
+
+    Found with an account that held a writing role in two projects and a
+    reading role in the connection's: every creation was refused as
+    unsupported while the instance offered it in the project named.
+    """
+
+    def test_a_creation_goes_through_where_only_the_target_offers_it(self) -> None:
+        built = writer(_another_project(creation_offered_there=True, creation_offered_here=False))
+        assert WorkManagementCapability.CREATE_WORK_ITEM not in built.capabilities
+        result = built.apply(built.propose_create("elsewhere", {"title": "a new thing"}))
+        assert result.item is not None
+
+    def test_the_target_refusing_outranks_a_connection_that_permits(self) -> None:
+        built = writer(_another_project(creation_offered_there=False, creation_offered_here=True))
+        assert WorkManagementCapability.CREATE_WORK_ITEM in built.capabilities
+        with pytest.raises(CapabilityNotSupportedError, match="in project 'elsewhere'"):
+            built.propose_create("elsewhere", {"title": "a new thing"})
+
+    def test_applying_is_judged_as_proposing_is(self) -> None:
+        # A proposal is a value and can travel to a token that may not make it.
+        permitted = writer(
+            _another_project(creation_offered_there=True, creation_offered_here=True)
+        )
+        proposal = permitted.propose_create("elsewhere", {"title": "a new thing"})
+        refused = writer(_another_project(creation_offered_there=False, creation_offered_here=True))
+        with pytest.raises(CapabilityNotSupportedError, match="in project 'elsewhere'"):
+            refused.apply(proposal)
+
+    def test_the_connections_own_project_is_still_answered_by_discovery(self) -> None:
+        built = writer(_another_project(creation_offered_there=True, creation_offered_here=False))
+        with pytest.raises(CapabilityNotSupportedError):
+            built.propose_create(PROJECT_REF, {"title": "a new thing"})
+
+
 class TestAnAssigneeResolvesLikeAnyOtherLink:
     """`assignee` and `responsible` resolve by name, like any other link.
 
