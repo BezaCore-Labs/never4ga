@@ -164,6 +164,32 @@ class Created:
         return self.document.path
 
 
+#: The most bytes a name made from a title may take, before its extension.
+#: Common filesystems refuse a name over 255 bytes, and an atomic write adds a
+#: temporary prefix and suffix beside it; a dated log adds its date. A name
+#: this long is already more than a reader takes in at a glance, and the title
+#: keeps every word in frontmatter.
+_MAX_STEM_BYTES: Final = 120
+
+
+def _fit(stem: str) -> str:
+    """Cap a name at `_MAX_STEM_BYTES` of UTF-8, at the last whole word.
+
+    Bytes, not characters: the filesystem's limit is in bytes, and a letter
+    outside ASCII takes more than one. A cut never splits a character, and
+    ends at the last `-` or `_` inside the limit, so no word is left half
+    there. A single word longer than the limit is cut where it must be.
+    """
+    encoded = stem.encode("utf-8")
+    if len(encoded) <= _MAX_STEM_BYTES:
+        return stem
+    cut = encoded[:_MAX_STEM_BYTES].decode("utf-8", errors="ignore")
+    boundary = max(cut.rfind("-"), cut.rfind("_"))
+    if boundary > 0:
+        cut = cut[:boundary]
+    return cut.strip("-_.")
+
+
 def _sanitise(title: str) -> str:
     """Strip what a filesystem cannot carry, and keep the two separators.
 
@@ -194,7 +220,7 @@ def _sanitise(title: str) -> str:
     # boundary: `a-_-b` is `a_b`. Runs collapse to the stronger separator,
     # because a field boundary that degraded into a word join would put the
     # name back where it started.
-    cleaned = _COLLAPSE_FIELDS.sub("_", cleaned).strip("-_.")
+    cleaned = _fit(_COLLAPSE_FIELDS.sub("_", cleaned).strip("-_."))
     if not cleaned:
         raise ConceptCreationError(f"{title!r} contains no characters usable in a filename")
     if cleaned.casefold() in _RESERVED_STEMS:

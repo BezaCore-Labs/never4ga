@@ -16,6 +16,7 @@ what `_` is for.
 
 from __future__ import annotations
 
+import re
 from datetime import date
 
 import pytest
@@ -120,3 +121,48 @@ class TestTheDatePrefixIsUnaffected:
         name = dated_filename_for("Session Handoff — Milestone 8", date(2026, 8, 27))
         assert name == "2026-08-27_session-handoff_milestone-8.md"
         assert "__" not in name
+
+
+class TestALongTitleStillMakesAName:
+    """A title has no length limit; a filename does.
+
+    Common filesystems refuse a name longer than 255 bytes, and an atomic
+    write needs room for a temporary prefix and suffix beside it. So the
+    name is capped, at a word boundary, and the title keeps every word in
+    frontmatter.
+    """
+
+    LONG = (
+        "The site redesigned as a traditional site and landed with every page on one "
+        "shared kit with its own graphic, a header with menus, pricing shown as typical "
+        "ranges with one price, a working estimator, and every check green"
+    )
+
+    def test_the_name_fits_with_room_for_a_temporary_file(self) -> None:
+        name = filename_for(self.LONG)
+        assert len(name.encode("utf-8")) <= 128
+        assert len(dated_filename_for(self.LONG, date(2026, 1, 2)).encode("utf-8")) <= 140
+
+    def test_it_ends_on_a_whole_word(self) -> None:
+        stem = filename_for(self.LONG).removesuffix(".md")
+        words = re.findall(r"\w+", self.LONG.casefold())
+        kept = re.split(r"[-_]", stem)
+        assert kept == words[: len(kept)]
+        assert not stem.endswith(("-", "_", "."))
+
+    def test_bytes_are_counted_not_characters(self) -> None:
+        """A multi-byte letter must not push the name past the limit or split."""
+        name = filename_for("été " * 60)
+        encoded = name.encode("utf-8")
+        assert len(encoded) <= 128
+        assert encoded.decode("utf-8") == name
+
+    def test_one_unbroken_word_is_cut_rather_than_refused(self) -> None:
+        name = filename_for("x" * 400)
+        assert name.endswith(".md") and 0 < len(name.encode("utf-8")) <= 128
+
+    def test_a_directory_name_is_capped_the_same_way(self) -> None:
+        assert len(directory_name_for(self.LONG).encode("utf-8")) <= 124
+
+    def test_a_short_title_is_untouched(self) -> None:
+        assert filename_for("Hybrid Retrieval") == "hybrid-retrieval.md"
