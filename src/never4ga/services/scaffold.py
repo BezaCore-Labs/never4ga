@@ -43,8 +43,7 @@ okf_version: "0.2"
 ---
 # Vault
 
-The seven roots below are stable. Extend inside them rather than adding new
-top-level folders.
+The seven roots below are stable. Extend inside them rather than adding new top-level folders.
 
 - [Home](home.md) - Human-facing dashboard.
 - [00_Inbox](00_Inbox/) - Unprocessed capture.
@@ -71,58 +70,43 @@ HOME_BODY: Final = """# Home
 
 ## Active workspaces
 
-Workspaces live in [10_Workspaces](10_Workspaces/). Each has a
-`workspace.md` describing what it is and where it stands.
+Workspaces live in [10_Workspaces](10_Workspaces/). Each has a `workspace.md` describing what it is and where it stands.
 
 ## Life areas
 
-Long-lived responsibilities live in [20_Life](20_Life/), each with an
-`area.md`.
+Long-lived responsibilities live in [20_Life](20_Life/), each with an `area.md`.
 
 ## Recent knowledge
 
-Durable notes live in [30_Knowledge/Notes](30_Knowledge/Notes/) and stay
-semantically flat. Classification uses type, domains, tags, links and
-[Maps](30_Knowledge/Maps/) rather than folders.
+Durable notes live in [30_Knowledge/Notes](30_Knowledge/Notes/) and stay semantically flat. Classification uses type, domains, tags, links and [Maps](30_Knowledge/Maps/) rather than folders.
 
 ## System
 
-[50_System](50_System/) holds standards, schemas, templates and integration
-records. The vault's own identity is [system.md](50_System/system.md).
+[50_System](50_System/) holds standards, schemas, templates and integration records. The vault's own identity is [system.md](50_System/system.md).
 """
 
 DOMAIN_REGISTRY_BODY: Final = """# Domain Registry
 
-The controlled domain vocabulary (core/02 section 9.1). A domain answers *which
-broad area of knowledge or responsibility is this relevant to* -- never what a
-document is exactly about. Exact subjects are tags, links and Entity records.
+The controlled domain vocabulary (core/02 section 9.1). A domain answers *which broad area of knowledge or responsibility is this relevant to* -- never what a document is exactly about. Exact subjects are tags, links and Entity records.
 
-To register a domain, add it to `values` in this file's frontmatter. Unknown
-domains are a strict-validation warning until registered, so a new value can be
-used first and promoted once it earns its place. Keep the list broad, stable
-and short: if a value only fits one project, it is a tag.
+To register a domain, add it to `values` in this file's frontmatter. Unknown domains are a strict-validation warning until registered, so a new value can be used first and promoted once it earns its place. Keep the list broad, stable and short: if a value only fits one project, it is a tag.
 """
 
 SYSTEM_MANIFEST_BODY: Final = """# System
 
-This document's `id` is the stable identity of this vault. It does not change
-when the vault directory is moved or renamed.
+This document's `id` is the stable identity of this vault. It does not change when the vault directory is moved or renamed.
 
 ## Canonical store
 
-Markdown with YAML frontmatter is the only canonical store. Indexes, caches and
-projections are derived and rebuildable, and the vault remains useful with no
-tooling running.
+Markdown with YAML frontmatter is the only canonical store. Indexes, caches and projections are derived and rebuildable, and the vault remains useful with no tooling running.
 
 ## Schema
 
-Concepts follow `never4ga/0.1`. Every concept carries `type`, `id`, `schema`,
-`title` and `created_at`. Unknown fields, types and profiles are preserved.
+Concepts follow `never4ga/0.1`. Every concept carries `type`, `id`, `schema`, `title` and `created_at`. Unknown fields, types and profiles are preserved.
 
 ## Reserved names
 
-`index.md` is navigation. `log.md` is directory history. Semantic manifests are
-`workspace.md`, `area.md` and this file.
+`index.md` is navigation. `log.md` is directory history. Semantic manifests are `workspace.md`, `area.md` and this file.
 """
 
 #: The Inbox scratchpad, created by `init` so it is simply *there* the first
@@ -135,13 +119,9 @@ Concepts follow `never4ga/0.1`. Every concept carries `type`, `id`, `schema`,
 #: silently ignored is the exact trap a scratchpad must not have.
 INBOX_SCRATCHPAD: Final = """# Scratchpad
 
-Somewhere to jot a thought down quickly so it is not forgotten. One per line,
-as a bullet. Type straight into this file, or run
-`never4ga scratch add "..."` from a terminal.
+Somewhere to jot a thought down quickly so it is not forgotten. One per line, as a bullet. Type straight into this file, or run `never4ga scratch add "..."` from a terminal.
 
-Every session reads these at startup and files them. Lines leave the way Inbox
-items leave: they become something, or they are discarded with a reason.
-Nothing is deleted for being untidy.
+Every session reads these at startup and files them. Lines leave the way Inbox items leave: they become something, or they are discarded with a reason. Nothing is deleted for being untidy.
 """
 
 #: Navigation for each root. Reserved OKF progressive disclosure: links to
@@ -151,22 +131,19 @@ ROOT_INDEXES: Final = {
 
 Unprocessed capture. Keep it shallow and empty it often.
 
-Move items to a workspace, a life area or `30_Knowledge/Notes/` once you know
-what they are.
+Move items to a workspace, a life area or `30_Knowledge/Notes/` once you know what they are.
 """,
     "10_Workspaces": """# Workspaces
 
 Bounded contexts that are actively managed or pursued.
 
-Each workspace directory holds a `workspace.md` manifest. Child workspaces live
-under a parent's `Workspaces/`. Source repositories stay outside the vault.
+Each workspace directory holds a `workspace.md` manifest. Child workspaces live under a parent's `Workspaces/`. Source repositories stay outside the vault.
 """,
     "20_Life": """# Life
 
 Long-lived areas of responsibility.
 
-Each area directory holds an `area.md` manifest. Bounded projects belonging to
-an area still live in `10_Workspaces/` and are linked from here.
+Each area directory holds an `area.md` manifest. Bounded projects belonging to an area still live in `10_Workspaces/` and are linked from here.
 """,
     "30_Knowledge": """# Knowledge
 
@@ -174,8 +151,7 @@ an area still live in `10_Workspaces/` and are linked from here.
 - [Maps](Maps/) - Curated navigation and synthesis.
 - [Assets](Assets/) - Supporting binaries.
 
-Notes are classified with type, domains, tags, links and typed relations, never
-with a topical folder tree.
+Notes are classified with type, domains, tags, links and typed relations, never with a topical folder tree.
 """,
     "50_System": """# System
 
@@ -192,9 +168,7 @@ with a topical folder tree.
 
 Intentionally detached historical material.
 
-Archiving is a deliberate act. Completing a workspace does not move it here;
-lifecycle metadata records completion. Subfolders mirror the live roots and are
-created only when used.
+Archiving is a deliberate act. Completing a workspace does not move it here; lifecycle metadata records completion. Subfolders mirror the live roots and are created only when used.
 """,
     "30_Knowledge/Notes": """# Notes
 
@@ -820,8 +794,7 @@ metadata:
 # <name>
 
 <One paragraph on what this Skill is for, in the words an agent will match a
-task against. The description above is what a client lists; this is what the
-agent reads once it has chosen.>
+task against. The description above is what a client lists; this is what the agent reads once it has chosen.>
 
 ## When to use it
 
@@ -860,26 +833,21 @@ SHIPPED_TEMPLATES: Final = {**TEMPLATES, SKILL_TEMPLATE_FILENAME: SKILL_TEMPLATE
 
 OBSIDIAN_README: Final = """# Obsidian
 
-Obsidian is a first-class way to work with this vault, and entirely optional.
-The vault is plain Markdown; nothing here is required to read it.
+Obsidian is a first-class way to work with this vault, and entirely optional. The vault is plain Markdown; nothing here is required to read it.
 
 ## Recommended settings
 
-- **Files & Links -> Use [[Wikilinks]]: off.** Never4gA prefers standard
-  Markdown links so the vault stays portable.
+- **Files & Links -> Use [[Wikilinks]]: off.** Never4gA prefers standard Markdown links so the vault stays portable.
 - **Files & Links -> New link format: relative path to file.**
 - **Templates -> Template folder location: `50_System/Templates`.**
 
 ## Bases
 
-`Bases/` holds saved views over frontmatter. They derive everything they show
-from the Markdown properties already in the vault and store no canonical data of
-their own. Deleting them loses nothing.
+`Bases/` holds saved views over frontmatter. They derive everything they show from the Markdown properties already in the vault and store no canonical data of their own. Deleting them loses nothing.
 
 ## What Obsidian must not become
 
-Bases, plugin state and workspace layout are never the only representation of a
-durable fact. If something matters, it lives in a concept's frontmatter or body.
+Bases, plugin state and workspace layout are never the only representation of a durable fact. If something matters, it lives in a concept's frontmatter or body.
 """
 
 #: Obsidian Bases views (details/obsidian-experience.md section 4). YAML, read
@@ -1264,23 +1232,15 @@ Run this before substantive work, once.
         + """
 ```
 
-**Name yourself in `--actor`.** `core/02` section 5.2 makes it a MUST: anything
-you write records you in `generated.by`, and the format is
-`<producer>/<version>` -- `claude-code/claude-opus-5`, not `claude-code`.
-Never4gA cannot work it out, because the process looks the same whoever started
-it, and without it every document you create claims a person wrote it.
+**Name yourself in `--actor`.** `core/02` section 5.2 makes it a MUST: anything you write records you in `generated.by`, and the format is `<producer>/<version>` -- `claude-code/claude-opus-5`, not `claude-code`. Never4gA cannot work it out, because the process looks the same whoever started it, and without it every document you create claims a person wrote it.
 
-Pass it once here and the session carries it: `never4ga concept create ...
---session <id>` then records you without repeating the flag.
+Pass it once here and the session carries it: `never4ga concept create ... --session <id>` then records you without repeating the flag.
 
-Add `--task "<short description>"` when you already know what the session is
-for. Keep it short: it becomes retrieval terms, and the full prompt is never
-persisted merely because retrieval used it.
+Add `--task "<short description>"` when you already know what the session is for. Keep it short: it becomes retrieval terms, and the full prompt is never persisted merely because retrieval used it.
 
 ## Reading the pack
 
-Every item says why it is there. Read them in the order given -- the pack is
-ordered by what a session needs first, not by relevance score:
+Every item says why it is there. Read them in the order given -- the pack is ordered by what a session needs first, not by relevance score:
 
 - **workspace** and **parent** -- what this repository *is*, and what it belongs to
 - **context** -- current state and constraints
@@ -1288,70 +1248,35 @@ ordered by what a session needs first, not by relevance score:
 - **decision** -- what was already settled, so it is not relitigated
 - **activity** -- what the last session did and left open
 
-The output is the whole pack: an index of the items first, then every body it
-carries under that document's path.
+The output is the whole pack: an index of the items first, then every body it carries under that document's path.
 
-**Required reading is not optional** (`core/07` §10). The workspace page, its
-parents' pages, every document in the workspace's `Context/`, the newest
-activity log and the standards that bind every session are marked
-`[required]`, and they are what this workspace needs a session to know.
-Those that fit are printed below the index. Each one that did not is marked
-`[required, read in full: <path>, <size> characters]`. **Read every one of
-those in full, with your own file-reading tool, before substantive work** --
-page through it if it is long, and never stop at the first screen. Never4gA
-never cuts them to fit, so nothing else will give you what they say.
+**Required reading is not optional** (`core/07` §10). The workspace page, its parents' pages, every document in the workspace's `Context/`, the newest activity log and the standards that bind every session are marked `[required]`, and they are what this workspace needs a session to know. Those that fit are printed below the index. Each one that did not is marked `[required, read in full: <path>, <size> characters]`. **Read every one of those in full, with your own file-reading tool, before substantive work** -- page through it if it is long, and never stop at the first screen. Never4gA never cuts them to fit, so nothing else will give you what they say.
 
-If your shell saves long output to a file and shows you a preview, read that
-file too: the preview is not the pack.
+If your shell saves long output to a file and shows you a preview, read that file too: the preview is not the pack.
 
-The `required reading:` line states the total against its ceiling. If it
-carries a `[W]`, say so -- the workspace needs something moved out, and what
-moves is the vault owner's call.
+The `required reading:` line states the total against its ceiling. If it carries a `[W]`, say so -- the workspace needs something moved out, and what moves is the vault owner's call.
 
-Anything else marked `[reference <id>]` is a pointer, not a body. Fetch one
-with `never4ga concept get <id>` when it turns out to matter.
+Anything else marked `[reference <id>]` is a pointer, not a body. Fetch one with `never4ga concept get <id>` when it turns out to matter.
 
-**A standard listed by reference still binds the work it describes.** The line
-under it says what it governs. Before work that touches that -- a palette, the
-books, a release -- fetch it and follow it.
+**A standard listed by reference still binds the work it describes.** The line under it says what it governs. Before work that touches that -- a palette, the books, a release -- fetch it and follow it.
 
-**A walkthrough listed as the current phase is the record you add to.** It is
-listed by reference because it is long. Before working on that phase, read
-its `## What is left` and the last step, and add each step you complete to it
-(`never4ga-checkpoint` says how). A phase about to start has none yet: create
-it with `never4ga walkthrough start <plan> "<phase>"`.
+**A walkthrough listed as the current phase is the record you add to.** It is listed by reference because it is long. Before working on that phase, read its `## What is left` and the last step, and add each step you complete to it (`never4ga-checkpoint` says how). A phase about to start has none yet: create it with `never4ga walkthrough start <plan> "<phase>"`.
 
-**Do not run startup a second time to read the pack** -- not with `--json`, not
-to see it again. Every startup opens a new session, and the second one is a
-stray: empty, never wrapped, and in the way of the ones that are real. If you
-need more, `never4ga concept get` fetches a document and `never4ga context
-focus` retrieves inside the session you already have.
+**Do not run startup a second time to read the pack** -- not with `--json`, not to see it again. Every startup opens a new session, and the second one is a stray: empty, never wrapped, and in the way of the ones that are real. If you need more, `never4ga concept get` fetches a document and `never4ga context focus` retrieves inside the session you already have.
 
 ## Surface the Inbox, and stop there
 
-The pack carries `inbox.pending` and `inbox.items` when captures are waiting.
-**Show them at the start of the session, before other work — and file
-nothing.**
+The pack carries `inbox.pending` and `inbox.items` when captures are waiting. **Show them at the start of the session, before other work — and file nothing.**
 
 ```bash
 never4ga inbox list
 ```
 
-Read each one, say what it looks like to you, and say where you think it
-belongs. Then wait for an answer. Do not create a work item, do not create a
-concept, do not resolve anything, until you have been told to.
+Read each one, say what it looks like to you, and say where you think it belongs. Then wait for an answer. Do not create a work item, do not create a concept, do not resolve anything, until you have been told to.
 
-**This is not caution, it is the rule**, as it was first put: *the inbox is
-meant to surface items that need to be filed, not to file them and tell me
-about it later.* A capture is a thought the vault's owner kept without deciding
-what it was. Deciding is theirs; surfacing it so they can decide is yours.
+**This is not caution, it is the rule**, as it was first put: *the inbox is meant to surface items that need to be filed, not to file them and tell me about it later.* A capture is a thought the vault's owner kept without deciding what it was. Deciding is theirs; surfacing it so they can decide is yours.
 
-**Placement is usually not inferable, and trying harder does not help.** A
-session filed a capture about ADR retrieval into the wrong project because it
-read the mechanical cause as the subject. Nothing in the capture said which
-project it belonged to — it was not a failure to infer well, it was a thing
-that could not be inferred at all. That is why confirming is not optional and
-not a matter of confidence.
+**Placement is usually not inferable, and trying harder does not help.** A session filed a capture about ADR retrieval into the wrong project because it read the mechanical cause as the subject. Nothing in the capture said which project it belonged to — it was not a failure to infer well, it was a thing that could not be inferred at all. That is why confirming is not optional and not a matter of confidence.
 
 What you may say about an item, once you have read it:
 
@@ -1371,37 +1296,17 @@ never4ga inbox resolve <path> --into <concept-id>
 never4ga inbox resolve <path> --work <item> --session <id>
 ```
 
-**Nothing leaves the Inbox until something accounts for it, and once
-something does, it leaves.** Never4gA checks rather than trusts: a concept
-must exist in the vault, and a work item must have a write this session
-actually recorded — saying you filed a ticket is a claim, and the session
-store is the fact. Never `rm` an item; that is the unowned write `resolve`
-exists to replace.
+**Nothing leaves the Inbox until something accounts for it, and once something does, it leaves.** Never4gA checks rather than trusts: a concept must exist in the vault, and a work item must have a write this session actually recorded — saying you filed a ticket is a claim, and the session store is the fact. Never `rm` an item; that is the unowned write `resolve` exists to replace.
 
-**And the destination has to resurface.** A concept that exists but reaches
-no structural lane is not an accounting — filing a thought there swaps a
-place that reminds you for a place that does not, which is the opposite of
-what capturing it was for. `resolve` refuses those and says why; the item
-stays, and the next session is asked about it again. Reference material is
-unaffected: a `knowledge` note is reached by looking for it and was never
-promised to arrive unasked.
+**And the destination has to resurface.** A concept that exists but reaches no structural lane is not an accounting — filing a thought there swaps a place that reminds you for a place that does not, which is the opposite of what capturing it was for. `resolve` refuses those and says why; the item stays, and the next session is asked about it again. Reference material is unaffected: a `knowledge` note is reached by looking for it and was never promised to arrive unasked.
 
-**An item they do not answer about stays.** An Inbox that is still full at the
-end of a session is a normal outcome, not a failure to tidy.
+**An item they do not answer about stays.** An Inbox that is still full at the end of a session is a normal outcome, not a failure to tidy.
 
 ## The scratchpad
 
-`00_Inbox/scratchpad.md` is where the vault's owner jots something down away
-from a session, so they do not forget it -- a line, not a paragraph, written in
-Obsidian or from a terminal. **It is theirs to write and yours to process.** You
-have no reason to add a line: you are in a session with them, so anything worth
-keeping gets filed where it belongs now, as a ticket, a concept or workspace
-material. A scratch line you wrote and then processed is a note you passed to
-yourself.
+`00_Inbox/scratchpad.md` is where the vault's owner jots something down away from a session, so they do not forget it -- a line, not a paragraph, written in Obsidian or from a terminal. **It is theirs to write and yours to process.** You have no reason to add a line: you are in a session with them, so anything worth keeping gets filed where it belongs now, as a ticket, a concept or workspace material. A scratch line you wrote and then processed is a note you passed to yourself.
 
-Its lines reach the pack as `inbox.scratch` and `inbox.scratch_items`, and
-they are your business at startup exactly as the pile is. The file itself is
-never listed as pending: it is drained, not processed, and it stays.
+Its lines reach the pack as `inbox.scratch` and `inbox.scratch_items`, and they are your business at startup exactly as the pile is. The file itself is never listed as pending: it is drained, not processed, and it stays.
 
 ```bash
 never4ga scratch list
@@ -1410,9 +1315,7 @@ never4ga scratch resolve <n> --work <item> --session <id>
 never4ga scratch resolve <n> --discard --reason "<why>"
 ```
 
-A line leaves under the same accounting a captured file leaves under. It is
-smaller; it is not more expendable -- and ask before discarding one, for the
-reason the pile has: you were not there when they wrote it.
+A line leaves under the same accounting a captured file leaves under. It is smaller; it is not more expendable -- and ask before discarding one, for the reason the pile has: you were not there when they wrote it.
 
 An item that is genuinely not worth keeping is still accounted for:
 
@@ -1420,9 +1323,7 @@ An item that is genuinely not worth keeping is still accounted for:
 never4ga inbox resolve <path> --discard --reason "<why>"
 ```
 
-Ask before discarding anything you did not capture yourself. The pile is
-somebody's thinking, and the reason you cannot see the value is sometimes
-that you were not there.
+Ask before discarding anything you did not capture yourself. The pile is somebody's thinking, and the reason you cannot see the value is sometimes that you were not there.
 
 ## If it cannot resolve
 
@@ -1451,8 +1352,7 @@ Escalate progressively. Do not start here, and do not reach for `deep` first.
 never4ga context focus "<terms>" --path "$PWD"
 ```
 
-Lexical retrieval inside this workspace and its parents, expanded one hop
-through typed relations. This is the usual answer.
+Lexical retrieval inside this workspace and its parents, expanded one hop through typed relations. This is the usual answer.
 
 ## Deep -- a broad investigation
 
@@ -1461,12 +1361,9 @@ never4ga context startup --depth deep --path "$PWD"
 never4ga context focus "<terms>" --depth deep --path "$PWD"
 ```
 
-Wider: the lineage's own context and decisions, `30_Knowledge/` admitted, a
-second relation hop, and more room. It stays inside the workspace and its
-parents -- a sibling workspace is never reached by depth alone.
+Wider: the lineage's own context and decisions, `30_Knowledge/` admitted, a second relation hop, and more room. It stays inside the workspace and its parents -- a sibling workspace is never reached by depth alone.
 
-Deep packs are large. Use it when a question genuinely spans the lineage, not
-because focused returned little.
+Deep packs are large. Use it when a question genuinely spans the lineage, not because focused returned little.
 """,
         version="0.2.0",
     ),
@@ -1482,13 +1379,9 @@ because focused returned little.
 never4ga capture "<the thought, in full>"
 ```
 
-An Inbox item is deliberately not a concept. It has no type, because choosing
-one is the act of processing it -- so nothing is being decided here, and that is
-the point.
+An Inbox item is deliberately not a concept. It has no type, because choosing one is the act of processing it -- so nothing is being decided here, and that is the point.
 
-Capture when interrupting the work to classify would cost more than the
-classification is worth. When you already know what the thing is and where it
-belongs, use `never4ga-create` instead.
+Capture when interrupting the work to classify would cost more than the classification is worth. When you already know what the thing is and where it belongs, use `never4ga-create` instead.
 
 Never edit `00_Inbox/index.md`: it is reserved navigation.
 """,
@@ -1502,9 +1395,7 @@ Never edit `00_Inbox/index.md`: it is reserved navigation.
         """
 # Create a concept
 
-Never hand-write frontmatter. The verb mints the UUIDv7, stamps the timestamps,
-works out the folder from the Type Registry and refuses anything that would not
-validate.
+Never hand-write frontmatter. The verb mints the UUIDv7, stamps the timestamps, works out the folder from the Type Registry and refuses anything that would not validate.
 
 ```bash
 never4ga concept create <type> "<title>" --workspace <id>
@@ -1515,14 +1406,9 @@ never4ga concept create <type> "<title>" --workspace <id>
 - `--description "<one sentence>"`
 - `--session <id>` so `generated.by` records **you**
 
-**Pass `--session`.** Without it the document says `human:owner` wrote it, which
-is a false claim about authorship in a vault whose whole point is that its
-claims are true. `core/02` section 5.2 makes naming yourself a MUST, and the
-session already knows who you are because startup was told. `--actor` overrides
-it when you need to say something more precise for one document.
+**Pass `--session`.** Without it the document says `human:owner` wrote it, which is a false claim about authorship in a vault whose whole point is that its claims are true. `core/02` section 5.2 makes naming yourself a MUST, and the session already knows who you are because startup was told. `--actor` overrides it when you need to say something more precise for one document.
 
-The folder is inferred and the inference is reported. If Never4gA refuses, it
-names the legal locations -- pick one rather than working around it.
+The folder is inferred and the inference is reported. If Never4gA refuses, it names the legal locations -- pick one rather than working around it.
 
 ## Which type
 
@@ -1538,8 +1424,7 @@ Ask what the document *is*, not where you want it:
 | supporting material, or a pointer to some | `resource` |
 | an investigation with a question | `research_note` |
 
-The two manifest types have their own verbs: `never4ga workspace create` and
-`never4ga life-area create`.
+The two manifest types have their own verbs: `never4ga workspace create` and `never4ga life-area create`.
 """,
         version="0.3.0",
     ),
@@ -1556,25 +1441,16 @@ never4ga doctor
 never4ga validate            # frontmatter only, per document
 ```
 
-`doctor` never changes the vault. It reports and stops -- repair is always an
-explicit act. What it does write is derived: a finding is recorded in the
-index's own database so it has a date, and so the run that fixes it can say
-so. Delete that database and nothing is lost but the history.
+`doctor` never changes the vault. It reports and stops -- repair is always an explicit act. What it does write is derived: a finding is recorded in the index's own database so it has a date, and so the run that fixes it can say so. Delete that database and nothing is lost but the history.
 
 ## What findings mean
 
-- **index_is_stale** -- the derived index is behind the Markdown. Run
-  `never4ga index`. Harmless; the vault is canonical either way.
-- **duplicate_id** -- two documents claim one identity. This is the serious one:
-  fix it before anything else, because identity is what everything else points
-  at.
-- **broken_link** -- a link resolves to nothing. Check for a rename before
-  assuming the target is missing.
-- **a validation error** -- the document does not meet Schema v0.1. `never4ga
-  validate <path>` says exactly which field.
+- **index_is_stale** -- the derived index is behind the Markdown. Run `never4ga index`. Harmless; the vault is canonical either way.
+- **duplicate_id** -- two documents claim one identity. This is the serious one: fix it before anything else, because identity is what everything else points at.
+- **broken_link** -- a link resolves to nothing. Check for a rename before assuming the target is missing.
+- **a validation error** -- the document does not meet Schema v0.1. `never4ga validate <path>` says exactly which field.
 
-Report what you found. Do not repair a finding you were not asked to repair, and
-never "fix" a document by deleting the part that failed.
+Report what you found. Do not repair a finding you were not asked to repair, and never "fix" a document by deleting the part that failed.
 """,
         version="0.2.0",
     ),
@@ -1586,8 +1462,7 @@ never "fix" a document by deleting the part that failed.
         """
 # Record a decision
 
-**An ADR records a decision the vault's owner made. You never author an accepted
-one, and you never edit a specification on your own authority.**
+**An ADR records a decision the vault's owner made. You never author an accepted one, and you never edit a specification on your own authority.**
 
 The process, and every step of it matters:
 
@@ -1599,35 +1474,21 @@ The process, and every step of it matters:
 
    The template starts at `lifecycle: proposed`. Leave it there.
 
-   **Leave the ADR number out of the title.** It is allocated: the next number
-   in the `Decisions/` folder it lands in, never the highest you have seen
-   elsewhere in the workspace family (`core/02` §21.11). A folder that does not number
-   yet gets one only with `--number`; one with two series needs `--series`. A
-   title stating a number other than the next is refused.
+   **Leave the ADR number out of the title.** It is allocated: the next number in the `Decisions/` folder it lands in, never the highest you have seen elsewhere in the workspace family (`core/02` §21.11). A folder that does not number yet gets one only with `--number`; one with two series needs `--series`. A title stating a number other than the next is refused.
 
-   **Never delete a decision.** A number is never reused, and the record is
-   what holds it: one that no longer stands stays in place as `rejected` or
-   `superseded`, or is archived, where it is still counted. Deleting a
-   folder's highest record hands its number to the next decision.
+   **Never delete a decision.** A number is never reused, and the record is what holds it: one that no longer stands stays in place as `rejected` or `superseded`, or is archived, where it is still counted. Deleting a folder's highest record hands its number to the next decision.
 
-2. **Say plainly that it is not in effect.** A draft that reads as settled is
-   worse than no draft, because the next session will build on it.
+2. **Say plainly that it is not in effect.** A draft that reads as settled is worse than no draft, because the next session will build on it.
 
 3. **Stop.** Present the problem, the options and a recommendation. Then wait.
 
-4. **Only on an explicit ruling**, set `lifecycle: accepted`, dated to that
-   decision, update the specification deliberately, and update any manifest in
-   the same change.
+4. **Only on an explicit ruling**, set `lifecycle: accepted`, dated to that decision, update the specification deliberately, and update any manifest in the same change.
 
-An agent that proposes a decision and also accepts it has put its own judgement
-into the project's decision record. That is the failure this Skill exists to
-prevent.
+An agent that proposes a decision and also accepts it has put its own judgement into the project's decision record. That is the failure this Skill exists to prevent.
 
 ## What a decision needs
 
-Context, the decision itself stated so it could be acted on alone, the
-alternatives and why they lost, the consequences, and the condition that should
-reopen it. A decision with no alternatives is an announcement.
+Context, the decision itself stated so it could be acted on alone, the alternatives and why they lost, the consequences, and the condition that should reopen it. A decision with no alternatives is an announcement.
 """,
         version="0.4.0",
     ),
@@ -1639,17 +1500,13 @@ reopen it. A decision with no alternatives is an announcement.
         """
 # Checkpoint
 
-Record what has happened since the last one. Nothing here touches the vault:
-checkpoints accumulate outside it and `never4ga-wrap` turns them into the one
-document that lasts.
+Record what has happened since the last one. Nothing here touches the vault: checkpoints accumulate outside it and `never4ga-wrap` turns them into the one document that lasts.
 
 ```bash
 never4ga checkpoint "<what happened, briefly>" --session <id>
 ```
 
-The session id is the one `never4ga context startup` reported. If you have lost
-it, run startup again -- that opens a new session rather than finding the old
-one, which is the honest outcome.
+The session id is the one `never4ga context startup` reported. If you have lost it, run startup again -- that opens a new session rather than finding the old one, which is the honest outcome.
 
 ## Saying more than what happened
 
@@ -1666,45 +1523,24 @@ never4ga checkpoint "cleared two defects" --session <id> \\
 ```
 
 - `--action` is a fact: a merged PR, a written concept, a deleted file.
-- `--decision` is a ruling you are claiming was made. **Never4gA records it
-  verbatim and never interprets it, and it is not an accepted decision until
-  somebody writes the ADR.** Declaring one is not the same as taking one.
+- `--decision` is a ruling you are claiming was made. **Never4gA records it verbatim and never interprets it, and it is not an accepted decision until somebody writes the ADR.** Declaring one is not the same as taking one.
 - `--memory` is something worth knowing next time that is not a decision.
-- `--work` is a tracker item you think needs something. **Never4gA writes
-  nothing to the tracker itself** -- a ticket either needs particular
-  information, which somebody should write, or it does not. **You are that
-  somebody**, so act on it before you wrap:
+- `--work` is a tracker item you think needs something. **Never4gA writes nothing to the tracker itself** -- a ticket either needs particular information, which somebody should write, or it does not. **You are that somebody**, so act on it before you wrap:
 
   ```bash
   never4ga work update 840 --field status=Closed --session <id> --apply
   ```
 
-  Pass `--session` so the write is recorded against this session. `wrap` exits
-  non-zero while a declared item has none, because a tracker that drifts out of
-  date because every session left it for the next one is the failure this
-  declaration exists to prevent.
+  Pass `--session` so the write is recorded against this session. `wrap` exits non-zero while a declared item has none, because a tracker that drifts out of date because every session left it for the next one is the failure this declaration exists to prevent.
 
-- `--context` is a context document this session changed something in -- a
-  fact it asserts that is no longer true because of what you did. Name it by
-  id or vault path, then `: what changed`. **Update the document itself**;
-  the declaration is a claim, and `wrap` exits non-zero while a declared
-  document's content has not moved. Correct the sentence that is now wrong;
-  never add a dated entry to it (`core/07` §10).
-- `--walkthrough` is the phase walkthrough you wrote a step into. **Write the
-  step itself** -- what, files, the exact commands, why, and how it was
-  checked, under the walkthrough's `## Steps` -- then declare it here, by id or
-  vault path and `: step N`. `wrap` holds it exactly as it holds `--context`.
-  A phase that has no walkthrough yet gets one first:
-  `never4ga walkthrough start <plan> "<phase>"`.
+- `--context` is a context document this session changed something in -- a fact it asserts that is no longer true because of what you did. Name it by id or vault path, then `: what changed`. **Update the document itself**; the declaration is a claim, and `wrap` exits non-zero while a declared document's content has not moved. Correct the sentence that is now wrong; never add a dated entry to it (`core/07` §10).
+- `--walkthrough` is the phase walkthrough you wrote a step into. **Write the step itself** -- what, files, the exact commands, why, and how it was checked, under the walkthrough's `## Steps` -- then declare it here, by id or vault path and `: step N`. `wrap` holds it exactly as it holds `--context`. A phase that has no walkthrough yet gets one first: `never4ga walkthrough start <plan> "<phase>"`.
 
-Never4gA cannot work any of this out for itself. It never reads a transcript,
-and it makes no model call, so what you declare is exactly what it knows.
+Never4gA cannot work any of this out for itself. It never reads a transcript, and it makes no model call, so what you declare is exactly what it knows.
 
 ## How often
 
-When something durable happens, not on a timer. A checkpoint per merged PR or
-per resolved question is about right; one per message is noise that makes the
-session log unreadable.
+When something durable happens, not on a timer. A checkpoint per merged PR or per resolved question is about right; one per message is noise that makes the session log unreadable.
 """,
         version="0.7.0",
     ),
@@ -1715,56 +1551,36 @@ session log unreadable.
         """
 # Wrap up
 
-Write the record this session leaves behind. One `activity_log`, in the
-workspace's `Logs/<year>/`, dated from when the session started rather than
-when you got round to wrapping it.
+Write the record this session leaves behind. One `activity_log`, in the workspace's `Logs/<year>/`, dated from when the session started rather than when you got round to wrapping it.
 
 ```bash
 never4ga doctor                                   # leave the vault healthy first
 never4ga wrap --session <id> --title "<what it was about>"
 ```
 
-Without `--title` the first checkpoint's note becomes the title, which is
-usually worse than one sentence of thought.
+Without `--title` the first checkpoint's note becomes the title, which is usually worse than one sentence of thought.
 
 ## It is idempotent
 
-Wrapping twice updates the same document rather than writing a second. So
-wrapping early is not a mistake: checkpoint some more, wrap again, and the log
-grows.
+Wrapping twice updates the same document rather than writing a second. So wrapping early is not a mistake: checkpoint some more, wrap again, and the log grows.
 
-**Pass `--title` again if the session turned out to be about something else.**
-That is the usual case for wrapping twice -- an early title describes what had
-happened so far, and the reason to wrap again is that more happened. A title
-given on the second wrap replaces the old one and the file is renamed to match;
-the output names where it moved from. Leave `--title` off and the log keeps the
-title it has.
+**Pass `--title` again if the session turned out to be about something else.** That is the usual case for wrapping twice -- an early title describes what had happened so far, and the reason to wrap again is that more happened. A title given on the second wrap replaces the old one and the file is renamed to match; the output names where it moved from. Leave `--title` off and the log keeps the title it has.
 
 ## What it will not do
 
-It refuses a session with no checkpoints. An empty log claims a session
-happened and says nothing about it.
+It refuses a session with no checkpoints. An empty log claims a session happened and says nothing about it.
 
-**It writes nothing but the log** -- not to the vault, and not to a tracker.
-Declarations made with `--decision` come back in its output, and turning one
-into an ADR is a step you take:
+**It writes nothing but the log** -- not to the vault, and not to a tracker. Declarations made with `--decision` come back in its output, and turning one into an ADR is a step you take:
 
 ```bash
 never4ga concept create decision "<title>" --workspace <id>
 ```
 
-That is deliberate. An agent never authors an accepted decision, and a `wrap`
-that drafted ADRs on a timer would be exactly that failure with a schedule
-attached.
+That is deliberate. An agent never authors an accepted decision, and a `wrap` that drafted ADRs on a timer would be exactly that failure with a schedule attached.
 
 ## Close the work out yourself
 
-**Where the work lives is the workspace's choice.** A `work_management` block
-in its frontmatter points at an external tracker; without one, the vault is
-the tracker and open work is `task` concepts under `Tasks/`. The commands
-below are the tracker form. For a vault-kept task the same acts are
-`never4ga concept` edits to its `lifecycle`, and the discipline is identical:
-finish the bookkeeping yourself rather than leaving it.
+**Where the work lives is the workspace's choice.** A `work_management` block in its frontmatter points at an external tracker; without one, the vault is the tracker and open work is `task` concepts under `Tasks/`. The commands below are the tracker form. For a vault-kept task the same acts are `never4ga concept` edits to its `lifecycle`, and the discipline is identical: finish the bookkeeping yourself rather than leaving it.
 
 If the session touched a work item, say so as you go:
 
@@ -1772,115 +1588,66 @@ If the session touched a work item, say so as you go:
 never4ga checkpoint --session <id> --work "840: ready to close, read-back is in" "..."
 ```
 
-**Then act on it before you wrap.** `wrap` still writes nothing to a tracker,
-and the reasoning holds: a ticket either needs some particular information, in
-which case somebody should write *that*, or it does not, in which case a note
-saying a session wrapped is noise on an audit trail somebody else reads.
+**Then act on it before you wrap.** `wrap` still writes nothing to a tracker, and the reasoning holds: a ticket either needs some particular information, in which case somebody should write *that*, or it does not, in which case a note saying a session wrapped is noise on an audit trail somebody else reads.
 
-You are that somebody. You held the conversation and you know what changed, so
-write the thing the ticket actually needs -- not that a session happened:
+You are that somebody. You held the conversation and you know what changed, so write the thing the ticket actually needs -- not that a session happened:
 
 ```bash
 never4ga work update 840 --field status=Closed --session <id> --apply
 never4ga work comment 840 "the read-back discipline is in; closing" --session <id> --apply
 ```
 
-Pass `--session` so Never4gA can see the write happened. A declaration is a
-claim it records without believing; a write is something it observed.
+Pass `--session` so Never4gA can see the write happened. A declaration is a claim it records without believing; a write is something it observed.
 
-**`wrap` will not finish quietly while a declared item has no write against
-it.** It writes the log and then exits non-zero, listing what was left. Do the
-work and wrap again, or pass `--allow-open-work` when leaving it open is the
-right call and you want that on the record.
+**`wrap` will not finish quietly while a declared item has no write against it.** It writes the log and then exits non-zero, listing what was left. Do the work and wrap again, or pass `--allow-open-work` when leaving it open is the right call and you want that on the record.
 
-Do not leave this for the person. Somebody working entirely through agents
-should never have to reconcile a tracker by hand.
+Do not leave this for the person. Somebody working entirely through agents should never have to reconcile a tracker by hand.
 
 ## The check only sees what you declared
 
-`--work` is what arms it, so an item you never mentioned is one nothing will
-ask you about. That is how work outlives the thing that finished it, and it is
-not a rare shape: a change resolves something it was not made for, a defect
-turns out to have been fixed weeks ago, somebody fixes it themselves and
-mentions it in passing.
+`--work` is what arms it, so an item you never mentioned is one nothing will ask you about. That is how work outlives the thing that finished it, and it is not a rare shape: a change resolves something it was not made for, a defect turns out to have been fixed weeks ago, somebody fixes it themselves and mentions it in passing.
 
-**So before you wrap, read what is still open against what this session
-actually did.** Where that list lives depends on the workspace, and both
-answers are normal:
+**So before you wrap, read what is still open against what this session actually did.** Where that list lives depends on the workspace, and both answers are normal:
 
-- **It declares a tracker** -- there is a `work_management` block in its
-  frontmatter -- so the tracker is where open work lives:
+- **It declares a tracker** -- there is a `work_management` block in its frontmatter -- so the tracker is where open work lives:
 
   ```bash
   never4ga work search --status New
   ```
 
-- **It declares none**, so the vault is the tracker. Open work is `task`
-  concepts under the workspace's `Tasks/`, and its dashboard's Tasks view is
-  that list. The lifecycle runs `todo`, `in_progress`, `blocked`, `done`,
-  `cancelled`.
+- **It declares none**, so the vault is the tracker. Open work is `task` concepts under the workspace's `Tasks/`, and its dashboard's Tasks view is that list. The lifecycle runs `todo`, `in_progress`, `blocked`, `done`, `cancelled`.
 
-For anything that looks finished, **confirm it against reality rather than
-against its own description** -- run the command, read the code, ask the
-system -- and then close it with what you found. Something merely stale still
-costs a person a read, and reading it costs more than checking it did.
+For anything that looks finished, **confirm it against reality rather than against its own description** -- run the command, read the code, ask the system -- and then close it with what you found. Something merely stale still costs a person a read, and reading it costs more than checking it did.
 
 The gap here is never a mechanism. It is that nobody looked.
 
 ## Read the context you were given
 
-Every wrap lists the context documents this session's startup carried, and
-asks one question: **did this session change anything these assert?** Answer
-it before you wrap, not after. These are the documents every later session
-reads first, so a stale one misleads all of them -- a workspace's
-`agent-context.md` once told sessions for three weeks that a rebrand was
-complete, while the sessions doing that work knew it was not.
+Every wrap lists the context documents this session's startup carried, and asks one question: **did this session change anything these assert?** Answer it before you wrap, not after. These are the documents every later session reads first, so a stale one misleads all of them -- a workspace's `agent-context.md` once told sessions for three weeks that a rebrand was complete, while the sessions doing that work knew it was not.
 
-Read each against what you did. Where one is now wrong, correct it -- an
-ordinary edit, yours because the change was -- and declare it:
+Read each against what you did. Where one is now wrong, correct it -- an ordinary edit, yours because the change was -- and declare it:
 
 ```bash
 never4ga checkpoint --session <id> --context "<id or path>: what changed" "..."
 ```
 
-`wrap` holds you to the declaration. A document you were given must have new
-content since the session opened; one you were not given must have been
-modified since then. Otherwise it exits non-zero and names the document.
-`--allow-open-context` closes out anyway when you declared one and then found
-it needed nothing.
+`wrap` holds you to the declaration. A document you were given must have new content since the session opened; one you were not given must have been modified since then. Otherwise it exits non-zero and names the document. `--allow-open-context` closes out anyway when you declared one and then found it needed nothing.
 
-**Correct it in place; never append to it** (`core/07` §10). A context document,
-and a workspace's Current State, says what is true now. Rewrite the sentence
-your work made wrong, and leave the account of what you did to the log `wrap`
-writes. A dated paragraph added at the top is the easy edit and the wrong one:
-`project-state.md` grew to 126 KB that way, one session at a time, until no
-startup pack could carry it and every session got its title alone. Context
-documents are required reading and are never cut (`core/07` §10), so every one
-costs every later session its full length. `doctor` reports a workspace whose
-required reading passes its ceiling as `required_reading_too_large`. If yours
-does, say so rather than adding to it.
+**Correct it in place; never append to it** (`core/07` §10). A context document, and a workspace's Current State, says what is true now. Rewrite the sentence your work made wrong, and leave the account of what you did to the log `wrap` writes. A dated paragraph added at the top is the easy edit and the wrong one: `project-state.md` grew to 126 KB that way, one session at a time, until no startup pack could carry it and every session got its title alone. Context documents are required reading and are never cut (`core/07` §10), so every one costs every later session its full length. `doctor` reports a workspace whose required reading passes its ceiling as `required_reading_too_large`. If yours does, say so rather than adding to it.
 
 ## Bring the walkthrough up to date
 
-If the session did a step of a plan's phase, the phase's walkthrough carries
-it: what, files, the exact commands, why, and how it was checked. Write it
-before you wrap -- you have the commands now, and nobody will later -- and
-declare it:
+If the session did a step of a plan's phase, the phase's walkthrough carries it: what, files, the exact commands, why, and how it was checked. Write it before you wrap -- you have the commands now, and nobody will later -- and declare it:
 
 ```bash
 never4ga checkpoint --session <id> --walkthrough "<id or path>: step N" "..."
 ```
 
-`wrap` holds a declared walkthrough exactly as it holds a declared context
-document, and the log lists the steps apart, under *Walkthrough steps this
-session wrote*. When the phase's done-when is met, set its `lifecycle` to
-`complete`.
+`wrap` holds a declared walkthrough exactly as it holds a declared context document, and the log lists the steps apart, under *Walkthrough steps this session wrote*. When the phase's done-when is met, set its `lifecycle` to `complete`.
 
 ## Before you finish
 
-Say what you left undone. A handoff that omits the unfinished part is worse
-than no handoff, and `wrap` cannot know what it is -- the log records what you
-told it happened, not what did not.
+Say what you left undone. A handoff that omits the unfinished part is worse than no handoff, and `wrap` cannot know what it is -- the log records what you told it happened, not what did not.
 """,
         version="0.9.0",
     ),

@@ -116,30 +116,13 @@ No LLM required.
 
 ### `90_Archive/` is excluded, at every depth
 
-No document under `90_Archive/` enters a Context Pack, through any stage or
-lane, however relevant it is. Detachment is a property of the material rather
-than of the interface reading it, so no depth relaxes this and `deep` is not an
-exception.
+No document under `90_Archive/` enters a Context Pack, through any stage or lane, however relevant it is. Detachment is a property of the material rather than of the interface reading it, so no depth relaxes this and `deep` is not an exception.
 
-`core/01` has always called the archive "intentionally detached historical
-material", and until ADR-0031 that was the only sentence on the subject —
-detachment was specified for filing and left open for retrieval. The two
-readings were not equivalent. Measured 2026-09-03 on a 1,429-concept vault:
-asked *what the frontmatter convention is for notes*, `deep` returned six
-archived documents in the first ten, ranked an archived note about the
-*superseded* convention first, and did not return `core/02` — the schema in
-force — at all.
+`core/01` has always called the archive "intentionally detached historical material", and until ADR-0031 that was the only sentence on the subject — detachment was specified for filing and left open for retrieval. The two readings were not equivalent. Measured 2026-09-03 on a 1,429-concept vault: asked *what the frontmatter convention is for notes*, `deep` returned six archived documents in the first ten, ranked an archived note about the *superseded* convention first, and did not return `core/02` — the schema in force — at all.
 
-The mechanism that admitted them is the one to watch for when adding a lane: a
-type-based query with no path filter. `30_Knowledge/` belongs to no workspace,
-so a workspace filter excludes it and a broad depth has to admit knowledge some
-other way; admitting it *by type* also admits every archived note, because an
-archived note keeps its type. Exclusion is by location, and location is the
-only thing that distinguishes them.
+The mechanism that admitted them is the one to watch for when adding a lane: a type-based query with no path filter. `30_Knowledge/` belongs to no workspace, so a workspace filter excludes it and a broad depth has to admit knowledge some other way; admitting it *by type* also admits every archived note, because an archived note keeps its type. Exclusion is by location, and location is the only thing that distinguishes them.
 
-The accepted cost is that genuinely useful history becomes unreachable through
-context acquisition. The remedy is deliberate rather than technical: material
-still worth retrieving does not belong in `90_Archive/`.
+The accepted cost is that genuinely useful history becomes unreachable through context acquisition. The remedy is deliberate rather than technical: material still worth retrieving does not belong in `90_Archive/`.
 
 No LLM required.
 
@@ -453,37 +436,13 @@ full-document bytes
 
 It applies priority ordering and truncation/reference substitution.
 
-**Required reading is never budgeted away** (ADR-0043). For the workspace a
-startup resolves to, it is the workspace page, the workspace pages of its
-parent chain, every live `type: context` document in its `Context/`, its
-newest activity log that is not a roll-up, and its required standards
-(ADR-0050). A standard is required when it is live, applies to the workspace
-(`core/02` §21.15), and either sits in `50_System/Standards/` or says
-`required_reading: true`; one that says `required_reading: false` is not. A
-standard that `excepts` a required standard is required too. Required bodies
-go inline, in priority order, while the response stays under a transport
-limit of 24,000 characters. A required document that does not fit is listed
-with its absolute path and size, to be read in full with the agent's own file
-reader. It is never truncated or dropped. The budget governs everything else.
+**Required reading is never budgeted away** (ADR-0043). For the workspace a startup resolves to, it is the workspace page, the workspace pages of its parent chain, every live `type: context` document in its `Context/`, its newest activity log that is not a roll-up, and its required standards (ADR-0050). A standard is required when it is live, applies to the workspace (`core/02` §21.15), and either sits in `50_System/Standards/` or says `required_reading: true`; one that says `required_reading: false` is not. A standard that `excepts` a required standard is required too. Required bodies go inline, in priority order, while the response stays under a transport limit of 24,000 characters. A required document that does not fit is listed with its absolute path and size, to be read in full with the agent's own file reader. It is never truncated or dropped. The budget governs everything else.
 
-Every other standard that applies, and every accepted decision, is binding: it
-is always listed, and never dropped by a category cap or the item ceiling. Its
-body is placed after required reading and before anything optional. A
-standard listed without its body carries its `description` in the index, so
-the reader knows what it governs and when to read it. Every startup pack
-reports the required-reading total against a ceiling of 200,000 characters, and
-`doctor` reports a workspace over it. Neither of them cuts anything.
+Every other standard that applies, and every accepted decision, is binding: it is always listed, and never dropped by a category cap or the item ceiling. Its body is placed after required reading and before anything optional. A standard listed without its body carries its `description` in the index, so the reader knows what it governs and when to read it. Every startup pack reports the required-reading total against a ceiling of 200,000 characters, and `doctor` reports a workspace over it. Neither of them cuts anything.
 
-Every walkthrough in progress in the workspace (`core/02` §21.27) is named in a
-startup pack, with the reason *current phase walkthrough* and its phase. It is
-carried as a reference and read on demand, never as a body and never as
-required reading, because one can run to tens of thousands of characters
-(ADR-0051).
+Every walkthrough in progress in the workspace (`core/02` §21.27) is named in a startup pack, with the reason *current phase walkthrough* and its phase. It is carried as a reference and read on demand, never as a body and never as required reading, because one can run to tens of thousands of characters (ADR-0051).
 
-A reference substitution states which of these caused it (ADR-0042): the body
-alone is larger than the pack's character budget (`larger_than_budget`), the
-higher-priority bodies used the room first (`budget_spent`), or the pack's
-limit on full documents was reached (`document_limit`).
+A reference substitution states which of these caused it (ADR-0042): the body alone is larger than the pack's character budget (`larger_than_budget`), the higher-priority bodies used the room first (`budget_spent`), or the pack's limit on full documents was reached (`document_limit`).
 
 Do not ask an LLM to decide whether a 30,000-token startup pack is too large.
 

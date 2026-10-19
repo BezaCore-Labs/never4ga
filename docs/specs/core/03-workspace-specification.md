@@ -210,9 +210,7 @@ lifecycle: active
 
 Plans may implement one or more Goals through typed relationships.
 
-**Amended 2026-10-02 by ADR-0051.** A plan's phases each have a walkthrough in
-the workspace's `Walkthroughs/` (`core/02` §21.27), recording step by step how
-the phase was done.
+**Amended 2026-10-02 by ADR-0051.** A plan's phases each have a walkthrough in the workspace's `Walkthroughs/` (`core/02` §21.27), recording step by step how the phase was done.
 
 ---
 
@@ -1256,12 +1254,7 @@ Create a child workspace when the candidate context has at least several of thes
 
 Do not create a workspace merely because something is a topic or folder category.
 
-**Amended 2026-08-30 by ADR-0024.** A workspace's parent may be a life area. A
-bounded pursuit that meets the test above and belongs to a responsibility rather
-than to a project — a course, a certification — lives under
-`20_Life/<Area>/Workspaces/`, names the area as `parent`, and works exactly as a
-child workspace under `10_Workspaces/` does. The area itself is never a
-workspace: it is carried, not pursued, and does not finish.
+**Amended 2026-08-30 by ADR-0024.** A workspace's parent may be a life area. A bounded pursuit that meets the test above and belongs to a responsibility rather than to a project — a course, a certification — lives under `20_Life/<Area>/Workspaces/`, names the area as `parent`, and works exactly as a child workspace under `10_Workspaces/` does. The area itself is never a workspace: it is carried, not pursued, and does not finish.
 
 ---
 

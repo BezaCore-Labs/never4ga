@@ -199,9 +199,7 @@ At minimum test:
 
 ## 8. Initial bootstrap set
 
-The eight fixed by ADR-0018. `core/04` sections 22 and 32 carry the same list;
-this was a third copy of it, and was the last one still naming the pre-ADR-0018
-spellings.
+The eight fixed by ADR-0018. `core/04` sections 22 and 32 carry the same list; this was a third copy of it, and was the last one still naming the pre-ADR-0018 spellings.
 
 ```text
 never4ga-startup

@@ -73,9 +73,7 @@ Read for Milestone 1, in addition to the Milestone 0 list above:
 
 ## Operating the vault
 
-The workspace's `Runbooks/vault-bootstrap.md` covers creating and maintaining an actual vault, as
-distinct from the code that serves it. Read it before running `never4ga init`
-against anything real.
+The workspace's `Runbooks/vault-bootstrap.md` covers creating and maintaining an actual vault, as distinct from the code that serves it. Read it before running `never4ga init` against anything real.
 
 ## Milestone 2 — complete
 

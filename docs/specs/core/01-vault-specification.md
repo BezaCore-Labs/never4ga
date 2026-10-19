@@ -33,27 +33,13 @@ sources:
 
 The six conceptual roots are intentionally stable.
 
-There were seven until 2026-09-05. **ADR-0032 dissolved `40_Entities/`**: an
-entity record turned out to be a knowledge note in a second place — a
-`LINK_RELATION` edge does not read the target's type, `aliases` resolve on any
-document, and the context assembler already grouped `entity` with `knowledge`
-and `resource`. Removing a root is the same weight as inventing one, which is
-why it took a decision.
+There were seven until 2026-09-05. **ADR-0032 dissolved `40_Entities/`**: an entity record turned out to be a knowledge note in a second place — a `LINK_RELATION` edge does not read the target's type, `aliases` resolve on any document, and the context assembler already grouped `entity` with `knowledge` and `resource`. Removing a root is the same weight as inventing one, which is why it took a decision.
 
 Extensions normally occur inside those roots rather than by inventing new top-level topical roots.
 
-A directory that `never4ga init` found already present and registered as
-**foreign material** (ADR-0039) is not a topical root and does not count
-against this rule. It is the user's, held beside the roots untouched, indexed
-by path for search only, and emptied one document at a time as its contents
-are adopted into their typed homes. The registration is recorded in
-`50_System/system.md`.
+A directory that `never4ga init` found already present and registered as **foreign material** (ADR-0039) is not a topical root and does not count against this rule. It is the user's, held beside the roots untouched, indexed by path for search only, and emptied one document at a time as its contents are adopted into their typed homes. The registration is recorded in `50_System/system.md`.
 
-**Amended 2026-10-01 under ADR-0039.** A loose Markdown note `init` finds at
-the top level is registered as foreign material the same way, by name, and is
-held, indexed by path and adopted exactly as a note in a registered directory
-is. `index.md`, `home.md` and `log.md` at the vault root are Never4gA's and are
-never registered.
+**Amended 2026-10-01 under ADR-0039.** A loose Markdown note `init` finds at the top level is registered as foreign material the same way, by name, and is held, indexed by path and adopted exactly as a note in a registered directory is. `index.md`, `home.md` and `log.md` at the vault root are Never4gA's and are never registered.
 
 ## 2. Root `index.md`
 
@@ -156,28 +142,13 @@ Software source repositories remain outside the vault.
 
 Life areas are long-lived responsibilities.
 
-**Amended 2026-08-30 by ADR-0024.** An area holds its own documents: `resource`,
-`activity_log`, `plan`, `goal`, `task`, `research_note` and `decision` may live
-under `20_Life/<Area>/`, with the same "extend inside on first use" allowance a
-workspace has. Grouping inside an area is allowed when it mirrors the structure
-of the thing being practised — `gardening/seed-catalog/`, `reading/classics/war-and-peace/`
-— and this does not contradict §8: that section forbids an invented taxonomy in
-`30_Knowledge/Notes/`, not the inherent structure of a practice.
+**Amended 2026-08-30 by ADR-0024.** An area holds its own documents: `resource`, `activity_log`, `plan`, `goal`, `task`, `research_note` and `decision` may live under `20_Life/<Area>/`, with the same "extend inside on first use" allowance a workspace has. Grouping inside an area is allowed when it mirrors the structure of the thing being practised — `gardening/seed-catalog/`, `reading/classics/war-and-peace/` — and this does not contradict §8: that section forbids an invented taxonomy in `30_Knowledge/Notes/`, not the inherent structure of a practice.
 
-An area may also contain workspaces. `20_Life/<Area>/Workspaces/` works exactly
-as a workspace's own `Workspaces/` does, and a workspace there names its area as
-`parent`. A course with units and a final, a certification with an exam date —
-these meet `core/03` §30's test and are workspaces that happen not to be
-software; the area itself stays the ongoing responsibility.
+An area may also contain workspaces. `20_Life/<Area>/Workspaces/` works exactly as a workspace's own `Workspaces/` does, and a workspace there names its area as `parent`. A course with units and a final, a certification with an exam date — these meet `core/03` §30's test and are workspaces that happen not to be software; the area itself stays the ongoing responsibility.
 
-The line between area material and knowledge is *practice versus reference*:
-reference you would consult from any context belongs in `30_Knowledge/Notes/`;
-the practice of a responsibility — a study guide for unit 6, a season's
-planting plan — means what it means inside that responsibility and stays in the
-area. `knowledge` gains no `20_Life` location.
+The line between area material and knowledge is *practice versus reference*: reference you would consult from any context belongs in `30_Knowledge/Notes/`; the practice of a responsibility — a study guide for unit 6, a season's planting plan — means what it means inside that responsibility and stays in the area. `knowledge` gains no `20_Life` location.
 
-Software projects related to a Life area still live in `10_Workspaces/` and are
-linked semantically.
+Software projects related to a Life area still live in `10_Workspaces/` and are linked semantically.
 
 ## 8. Knowledge
 
@@ -215,25 +186,13 @@ Sources are primarily provenance, not a permanent folder taxonomy.
 
 ## 9. Entities — retired
 
-**Removed 2026-09-05 by ADR-0032.** `40_Entities/` held one document per
-canonical thing, typed by an `entity_type` field. Measured on 120 records:
-117 of their 118 resolved inbound links came from other entity records and
-exactly one from the rest of the vault, while a single curated `map` in
-`30_Knowledge/Maps/` gave 114 of 118 knowledge notes an inbound edge.
+**Removed 2026-09-05 by ADR-0032.** `40_Entities/` held one document per canonical thing, typed by an `entity_type` field. Measured on 120 records: 117 of their 118 resolved inbound links came from other entity records and exactly one from the rest of the vault, while a single curated `map` in `30_Knowledge/Maps/` gave 114 of 118 knowledge notes an inbound edge.
 
-The three things the root claimed to provide were each already true of any
-document, so what it actually produced was a second place to look and a fight
-over filenames — `30_Knowledge/Notes/docker.md` and a `docker` entity record
-answer to one name, and a bare wikilink then reaches neither.
+The three things the root claimed to provide were each already true of any document, so what it actually produced was a second place to look and a fight over filenames — `30_Knowledge/Notes/docker.md` and a `docker` entity record answer to one name, and a bare wikilink then reaches neither.
 
-Where its contents went: a thing you write *about* is a note in
-`30_Knowledge/Notes/`; a machine or a service belongs to the workspace that
-operates it; and a **person** is `core/02` §21.23's own type, living in
-`20_Life/<Area>/`. The section number is retired rather than reused.
+Where its contents went: a thing you write *about* is a note in `30_Knowledge/Notes/`; a machine or a service belongs to the workspace that operates it; and a **person** is `core/02` §21.23's own type, living in `20_Life/<Area>/`. The section number is retired rather than reused.
 
-**What survives unchanged is the rule this section existed to state**, and it
-now applies to the areas instead: kind is metadata, and no root grows a folder
-per kind of thing.
+**What survives unchanged is the rule this section existed to state**, and it now applies to the areas instead: kind is metadata, and no root grows a folder per kind of thing.
 
 ## 10. System
 
@@ -293,21 +252,13 @@ Never4gA workspace semantic logs live under:
 Logs/<YYYY>/*.md
 ```
 
-with `type: activity_log`. The year directory is created when its first record
-is written; filenames keep a full date prefix, so a record names its own year
-and the path is never the only thing carrying it.
+with `type: activity_log`. The year directory is created when its first record is written; filenames keep a full date prefix, so a record names its own year and the path is never the only thing carrying it.
 
 Do not name an activity record `log.md`.
 
-When a year closes, its records are rolled up: a condensed
-`Logs/<YYYY>_summary.md` stays in the workspace, and the originals move intact
-to `90_Archive/Workspaces/<Name>/Logs/<YYYY>/`. Nothing performs this
-automatically; it is a maintenance operation run on request, and the originals
-are never edited or deleted (section 32 of core/02).
+When a year closes, its records are rolled up: a condensed `Logs/<YYYY>_summary.md` stays in the workspace, and the originals move intact to `90_Archive/Workspaces/<Name>/Logs/<YYYY>/`. Nothing performs this automatically; it is a maintenance operation run on request, and the originals are never edited or deleted (section 32 of core/02).
 
-A workspace's Recent Activity view must therefore bound by date or path rather
-than by `workspace` alone, or a rolled-up year reappears in the dashboard it
-just left.
+A workspace's Recent Activity view must therefore bound by date or path rather than by `workspace` alone, or a rolled-up year reappears in the dashboard it just left.
 
 Added by ADR-0016.
 
