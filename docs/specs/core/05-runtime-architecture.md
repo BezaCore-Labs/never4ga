@@ -605,9 +605,7 @@ ServiceManager
 
 V0.1 may have only one implementation for most ports.
 
-Not every port is defined at once: each arrives with the milestone that first
-requires it. `ServiceManager` belongs with the background service (§10, §11,
-§18) and is therefore defined when that service is implemented, not before.
+Not every port is defined at once: each arrives with the milestone that first requires it. `ServiceManager` belongs with the background service (§10, §11, §18) and is therefore defined when that service is implemented, not before.
 
 The interface exists so later backends do not infect core logic.
 

@@ -57,20 +57,9 @@ Antigravity 2.x and Antigravity IDE are distinct applications, not two names for
 
 Treat each as its own adapter capability profile when implementation requires it.
 
-**`antigravity_ide` is out of scope for v0.1, by the maintainer's ruling of 2026-09-01
-(work item 944).** It is not installed on this machine, so it cannot be
-measured, and `core/04` §9 makes a client path descriptor data measured against
-a real installation rather than a value anybody may reason out. The name stays
-in the list above because the *distinction* is the finding — a matrix that
-silently collapsed three surfaces into two is what this section exists to
-prevent — but nothing ships for it and no descriptor is written. It may be
-added in a later version, and the first step will be installing it.
+**`antigravity_ide` is out of scope for v0.1, by the maintainer's ruling of 2026-09-01 (work item 944).** It is not installed on this machine, so it cannot be measured, and `core/04` §9 makes a client path descriptor data measured against a real installation rather than a value anybody may reason out. The name stays in the list above because the *distinction* is the finding — a matrix that silently collapsed three surfaces into two is what this section exists to prevent — but nothing ships for it and no descriptor is written. It may be added in a later version, and the first step will be installing it.
 
-Do not make any of these a permanent core constant. This document said
-`~/.gemini/antigravity-cli/skills/` until 2026-08-24, when a probe Skill placed
-there was discovered by nothing: the global customization root is
-`~/.gemini/config/`. The warning was right, and the path it warned about was
-already wrong.
+Do not make any of these a permanent core constant. This document said `~/.gemini/antigravity-cli/skills/` until 2026-08-24, when a probe Skill placed there was discovered by nothing: the global customization root is `~/.gemini/config/`. The warning was right, and the path it warned about was already wrong.
 
 ## Measured global instruction paths
 
@@ -92,11 +81,7 @@ A desktop surface ships no scriptable entry point, so its acceptance test can on
 
 Verified 2026-08-24, Milestone 5b. Adapter data, not schema — revalidate.
 
-Method: a probe Skill carrying an unguessable token was deployed one mechanism
-at a time. A no-tools prompt asked each client to *name* any Skill beginning
-`never4ga`, which tests registration; a second prompt asked for the token, which
-tests that the body was actually read. Controls with nothing deployed returned
-none on all three.
+Method: a probe Skill carrying an unguessable token was deployed one mechanism at a time. A no-tools prompt asked each client to *name* any Skill beginning `never4ga`, which tests registration; a second prompt asked for the token, which tests that the body was actually read. Controls with nothing deployed returned none on all three.
 
 | Surface | Global Skill directory | Copy | Symlink | Body read via symlink |
 |---|---|---|---|---|
@@ -106,34 +91,16 @@ none on all three.
 | Antigravity 2.9.1 | not measured | | | |
 | Antigravity IDE | not measured | | | |
 
-The three paths are isolated. With only `$HOME/.agents/skills/` populated, Codex
-found the Skill and the other two reported none; no client reads another's
-directory.
+The three paths are isolated. With only `$HOME/.agents/skills/` populated, Codex found the Skill and the other two reported none; no client reads another's directory.
 
-Antigravity CLI documents its own layout in a bundled `agy-customizations`
-Skill. Its global root is `~/.gemini/config/`; its per-workspace root is
-`.agents/` (also `.agent/`, `_agents/`, `_agent/`), walked from the working
-directory up to the repository root.
+Antigravity CLI documents its own layout in a bundled `agy-customizations` Skill. Its global root is `~/.gemini/config/`; its per-workspace root is `.agents/` (also `.agent/`, `_agents/`, `_agent/`), walked from the working directory up to the repository root.
 
-It also has a third deployment mechanism the other two lack: a `skills.json` of
-the form `{"entries": [{"path": "<dir>"}]}` mounts an arbitrary directory of
-Skills. That is a per-client capability, not a portable one, and belongs in that
-client's descriptor rather than in the engine.
+It also has a third deployment mechanism the other two lack: a `skills.json` of the form `{"entries": [{"path": "<dir>"}]}` mounts an arbitrary directory of Skills. That is a per-client capability, not a portable one, and belongs in that client's descriptor rather than in the engine.
 
 ### Why copy remains the default
 
-Symlinks work on all three, end to end — which `core/04` section 24 permits
-without requiring ("no symlink is required"). Deployment stays **copy** anyway,
-and symlink is an opt-in descriptor capability.
+Symlinks work on all three, end to end — which `core/04` section 24 permits without requiring ("no symlink is required"). Deployment stays **copy** anyway, and symlink is an opt-in descriptor capability.
 
-A symlinked Skill is a client writing into the Git-backed vault. An agent
-editing what it thinks is its own Skill would rewrite the canonical copy for
-every client at once, and a vault on an auto-commit timer would carry it to
-every remote unreviewed. Section 25 rules 4 and 5 — do not destroy an edit
-silently, report drift and require reconciliation — need two copies to compare
-before they mean anything. Symlinks do not make that manifest unnecessary; they
-remove the containment it exists to provide.
+A symlinked Skill is a client writing into the Git-backed vault. An agent editing what it thinks is its own Skill would rewrite the canonical copy for every client at once, and a vault on an auto-commit timer would carry it to every remote unreviewed. Section 25 rules 4 and 5 — do not destroy an edit silently, report drift and require reconciliation — need two copies to compare before they mean anything. Symlinks do not make that manifest unnecessary; they remove the containment it exists to provide.
 
-Copy also has no platform question. Symlinks on Windows need developer mode or
-elevation, and `core/05` section 7's platform abstraction exists so a second
-platform stays possible.
+Copy also has no platform question. Symlinks on Windows need developer mode or elevation, and `core/05` section 7's platform abstraction exists so a second platform stays possible.

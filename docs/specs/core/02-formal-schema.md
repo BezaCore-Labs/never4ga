@@ -156,22 +156,9 @@ Examples may include Agent Skills `SKILL.md` or Obsidian `.base` files.
 
 These MUST be explicitly located in a registered integration/system location or identified by a future foreign-format registry.
 
-A directory `never4ga init` registered as foreign material (ADR-0039,
-`core/01` §1) is such a location, and the record of those directories in
-`50_System/system.md` is that registry's first form. **Amended 2026-10-01
-under ADR-0039:** so is a loose top-level Markdown note `init` registered by
-name in the same record, other than the reserved `index.md`, `home.md` and
-`log.md`. Inside it, a document
-without an `id` — with or without frontmatter of its own — is *untracked*, a
-warning that names `adopt`, and never a `missing_id` error. Its frontmatter is
-the writer's and is preserved untouched.
+A directory `never4ga init` registered as foreign material (ADR-0039, `core/01` §1) is such a location, and the record of those directories in `50_System/system.md` is that registry's first form. **Amended 2026-10-01 under ADR-0039:** so is a loose top-level Markdown note `init` registered by name in the same record, other than the reserved `index.md`, `home.md` and `log.md`. Inside it, a document without an `id` — with or without frontmatter of its own — is *untracked*, a warning that names `adopt`, and never a `missing_id` error. Its frontmatter is the writer's and is preserved untouched.
 
-**Amended 2026-09-21 by ADR-0040.** Adopting such a document keeps what the
-writer wrote. Every key of its own frontmatter whose value the adopted concept
-does not carry unchanged -- a value that does not fit the field, a value
-`--field` replaced, a key Never4gA owns, or a `type` that is not registered --
-is kept verbatim under `extensions.adopted` (§20) and reported, rather than
-refused or discarded. No value is mapped to a registered one.
+**Amended 2026-09-21 by ADR-0040.** Adopting such a document keeps what the writer wrote. Every key of its own frontmatter whose value the adopted concept does not carry unchanged -- a value that does not fit the field, a value `--field` replaced, a key Never4gA owns, or a `type` that is not registered -- is kept verbatim under `extensions.adopted` (§20) and reported, rather than refused or discarded. No value is mapped to a registered one.
 
 Never4gA consumers MUST NOT silently rewrite these files as Never4gA concept documents.
 
@@ -808,8 +795,7 @@ area: 01a04f5f-5581-737b-80b2-16181bec2321
 
 `area` is the stable ID of the life area that owns/scopes the concept.
 
-Required, in place of `workspace`, for a workspace-scoped type placed in a life
-area under ADR-0024 (`core/01` §7):
+Required, in place of `workspace`, for a workspace-scoped type placed in a life area under ADR-0024 (`core/01` §7):
 
 - goal;
 - plan;
@@ -818,18 +804,11 @@ area under ADR-0024 (`core/01` §7):
 - research_note;
 - activity_log.
 
-Requirement follows placement, because scope does: the rule is *name your
-scope*, and the field is decided by where the document sits.
+Requirement follows placement, because scope does: the rule is *name your scope*, and the field is decided by where the document sits.
 
-`area` and `workspace` are mutually exclusive on one document. A concept has one
-scope, and a document carrying both is a contradiction rather than a ranking
-problem.
+`area` and `workspace` are mutually exclusive on one document. A concept has one scope, and a document carrying both is a contradiction rather than a ranking problem.
 
-An area is not a workspace (ADR-0024: it is carried, not pursued), so an `area`
-id MUST NOT be used where a `workspace` id is expected. A *workspace* that lives
-under `20_Life/<Area>/Workspaces/` names its area with `parent`, not `area`:
-§16.3 scopes a document to a responsibility, §16.2 places a workspace in a
-hierarchy.
+An area is not a workspace (ADR-0024: it is carried, not pursued), so an `area` id MUST NOT be used where a `workspace` id is expected. A *workspace* that lives under `20_Life/<Area>/Workspaces/` names its area with `parent`, not `area`: §16.3 scopes a document to a responsibility, §16.2 places a workspace in a hierarchy.
 
 The filesystem path is expected to agree with this field.
 
@@ -903,9 +882,7 @@ Source has been replaced by target.
 
 Source declares the target's work finished.
 
-Written on the record of completion -- an `activity_log` closing a `plan` -- at
-the moment the connection is known, rather than on the plan, which would be
-edited by every report about it.
+Written on the record of completion -- an `activity_log` closing a `plan` -- at the moment the connection is known, rather than on the plan, which would be edited by every report about it.
 
 Example:
 
@@ -916,17 +893,13 @@ relations:
     target: <plan-id>
 ```
 
-A plan that something `closes` whose own `lifecycle` is not terminal is a
-reportable inconsistency (ADR-0022).
+A plan that something `closes` whose own `lifecycle` is not terminal is a reportable inconsistency (ADR-0022).
 
 ### `excepts`
 
 Source overrides target for the scope the source belongs to.
 
-**Added 2026-08-31 by ADR-0029.** Written on a child workspace's own `standard`,
-naming the inherited standard it overrules (`core/03` §32, Q-048). Only an
-explicit exception counts: a child cannot override by silence or by saying
-something different in passing.
+**Added 2026-08-31 by ADR-0029.** Written on a child workspace's own `standard`, naming the inherited standard it overrules (`core/03` §32, Q-048). Only an explicit exception counts: a child cannot override by silence or by saying something different in passing.
 
 The reason is the document body, because that is what a standard is.
 
@@ -939,8 +912,7 @@ relations:
     target: <inherited-standard-id>
 ```
 
-Registering the relation does not enforce it. Nothing yet applies "closest rule
-wins" — the assembler selects standards by metadata filter and carries both.
+Registering the relation does not enforce it. Nothing yet applies "closest rule wins" — the assembler selects standards by metadata filter and carries both.
 
 The reverse edge of registered relations MAY be derived by the index and need not be redundantly stored.
 
@@ -1066,18 +1038,7 @@ Consumers MUST preserve unknown extensions during round-tripping.
 
 The following core types are defined.
 
-**Amended 2026-08-30 by ADR-0024.** Seven types gain a `20_Life/<Area>/`
-location in addition to what their entries below state: `resource`,
-`activity_log`, `plan`, `goal`, `task`, `research_note` and `decision`. An
-`activity_log` in an area carries the area as its scope rather than requiring a
-`workspace`; **the field that carries it is `area` (§16.3), registered
-2026-08-31 by ADR-0028**, which applies to all six of the workspace-scoped types
-above and not to `activity_log` alone. `workspace` additionally accepts `20_Life/<Area>/Workspaces/<Name>/workspace.md`
-with the area as `parent` (`core/03` §30). `knowledge` gains nothing — the
-practice-versus-reference line in `core/01` §7 is the rule. Recorded here as one
-amendment rather than rewritten into seven entries so the change and its source
-stay legible; the registry *implementation* follows through the ordinary gate,
-and until it ships `validate` still reports the pre-ADR-0024 locations.
+**Amended 2026-08-30 by ADR-0024.** Seven types gain a `20_Life/<Area>/` location in addition to what their entries below state: `resource`, `activity_log`, `plan`, `goal`, `task`, `research_note` and `decision`. An `activity_log` in an area carries the area as its scope rather than requiring a `workspace`; **the field that carries it is `area` (§16.3), registered 2026-08-31 by ADR-0028**, which applies to all six of the workspace-scoped types above and not to `activity_log` alone. `workspace` additionally accepts `20_Life/<Area>/Workspaces/<Name>/workspace.md` with the area as `parent` (`core/03` §30). `knowledge` gains nothing — the practice-versus-reference line in `core/01` §7 is the rule. Recorded here as one amendment rather than rewritten into seven entries so the change and its source stay legible; the registry *implementation* follows through the ordinary gate, and until it ships `validate` still reports the pre-ADR-0024 locations.
 
 ---
 
@@ -1131,15 +1092,9 @@ cover: <vault-relative-image-path>
 
 A top-level workspace omits `parent`.
 
-`repositories` (`core/03` §5.5, plural since it was written) and
-`work_management` (`core/03` §16) were registered when the milestones that
-introduced them shipped; they are listed here **as of 2026-08-30**, because this
-block had said `parent` and nothing else while the registry carried all three.
+`repositories` (`core/03` §5.5, plural since it was written) and `work_management` (`core/03` §16) were registered when the milestones that introduced them shipped; they are listed here **as of 2026-08-30**, because this block had said `parent` and nothing else while the registry carried all three.
 
-`cover` names an image the Obsidian card views render for the workspace, and was
-registered 2026-08-30. Never4gA both writes it and reads it, so a warning on it
-was a warning nobody could clear — the failure #94 removed for `index_is_stale`.
-It is registered on `workspace` only.
+`cover` names an image the Obsidian card views render for the workspace, and was registered 2026-08-30. Never4gA both writes it and reads it, so a warning on it was a warning nobody could clear — the failure #94 removed for `index_is_stale`. It is registered on `workspace` only.
 
 Exact workspace types and lifecycle vocabulary are finalized in Phase D.
 
@@ -1228,16 +1183,9 @@ Maps primarily connect concepts through normal Markdown links.
 
 ## 21.6 `entity` — retired
 
-**Retired 2026-09-05 by ADR-0032**, with the `40_Entities/` root it lived in
-(`core/01` §9). An entity record was a knowledge note in a second place: a
-`LINK_RELATION` edge does not read the target's type, `aliases` resolve on any
-document, and `context/structural.py` already grouped `entity` with `knowledge`
-and `resource` as reference material reached by searching. The number is not
-reused.
+**Retired 2026-09-05 by ADR-0032**, with the `40_Entities/` root it lived in (`core/01` §9). An entity record was a knowledge note in a second place: a `LINK_RELATION` edge does not read the target's type, `aliases` resolve on any document, and `context/structural.py` already grouped `entity` with `knowledge` and `resource` as reference material reached by searching. The number is not reused.
 
-`entity_type` is retired with it, and with it the Entity Type Registry that
-§22 used to list. An `entity_type` field surviving on an old document is an
-unknown field, which §17.3 requires be tolerated and preserved.
+`entity_type` is retired with it, and with it the Entity Type Registry that §22 used to list. An `entity_type` field surviving on an old document is an unknown field, which §17.3 requires be tolerated and preserved.
 
 A **person** was the one thing with no other home; it is §21.23.
 
@@ -1328,10 +1276,7 @@ relations:
     target: <goal-id>
 ```
 
-**Amended 2026-10-02 by ADR-0051.** A plan is also a project's roadmap. Work
-done in phases lists them under `## Phases`, one heading per phase, and each
-phase links the walkthrough that records how it was done (§21.27). A large
-project may give a phase a plan of its own; there is no separate roadmap type.
+**Amended 2026-10-02 by ADR-0051.** A plan is also a project's roadmap. Work done in phases lists them under `## Phases`, one heading per phase, and each phase links the walkthrough that records how it was done (§21.27). A large project may give a phase a plan of its own; there is no separate roadmap type.
 
 ---
 
@@ -1420,23 +1365,9 @@ relations:
     target: <new-decision-id>
 ```
 
-**Added 2026-09-27 by ADR-0044.** A decision's number is part of its filename,
-`adr-[<series>-]NNNN_<slug>.md`, and it is scoped to the `Decisions/` folder
-that holds it. Creating a decision in a folder that already numbers its records
-MUST allocate the next number in that folder and series: the highest present
-plus one. The title then begins `ADR-NNNN — `. A title that states a different
-number MUST be refused. A folder with no numbered records stays unnumbered
-unless a number is asked for, and the first is then 0001. A folder carrying
-more than one series requires the series to be named. Gaps are permitted.
-Adoption does not renumber.
+**Added 2026-09-27 by ADR-0044.** A decision's number is part of its filename, `adr-[<series>-]NNNN_<slug>.md`, and it is scoped to the `Decisions/` folder that holds it. Creating a decision in a folder that already numbers its records MUST allocate the next number in that folder and series: the highest present plus one. The title then begins `ADR-NNNN — `. A title that states a different number MUST be refused. A folder with no numbered records stays unnumbered unless a number is asked for, and the first is then 0001. A folder carrying more than one series requires the series to be named. Gaps are permitted. Adoption does not renumber.
 
-**Amended 2026-10-04 (ADR-0044, amendment 1).** A number is never reused. The
-highest present is counted across the folder and its archived counterpart,
-`90_Archive/Workspaces/<same path>/Decisions/`, so a record that was archived
-still holds its number. A decision SHOULD NOT be deleted: one that no longer
-holds stays in place as `rejected` or `superseded`, or is archived. Nothing
-detects the deletion of a folder's highest record, and its number is then
-allocated again.
+**Amended 2026-10-04 (ADR-0044, amendment 1).** A number is never reused. The highest present is counted across the folder and its archived counterpart, `90_Archive/Workspaces/<same path>/Decisions/`, so a record that was archived still holds its number. A decision SHOULD NOT be deleted: one that no longer holds stays in place as `rejected` or `superseded`, or is archived. Nothing detects the deletion of a folder's highest record, and its number is then allocated again.
 
 ---
 
@@ -1484,9 +1415,7 @@ Typical location:
                                     Requirements, Testing, Releases -- ADR-0017)
 ```
 
-Supporting material appears wherever the material it supports does, so a
-`resource` is accepted in any profile extension folder core/03 sections 9 and 10
-define.
+Supporting material appears wherever the material it supports does, so a `resource` is accepted in any profile extension folder core/03 sections 9 and 10 define.
 
 Required when describing an external/binary resource:
 
@@ -1525,8 +1454,7 @@ Optional:
 covers: "<start>/<end>"   # a roll-up's range (ADR-0016); ADR-0043
 ```
 
-A log that carries `covers` is a roll-up, not a session's handoff. It is never
-chosen as a workspace's newest activity log for required reading (ADR-0043).
+A log that carries `covers` is a roll-up, not a session's handoff. It is never chosen as a workspace's newest activity log for required reading (ADR-0043).
 
 This type MUST NOT use reserved filename `log.md`.
 
@@ -1546,10 +1474,7 @@ Location:
 <Workspace>/Testing/        ┘
 ```
 
-A standard in `50_System/Standards/` is vault-wide; one in a workspace's profile
-folder is scoped to that workspace. A palette specification, a bookkeeping
-cadence, a contract workflow, a requirement and a testing strategy all
-prescribe, which is what a standard is; the location says who it binds.
+A standard in `50_System/Standards/` is vault-wide; one in a workspace's profile folder is scoped to that workspace. A palette specification, a bookkeeping cadence, a contract workflow, a requirement and a testing strategy all prescribe, which is what a standard is; the location says who it binds.
 
 Recommended:
 
@@ -1566,11 +1491,7 @@ relations:
 required_reading: false
 ```
 
-`required_reading` is a boolean saying whether every startup the standard
-applies to reads it in full (`core/07` §10, ADR-0050). Without it, a standard
-in `50_System/Standards/` is required reading and a workspace's own standard is
-read on demand: listed with its `description`, and opened when the work
-touches it. Any other value is a validation finding.
+`required_reading` is a boolean saying whether every startup the standard applies to reads it in full (`core/07` §10, ADR-0050). Without it, a standard in `50_System/Standards/` is required reading and a workspace's own standard is read on demand: listed with its `description`, and opened when the work touches it. Any other value is a validation finding.
 
 ---
 
@@ -1632,26 +1553,13 @@ Locations:
 
 Purpose:
 
-Documentation of anything the vault holds — a project, a product, a workspace, a
-life area, or Never4gA itself.
+Documentation of anything the vault holds — a project, a product, a workspace, a life area, or Never4gA itself.
 
-This section read *"Documentation of Never4gA itself"* with
-`50_System/Documentation/` as its only home until 2026-09-11 (ADR-0038). That
-left no registered type for documentation of a project, which is most
-documentation that exists: a workspace wanting a README-equivalent had to borrow
-a type meaning something else — `context` (current-state orientation), `knowledge`
-(reference material in `30_Knowledge/`), or `resource` (supporting material). No
-other type in the registry is confined to one project, and the narrowing bought
-nothing. `50_System/Documentation/` remains where Never4gA documents itself
-because that is where it sits, not because the type forbids anywhere else.
+This section read *"Documentation of Never4gA itself"* with `50_System/Documentation/` as its only home until 2026-09-11 (ADR-0038). That left no registered type for documentation of a project, which is most documentation that exists: a workspace wanting a README-equivalent had to borrow a type meaning something else — `context` (current-state orientation), `knowledge` (reference material in `30_Knowledge/`), or `resource` (supporting material). No other type in the registry is confined to one project, and the narrowing bought nothing. `50_System/Documentation/` remains where Never4gA documents itself because that is where it sits, not because the type forbids anywhere else.
 
-A workspace's `Documentation/` is the default home when a workspace is named.
-`Architecture/` stays accepted for design documents and technical structure
-(`core/03` §10), which is where a product's own specifications already live.
+A workspace's `Documentation/` is the default home when a workspace is named. `Architecture/` stays accepted for design documents and technical structure (`core/03` §10), which is where a product's own specifications already live.
 
-`documentation` requires no scope field, because one of its homes is not in one.
-Creation fills `workspace` in from placement wherever placement implies one, as
-it does for `resource`.
+`documentation` requires no scope field, because one of its homes is not in one. Creation fills `workspace` in from placement wherever placement implies one, as it does for `resource`.
 
 ---
 
@@ -1672,18 +1580,11 @@ workspace   (or `area`, by placement — §21 scope-follows-placement)
 
 Purpose:
 
-How to operate a thing: start it, stop it, recover it, what to do when it
-breaks, the sequence to run.
+How to operate a thing: start it, stop it, recover it, what to do when it breaks, the sequence to run.
 
-Registered 2026-09-11 by ADR-0038. The registry covered design and governance —
-`decision`, `plan`, `context`, `standard`, `requirement` — and reference —
-`knowledge`, `resource` — and had nothing for operational instruction.
+Registered 2026-09-11 by ADR-0038. The registry covered design and governance — `decision`, `plan`, `context`, `standard`, `requirement` — and reference — `knowledge`, `resource` — and had nothing for operational instruction.
 
-It is separate from `documentation` rather than a shape of it because retrieval
-has to tell them apart. When something is broken, *"what do I do when this
-breaks"* is a different need from *"how is this built"*, and a type is how the
-system knows which it is holding. Folding it into `documentation` would rebuild
-the catch-all this type exists to empty.
+It is separate from `documentation` rather than a shape of it because retrieval has to tell them apart. When something is broken, *"what do I do when this breaks"* is a different need from *"how is this built"*, and a type is how the system knows which it is holding. Folding it into `documentation` would rebuild the catch-all this type exists to empty.
 
 A life area may hold one: operating a thing is not only a software concern.
 
@@ -1715,9 +1616,7 @@ Canonical location:
 
 Purpose:
 
-The stable manifest for the vault itself. Its `id` is the vault identity, which
-survives moving or renaming the vault directory (`core/01` section 10,
-`core/05` section 6).
+The stable manifest for the vault itself. Its `id` is the vault identity, which survives moving or renaming the vault directory (`core/01` section 10, `core/05` section 6).
 
 Required beyond base:
 
@@ -1731,8 +1630,7 @@ authority: authoritative
 
 A vault has exactly one `system_manifest`.
 
-Added by ADR-0006, reconciling this registry with `core/05` section 6, which
-defines the type and describes it as "an additive Schema v0.1 type".
+Added by ADR-0006, reconciling this registry with `core/05` section 6, which defines the type and describes it as "an additive Schema v0.1 type".
 
 ---
 
@@ -1745,19 +1643,11 @@ Canonical location:
 50_System/agent-provenance_<name>.md
 ```
 
-The class is in the filename because a Skill and an Agent may legitimately
-share a name, and one record path for both would silently overwrite. The type
-is `skill_provenance` for both: renaming it would be churn for a distinction
-the path already carries.
+The class is in the filename because a Skill and an Agent may legitimately share a name, and one record path for both would silently overwrite. The type is `skill_provenance` for both: renaming it would be churn for a distinction the path already carries.
 
 Purpose:
 
-Where a vendored Skill or Agent came from, and what it contained when it
-arrived. `50_System/Skills/` and `50_System/Agents/` are foreign-format islands
-(section 3.3): nothing in them is validated or indexed, so a record kept beside
-the material would be invisible to `doctor` and to the index, and whole-directory
-deployment would copy vault bookkeeping into every client. The record therefore
-lives outside the island and names its subject by path.
+Where a vendored Skill or Agent came from, and what it contained when it arrived. `50_System/Skills/` and `50_System/Agents/` are foreign-format islands (section 3.3): nothing in them is validated or indexed, so a record kept beside the material would be invisible to `doctor` and to the index, and whole-directory deployment would copy vault bookkeeping into every client. The record therefore lives outside the island and names its subject by path.
 
 Required beyond base:
 
@@ -1771,10 +1661,7 @@ integrity:
   tree_digest: <hex>
 ```
 
-`origin.kind: git` additionally requires `url` and `commit`; `ref` and `subpath`
-are recommended, and `license` and `author` are recommended wherever the
-material carries them, because a licence obligation that is not recorded cannot
-be honoured.
+`origin.kind: git` additionally requires `url` and `commit`; `ref` and `subpath` are recommended, and `license` and `author` are recommended wherever the material carries them, because a licence obligation that is not recorded cannot be honoured.
 
 Recommended:
 
@@ -1790,30 +1677,15 @@ local:
   modified: false
 ```
 
-`tree_digest` is computed over the subject directory by the construction
-Never4gA already uses for the seed hash on its own shipped Skills: for every
-file, sorted by relative path, feed `path`, a unit separator, the file's text,
-and a unit separator into one SHA-256. Deterministic, order-independent, and
-independent of mode and mtime.
+`tree_digest` is computed over the subject directory by the construction Never4gA already uses for the seed hash on its own shipped Skills: for every file, sorted by relative path, feed `path`, a unit separator, the file's text, and a unit separator into one SHA-256. Deterministic, order-independent, and independent of mode and mtime.
 
-Stated as a reuse rather than a definition on purpose. ADR-0027 requires one
-construction serving first-party and vendored material alike; a second digest
-that differed only in its separator would make two records incomparable for no
-gain. `integrity.files` is the separate, additional thing: a per-file SHA-256,
-which turns "something changed" into "this file changed".
+Stated as a reuse rather than a definition on purpose. ADR-0027 requires one construction serving first-party and vendored material alike; a second digest that differed only in its separator would make two records incomparable for no gain. `integrity.files` is the separate, additional thing: a per-file SHA-256, which turns "something changed" into "this file changed".
 
-The three fields answer three different questions and none substitutes for
-another. `origin` says where it came from; `integrity` says what arrived;
-`upstream` says what is there now. Origin without integrity detects nothing —
-the arrangement ADR-0027 examined in prior art and declined. Integrity without
-origin can never answer whether upstream moved.
+The three fields answer three different questions and none substitutes for another. `origin` says where it came from; `integrity` says what arrived; `upstream` says what is there now. Origin without integrity detects nothing — the arrangement ADR-0027 examined in prior art and declined. Integrity without origin can never answer whether upstream moved.
 
-A subject directory with no `skill_provenance` is reported, not repaired: what
-a vendored artifact came from is not derivable from its contents.
+A subject directory with no `skill_provenance` is reported, not repaired: what a vendored artifact came from is not derivable from its contents.
 
-Added by ADR-0027, which extends the two hops ADR-0021 mapped — shipped to
-vault, vault to client — with the third that governs material Never4gA did not
-author.
+Added by ADR-0027, which extends the two hops ADR-0021 mapped — shipped to vault, vault to client — with the third that governs material Never4gA did not author.
 
 ## 21.22 `finding_dismissal`
 
@@ -1827,10 +1699,7 @@ Location:
 
 Purpose:
 
-A person's judgement that a maintenance finding is wrong, or is right and does
-not matter. Canonical in the vault rather than in the ledger: a judgement living
-only in a derived table a rebuild can erase is a fact with no home (Q-051,
-ADR-0023). The ledger caches it.
+A person's judgement that a maintenance finding is wrong, or is right and does not matter. Canonical in the vault rather than in the ledger: a judgement living only in a derived table a rebuild can erase is a fact with no home (Q-051, ADR-0023). The ledger caches it.
 
 Required beyond base:
 
@@ -1846,11 +1715,7 @@ Optional:
 finding_path: <the path the finding named>
 ```
 
-`fingerprint` rather than a path, because the fingerprint is what the ledger
-keys on and what re-detection compares; a dismissal naming only a path would
-silently cover a different finding about the same file. `finding_path` is
-carried beside it as the thing a person reads, and is prefixed because an
-unprefixed `path` in frontmatter reads as the document's own.
+`fingerprint` rather than a path, because the fingerprint is what the ledger keys on and what re-detection compares; a dismissal naming only a path would silently cover a different finding about the same file. `finding_path` is carried beside it as the thing a person reads, and is prefixed because an unprefixed `path` in frontmatter reads as the document's own.
 
 Recommended:
 
@@ -1858,8 +1723,7 @@ Recommended:
 authority: informational
 ```
 
-Registering the type does not enforce it. Nothing yet reads a dismissal into the
-ledger, so a dismissed finding still reports.
+Registering the type does not enforce it. Nothing yet reads a dismissal into the ledger, so a dismissed finding still reports.
 
 ## 21.23 `person`
 
@@ -1873,13 +1737,7 @@ Location:
 
 Purpose:
 
-A person. Registered when `40_Entities/` was dissolved, and the one case that
-survived the argument that dissolved it: the three things an entity record
-claimed to give — graph traversal, `aliases`, and reaching a context pack — are
-each something any document already has, so an entity record was a knowledge
-note in a second place. A person is different only because nobody writes a
-*knowledge note* about a person. `30_Knowledge/` is for subjects; a person is
-not a subject.
+A person. Registered when `40_Entities/` was dissolved, and the one case that survived the argument that dissolved it: the three things an entity record claimed to give — graph traversal, `aliases`, and reaching a context pack — are each something any document already has, so an entity record was a knowledge note in a second place. A person is different only because nobody writes a *knowledge note* about a person. `30_Knowledge/` is for subjects; a person is not a subject.
 
 Required beyond base:
 
@@ -1892,26 +1750,17 @@ aliases: [...]
 authority: informational
 ```
 
-**A life area, and only a life area.** `20_Life/Relationships/` describes itself
-as "a lightweight personal record — not a CRM — for people, family, community
-and social connections", and routes professional relationships to Career and to
-the owning workspace; a person met through a club belongs to the area that club
-is in.
+**A life area, and only a life area.** `20_Life/Relationships/` describes itself as "a lightweight personal record — not a CRM — for people, family, community and social connections", and routes professional relationships to Career and to the owning workspace; a person met through a club belongs to the area that club is in.
 
-**No `workspace` field.** A person is not scoped to a project. Sam Rivera is
-a client's stakeholder, a lead for one product and a member of a local club at
-once, and none of those owns them — the documents that need them link to them.
+**No `workspace` field.** A person is not scoped to a project. Sam Rivera is a client's stakeholder, a lead for one product and a member of a local club at once, and none of those owns them — the documents that need them link to them.
 
-`aliases` carries the second name a person is known by, exactly as it does
-anywhere else: `Coach Sam` and `Sam Rivera` reach one document because the
-document says so.
+`aliases` carries the second name a person is known by, exactly as it does anywhere else: `Coach Sam` and `Sam Rivera` reach one document because the document says so.
 
 ---
 
 ## 21.24 `course_unit`
 
-Registered by ADR-0034 (2026-09-07). A course is a workspace (ADR-0024 part
-2); this is the page a student works a unit from.
+Registered by ADR-0034 (2026-09-07). A course is a workspace (ADR-0024 part 2); this is the page a student works a unit from.
 
 Location:
 
@@ -1945,18 +1794,13 @@ due: "YYYY-MM-DD"
 
 Purpose:
 
-One unit of a course: the reading, the videos, the notes and the questions,
-so what is open and what is due is a query over frontmatter rather than a
-table maintained by hand. `knowledge` is reference material in
-`30_Knowledge/`, `research_note` is research, and `resource` is the material
-that *supports* the work rather than the work itself.
+One unit of a course: the reading, the videos, the notes and the questions, so what is open and what is due is a query over frontmatter rather than a table maintained by hand. `knowledge` is reference material in `30_Knowledge/`, `research_note` is research, and `resource` is the material that *supports* the work rather than the work itself.
 
 ---
 
 ## 21.25 `course_assignment`
 
-Registered by ADR-0036 (2026-09-07), which supersedes the ADR-0034 clause
-that filed this material under `resource`.
+Registered by ADR-0036 (2026-09-07), which supersedes the ADR-0034 clause that filed this material under `resource`.
 
 Location:
 
@@ -1991,11 +1835,7 @@ grade: <what-it-scored>
 
 Purpose:
 
-The graded work a unit carries -- an assignment prompt, a rubric, a
-discussion question -- living beside the unit page it belongs to. It opens,
-is due, is submitted and is graded, none of which `resource` carries. The
-syllabus, companion articles and reading lists stay `resources`: they support
-the work; this *is* the work's record.
+The graded work a unit carries -- an assignment prompt, a rubric, a discussion question -- living beside the unit page it belongs to. It opens, is due, is submitted and is graded, none of which `resource` carries. The syllabus, companion articles and reading lists stay `resources`: they support the work; this *is* the work's record.
 
 ---
 
@@ -2036,21 +1876,11 @@ relations:
 
 Purpose:
 
-How one phase of a plan was actually done, step by step, so the work can be
-recreated or followed. Each step under `## Steps` gives what it changed, the
-files, the exact commands, why, and how it was checked. `## Decided before
-starting` holds the choices the steps assume, and `## What is left` is what
-the next session picks up.
+How one phase of a plan was actually done, step by step, so the work can be recreated or followed. Each step under `## Steps` gives what it changed, the files, the exact commands, why, and how it was checked. `## Decided before starting` holds the choices the steps assume, and `## What is left` is what the next session picks up.
 
-`never4ga walkthrough start <plan> "<phase>"` creates one from its template,
-`in_progress`, linked to the plan. With `--backfill` it records a phase
-already done: `complete`, and saying it was reconstructed after the fact. The
-plan is not edited; the verb prints the link to add under the phase.
+`never4ga walkthrough start <plan> "<phase>"` creates one from its template, `in_progress`, linked to the plan. With `--backfill` it records a phase already done: `complete`, and saying it was reconstructed after the fact. The plan is not edited; the verb prints the link to add under the phase.
 
-It is separate from `runbook` because it records one phase of one plan
-rather than a procedure to repeat, and it has a lifecycle. The startup pack
-names the walkthrough in progress (`core/07` §10), and `wrap` holds a declared
-one to having changed (`core/04` §37).
+It is separate from `runbook` because it records one phase of one plan rather than a procedure to repeat, and it has a lifecycle. The startup pack names the walkthrough in progress (`core/07` §10), and `wrap` holds a declared one to having changed (`core/04` §37).
 
 ---
 
@@ -2064,8 +1894,7 @@ The following registries are required conceptually by v0.1:
 4. Workspace Type Registry
 5. Profile Registry
 
-The Entity Type Registry was the sixth until 2026-09-05, when ADR-0032 retired
-the `entity` type it served.
+The Entity Type Registry was the sixth until 2026-09-05, when ADR-0032 retired the `entity` type it served.
 
 Initial bootstrapping may hard-code the core values defined in this specification.
 
@@ -2415,10 +2244,8 @@ The future runtime SHOULD detect:
 - duplicate Entities by title/alias/resource;
 - relations to deleted concepts;
 - orphan workspace content;
-- a workspace whose required reading is larger than its ceiling (ADR-0043,
-  superseding ADR-0042's per-document item);
-- two decisions in one `Decisions/` folder sharing a series and number
-  (ADR-0044). A gap or an out-of-order number is not a finding.
+- a workspace whose required reading is larger than its ceiling (ADR-0043, superseding ADR-0042's per-document item);
+- two decisions in one `Decisions/` folder sharing a series and number (ADR-0044). A gap or an out-of-order number is not a finding.
 
 Canonical data is never silently discarded merely because maintenance finds a problem.
 

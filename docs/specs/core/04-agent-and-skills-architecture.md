@@ -564,10 +564,7 @@ unresolved:
 
 The final API format is Phase F.
 
-`relevance: required` is implemented by ADR-0043. The workspace, its parents'
-workspace pages, its `Context/` documents and its newest activity log are
-required reading. They are never budgeted away, and each is delivered inline
-or by path.
+`relevance: required` is implemented by ADR-0043. The workspace, its parents' workspace pages, its `Context/` documents and its newest activity log are required reading. They are never budgeted away, and each is delivered inline or by path.
 
 ---
 
@@ -734,20 +731,13 @@ The set, fixed by ADR-0018:
 | `never4ga-checkpoint` | save session state mid-flight |
 | `never4ga-wrap` | close a session: the activity log, then the tracker |
 
-This is the same list section 32 gives, and the two were inconsistent until
-ADR-0018: section 22 omitted decision-recording and health, and section 32 named
-them `never4ga-record-decision` and `never4ga-maintenance`. One list now.
+This is the same list section 32 gives, and the two were inconsistent until ADR-0018: section 22 omitted decision-recording and health, and section 32 named them `never4ga-record-decision` and `never4ga-maintenance`. One list now.
 
-Eight is already stretching "a very small number". A ninth belongs in `global`
-rather than here unless it is genuinely system-critical.
+Eight is already stretching "a very small number". A ninth belongs in `global` rather than here unless it is genuinely system-critical.
 
-`never4ga-wrap` was `never4ga-closeout` until ADR-0018. `closeout` was a
-drafting-stage word and `wrap` is the one in use; the rename was taken before
-Milestone 7 implemented either.
+`never4ga-wrap` was `never4ga-closeout` until ADR-0018. `closeout` was a drafting-stage word and `wrap` is the one in use; the rename was taken before Milestone 7 implemented either.
 
-A Skill name and a CLI verb need not match. `never4ga-startup` calls
-`never4ga context startup`: a Skill is a unit of instruction and a verb a unit
-of behaviour. They must not contradict, which is the weaker and sufficient rule.
+A Skill name and a CLI verb need not match. `never4ga-startup` calls `never4ga context startup`: a Skill is a unit of instruction and a verb a unit of behaviour. They must not contradict, which is the weaker and sufficient rule.
 
 ## `global`
 
@@ -987,8 +977,7 @@ The startup/context system combines them at runtime.
 
 # 32. The Never4gA Core Skills
 
-Fixed by ADR-0018. Section 22 lists the same eight; this section says what each
-is for.
+Fixed by ADR-0018. Section 22 lists the same eight; this section says what each is for.
 
 ## `never4ga-startup`
 
@@ -996,14 +985,11 @@ Resolve the workspace and obtain startup context.
 
 ## `never4ga-context`
 
-Request context for the current task at a stated depth -- `focused`, or `deep`
-when focused was not enough. The Skill instructs escalating progressively rather
-than reaching for `deep` first (section 18).
+Request context for the current task at a stated depth -- `focused`, or `deep` when focused was not enough. The Skill instructs escalating progressively rather than reaching for `deep` first (section 18).
 
 ## `never4ga-capture`
 
-Capture new unprocessed material safely into Inbox. Capture deliberately does
-*not* decide where something belongs; `never4ga-create` does.
+Capture new unprocessed material safely into Inbox. Capture deliberately does *not* decide where something belongs; `never4ga-create` does.
 
 ## `never4ga-create`
 
@@ -1011,16 +997,11 @@ Place a correctly typed concept: its type, folder, domains and frontmatter.
 
 ## `never4ga-doctor`
 
-Run and interpret system health checks. Named for the CLI verb that ADR-0011
-settled as the product's detection surface; it detects and never repairs, which
-is what separates it from the Milestone 10 maintenance work.
+Run and interpret system health checks. Named for the CLI verb that ADR-0011 settled as the product's detection surface; it detects and never repairs, which is what separates it from the Milestone 10 maintenance work.
 
 ## `never4ga-decide`
 
-Create or propose a correctly typed Decision, following the process in the
-implementation repository's `AGENTS.md`: draft as `proposed`, say plainly that it
-is not in effect, stop, and only on an explicit human ruling set it `accepted`
-and edit the specification.
+Create or propose a correctly typed Decision, following the process in the implementation repository's `AGENTS.md`: draft as `proposed`, say plainly that it is not in effect, stop, and only on an explicit human ruling set it `accepted` and edit the specification.
 
 ## `never4ga-checkpoint`
 
@@ -1032,9 +1013,7 @@ Summarize meaningful session outcomes and propose durable memory updates.
 
 These should be small and composable.
 
-Renamed by ADR-0018: `never4ga-closeout` to `never4ga-wrap`,
-`never4ga-record-decision` to `never4ga-decide`, `never4ga-maintenance` to
-`never4ga-doctor`. `never4ga-create` was added.
+Renamed by ADR-0018: `never4ga-closeout` to `never4ga-wrap`, `never4ga-record-decision` to `never4ga-decide`, `never4ga-maintenance` to `never4ga-doctor`. `never4ga-create` was added.
 
 ---
 
@@ -1145,21 +1124,9 @@ What may deserve a Decision record.
 
 What Goals/Plans/Context may need updating.
 
-For Context, ADR-0041 makes this a mechanism, not a reminder. Every wrap lists
-the context documents the session's startup pack carried, as bodies or as
-references, and asks whether the session changed anything they assert. A
-checkpoint may declare a context document the session changed (`--context`). A
-declared document whose body is unchanged since the session was given it is
-reported as `outstanding_context`, beside the outstanding work below. The log
-is still written. Never4gA never edits a context document itself and never
-infers from age which one is wrong.
+For Context, ADR-0041 makes this a mechanism, not a reminder. Every wrap lists the context documents the session's startup pack carried, as bodies or as references, and asks whether the session changed anything they assert. A checkpoint may declare a context document the session changed (`--context`). A declared document whose body is unchanged since the session was given it is reported as `outstanding_context`, beside the outstanding work below. The log is still written. Never4gA never edits a context document itself and never infers from age which one is wrong.
 
-**Amended 2026-10-02 by ADR-0051.** A phase walkthrough (`core/02` §21.27) is
-held the same way. A checkpoint declares the walkthrough it wrote a step into
-(`--walkthrough`). A declared walkthrough whose content did not change is
-reported with the outstanding context documents, and the log lists the steps
-apart, under *Walkthrough steps this session wrote*. Nothing appends a step
-for the session: it writes the step itself.
+**Amended 2026-10-02 by ADR-0051.** A phase walkthrough (`core/02` §21.27) is held the same way. A checkpoint declares the walkthrough it wrote a step into (`--walkthrough`). A declared walkthrough whose content did not change is reported with the outstanding context documents, and the log lists the steps apart, under *Walkthrough steps this session wrote*. Nothing appends a step for the session: it writes the step itself.
 
 ## External work changes
 

@@ -75,14 +75,7 @@ GET  /v1/workspaces/{id}
 GET  /v1/schema/types      (the Type Registry -- 1163)
 ```
 
-The registry is a property of the schema version rather than of a vault: the
-same answer for every vault a build serves, and it needs no session. It
-publishes each type's locations, required fields, lifecycle vocabulary,
-optional fields with their declared kinds, and whether the generic creation
-verb makes one. A surface that has it can offer the types, render the right
-input per optional field and constrain a lifecycle to its legal values —
-which is what body-only templates (ADR-0035 §6) stopped doing when the
-placeholder block went.
+The registry is a property of the schema version rather than of a vault: the same answer for every vault a build serves, and it needs no session. It publishes each type's locations, required fields, lifecycle vocabulary, optional fields with their declared kinds, and whether the generic creation verb makes one. A surface that has it can offer the types, render the right input per optional field and constrain a lifecycle to its legal values — which is what body-only templates (ADR-0035 §6) stopped doing when the placeholder block went.
 
 ## Concepts
 
@@ -118,10 +111,7 @@ POST /v1/capture
 POST /v1/decisions
 ```
 
-The reservation "more generic canonical mutation endpoints may be added after
-safe file-writing behavior is proven" was exercised by ADR-0035 (2026-09-07):
-the two concept writes above wrap the same creation and adoption services the
-CLI calls, and carry no logic of their own.
+The reservation "more generic canonical mutation endpoints may be added after safe file-writing behavior is proven" was exercised by ADR-0035 (2026-09-07): the two concept writes above wrap the same creation and adoption services the CLI calls, and carry no logic of their own.
 
 ## Work management
 

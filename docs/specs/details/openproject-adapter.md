@@ -174,14 +174,7 @@ extensions
 
 Unavailable fields are null/omitted.
 
-**Amended 2026-08-31, work package 941.** `description` was added beside
-`description_excerpt`, which had been the only one. The excerpt is capped at 240
-characters and is what a *list* carries: a search of fifty items must not pull
-fifty full descriptions across the wire to render one line each. `work get`
-fetches one item deliberately, and truncating there defeats the verb — reading
-941 itself, the ticket that filed this, needed the cap raised by hand and a
-cache row deleted. So `get` carries the whole description and `search` carries
-the excerpt, from one normalized item that holds both.
+**Amended 2026-08-31, work package 941.** `description` was added beside `description_excerpt`, which had been the only one. The excerpt is capped at 240 characters and is what a *list* carries: a search of fifty items must not pull fifty full descriptions across the wire to render one line each. `work get` fetches one item deliberately, and truncating there defeats the verb — reading 941 itself, the ticket that filed this, needed the cap raised by hand and a cache row deleted. So `get` carries the whole description and `search` carries the excerpt, from one normalized item that holds both.
 
 ---
 

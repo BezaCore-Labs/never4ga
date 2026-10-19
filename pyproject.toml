@@ -138,6 +138,9 @@ select = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["N801"]  # contract suites are mixin classes, not Test* classes
+# The Markdown these files write is one line per paragraph, so the viewer wraps it.
+"src/never4ga/services/scaffold.py" = ["E501"]
+"scripts/export_specs.py" = ["E501"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
