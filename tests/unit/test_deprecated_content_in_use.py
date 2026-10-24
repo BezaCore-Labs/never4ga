@@ -71,6 +71,15 @@ def write_user(
     )
 
 
+def write_walkthrough(vault: Path, *, lifecycle: str) -> None:
+    (vault / "30_Knowledge" / "Notes" / "the-walkthrough.md").write_text(
+        f"---\ntype: walkthrough\nid: {LIVE_ID}\nschema: never4ga/0.1\n"
+        f'title: The Walkthrough\ncreated_at: "2026-08-02T12:00:00Z"\n'
+        f"lifecycle: {lifecycle}\nrelations:\n  - type: implements\n    target: {OLD_ID}\n"
+        f"---\n\n# The Walkthrough\n"
+    )
+
+
 def findings(vault: Path) -> dict[str, str]:
     diagnosis = Doctor(
         FileSystemVaultFileStore(vault), FileSystemMarkdownStore(vault), now=fixed_clock
@@ -142,6 +151,32 @@ class TestWhatMustNeverTriggerIt:
         write_old(vault, lifecycle="superseded")
         write_user(vault, relation="depends_on", lifecycle="superseded")
         assert "deprecated_content_in_use" not in findings(vault)
+
+    def test_a_completed_walkthrough_of_an_abandoned_plan_does_not(self, vault: Path) -> None:
+        """A finished walkthrough is a record of what was done (`core/02` §21.27).
+
+        Its vocabulary has no retired value, so `complete` is the only way it
+        can say it is history. A plan abandoned after its phases were done
+        leaves its walkthroughs behind as records, not as live use.
+        """
+        write_old(vault, lifecycle="abandoned")
+        write_walkthrough(vault, lifecycle="complete")
+        assert "deprecated_content_in_use" not in findings(vault)
+
+    @pytest.mark.parametrize("lifecycle", ["not_started", "in_progress"])
+    def test_an_unfinished_walkthrough_of_an_abandoned_plan_still_does(
+        self, vault: Path, lifecycle: str
+    ) -> None:
+        """Work still under way on a plan nobody is pursuing is real drift."""
+        write_old(vault, lifecycle="abandoned")
+        write_walkthrough(vault, lifecycle=lifecycle)
+        assert "The Walkthrough" in findings(vault)["deprecated_content_in_use"]
+
+    def test_completed_is_historical_only_for_a_walkthrough(self, vault: Path) -> None:
+        """A note says it is retired with a retired value, not with `complete`."""
+        write_old(vault, lifecycle="abandoned")
+        write_user(vault, relation="depends_on", lifecycle="complete")
+        assert "deprecated_content_in_use" in findings(vault)
 
     def test_a_markdown_link_does_not(self, vault: Path) -> None:
         """Prose cites superseded decisions constantly, to explain history.

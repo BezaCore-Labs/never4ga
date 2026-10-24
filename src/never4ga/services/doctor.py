@@ -885,7 +885,7 @@ class Doctor:
 
         findings: list[Finding] = []
         for document in concepts:
-            if lifecycles.get(str(document.concept_id)) in _RETIRED_LIFECYCLES:
+            if _is_historical(document, lifecycles.get(str(document.concept_id))):
                 # Old material may cite old material; only live use is a problem.
                 continue
             title = document.frontmatter.get("title")
@@ -1800,6 +1800,19 @@ _OPEN_LIFECYCLES: Final = frozenset({"draft", "active", "proposed"})
 _RETIRED_LIFECYCLES: Final = frozenset(
     {"superseded", "abandoned", "cancelled", "rejected", "retired", "deprecated"}
 )
+
+
+def _is_historical(document: StoredDocument, lifecycle: str | None) -> bool:
+    """Whether a document is a record of the past rather than live material.
+
+    A retired lifecycle says so for any type. A walkthrough's vocabulary has no
+    retired value (`core/02` §21.27), and a `complete` one records how a phase
+    was done, so it stays a record when the plan it implements is abandoned.
+    An unfinished walkthrough of such a plan is still live.
+    """
+    if lifecycle in _RETIRED_LIFECYCLES:
+        return True
+    return document.frontmatter.get("type") == "walkthrough" and lifecycle == "complete"
 
 
 def _closes(document: StoredDocument) -> list[ConceptId]:
