@@ -1310,10 +1310,15 @@ Its lines reach the pack as `inbox.scratch` and `inbox.scratch_items`, and they 
 
 ```bash
 never4ga scratch list
-never4ga scratch resolve <n> --into <concept-id>
+never4ga work create "<title>" --field "description=<what happened, briefly>" --session <id> --apply
 never4ga scratch resolve <n> --work <item> --session <id>
+never4ga scratch resolve <n> --into <concept-id>
 never4ga scratch resolve <n> --discard --reason "<why>"
 ```
+
+**A line they have you act on leaves as a work item.** A scratch line is almost always a reminder to do something, and the tracker is where the owner looks for what was asked and what was done. So once they tell you to act on one, file it in the workspace's tracker, do the work, close the item when the work is finished, and clear the line with `--work`. That is bookkeeping, not a decision: do not hold a finished line back to ask whether to mark it done. Do not resolve it `--into` the walkthrough or log where the work happened to be written up either -- those record how the work went, not that it was asked for. A workspace with no tracker has nowhere for the item to go, so ask where the line belongs.
+
+`--into` is for the rarer line that turns out to be a thought to keep rather than something to do, and that is the owner's call, made at the surfacing step like any other placement.
 
 A line leaves under the same accounting a captured file leaves under. It is smaller; it is not more expendable -- and ask before discarding one, for the reason the pile has: you were not there when they wrote it.
 
@@ -1334,7 +1339,7 @@ never4ga workspace resolve --path "$PWD"
 never4ga workspace map <workspace-id> --repo "$PWD"
 ```
 """,
-        version="0.12.0",
+        version="0.13.0",
     ),
     "never4ga-context": _skill(
         "never4ga-context",
