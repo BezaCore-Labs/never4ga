@@ -64,32 +64,67 @@ A pack is built in stages, and each stage is a query: which workspace this repos
 
 ## Quick start
 
+Never4gA is made to be driven by your coding agents. You install it once and connect the agents, and from then on they open each session, look things up and write back what they did, using the Skills Never4gA gives them. You don't run it by hand in day-to-day work.
+
+**1. Install it and make a vault** (a folder of Markdown, new or already full of your notes):
+
 ```bash
 uv tool install never4ga
 export NEVER4GA_VAULT=~/notes
+never4ga init
+never4ga index
 ```
 
 [uv](https://docs.astral.sh/uv/) installs the Python version Never4gA needs if you don't already have it.
 
+**2. Connect your agents** to Claude Code, Codex or Antigravity, whichever you have installed. The Code tab in the Claude desktop app runs Claude Code, so it is connected the same way:
+
 ```bash
-never4ga init                        # a new vault, or around the notes already there
-never4ga index
-never4ga search "what we decided about auth"
+never4ga adapters sync --apply     # the Skills, into each agent
+never4ga adapters mcp --apply      # the MCP server, so agents can call Never4gA directly
 ```
 
-Then connect a project and your agents:
+**3. Attach a project.** Give the repository a workspace in your vault, and tell the agents working there to ask Never4gA for context:
 
 ```bash
 cd ~/code/my-project
 never4ga workspace create "My Project" --type project
 never4ga workspace map <workspace-id>
-never4ga adapters sync --apply --repositories   # skills, and this repository's pointer files
-never4ga adapters mcp --apply                    # the MCP server
+never4ga adapters sync --apply --repositories
 ```
 
-`adapters sync --apply` on its own only updates your agents. `--repositories` also writes a small pointer file into each mapped repository, ignored by Git, so agents working there know to ask Never4gA for context.
+`--repositories` writes a small pointer file into the mapped repository, ignored by Git, that tells an agent to start from Never4gA. Without it, `adapters sync --apply` only updates the agents themselves.
 
-Your next agent session in that repository starts with its context pack.
+**4. Start a session.** Open Claude Code (in a terminal or the Claude desktop app), Codex or Antigravity in that repository and work as usual. The agent runs the `never4ga-startup` Skill first, which hands it the project's context pack: what the project is, the rules it follows, what was decided, and what the last session left open.
+
+### What your agents can do with it
+
+The Skills are what the agents actually use. Each one is a short set of instructions for a single job, so an agent does it the same way every session:
+
+| Skill | The agent uses it to |
+|---|---|
+| `never4ga-startup` | Open a session with the project's context pack. |
+| `never4ga-context` | Look up more on a topic once work is under way. |
+| `never4ga-checkpoint` | Record progress as it happens, so an interrupted session loses nothing. |
+| `never4ga-wrap` | Close a session by writing the dated log the next one starts from. |
+| `never4ga-create` | Write a plan, note or other document into the right place with valid metadata. |
+| `never4ga-decide` | Draft a decision for you to accept. It never accepts one itself. |
+| `never4ga-capture` | Put a loose thought in your Inbox for you to file. |
+| `never4ga-doctor` | Check the vault's health and report what it finds. |
+
+You can ask for any of them in plain words ("check the vault", "write this up as a note") and the agent picks the Skill. The same operations are available to any other MCP client through `never4ga-mcp`.
+
+### Using the command line directly
+
+Everything the agents do is also a `never4ga` command, and the commands are there when you want them: searching your notes, inspecting a pack, or scripting.
+
+```bash
+never4ga search "what we decided about auth"
+never4ga context startup --client claude-code --cwd .
+never4ga doctor
+```
+
+`never4ga --help` lists the rest.
 
 ## What it won't do
 
@@ -102,7 +137,7 @@ Your next agent session in that repository starts with its context pack.
 
 - **Context packs follow repositories.** A workspace is attached to a Git repository, and a pack is built for the repository you're in. Notes that aren't tied to one are fully searchable but don't get a pack yet.
 - **Platforms.** Built and tested on Linux and macOS. On Linux the background service runs under systemd; on macOS, run `never4ga serve` in a terminal instead. Windows is not supported yet.
-- **Four ways in.** The `never4ga` CLI, an MCP server (`never4ga-mcp`), a local HTTP API, and the [Obsidian companion](https://github.com/BezaCore-Labs/never4ga-obsidian). All four run the same code.
+- **Four ways in.** The Skills and MCP server your agents use (`never4ga-mcp`), the `never4ga` command line, a local HTTP API, and the [Obsidian companion](https://github.com/BezaCore-Labs/never4ga-obsidian). All four run the same code.
 
 </details>
 
