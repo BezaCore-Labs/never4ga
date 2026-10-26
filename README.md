@@ -77,7 +77,7 @@ never4ga index
 
 [uv](https://docs.astral.sh/uv/) installs the Python version Never4gA needs if you don't already have it.
 
-**2. Connect your agents** to Claude Code, Codex or Antigravity, whichever you have installed:
+**2. Connect your agents** to Claude Code, Codex or Antigravity, whichever you have installed. The Code tab in the Claude desktop app runs Claude Code, so it is connected the same way:
 
 ```bash
 never4ga adapters sync --apply     # the Skills, into each agent
@@ -95,7 +95,7 @@ never4ga adapters sync --apply --repositories
 
 `--repositories` writes a small pointer file into the mapped repository, ignored by Git, that tells an agent to start from Never4gA. Without it, `adapters sync --apply` only updates the agents themselves.
 
-**4. Start a session.** Open Claude Code, Codex or Antigravity in that repository and work as usual. The agent runs the `never4ga-startup` Skill first, which hands it the project's context pack: what the project is, the rules it follows, what was decided, and what the last session left open.
+**4. Start a session.** Open Claude Code (in a terminal or the Claude desktop app), Codex or Antigravity in that repository and work as usual. The agent runs the `never4ga-startup` Skill first, which hands it the project's context pack: what the project is, the rules it follows, what was decided, and what the last session left open.
 
 ### What your agents can do with it
 
