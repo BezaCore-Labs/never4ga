@@ -267,8 +267,8 @@ class TestADocumentTheSessionWasNotGiven:
     ) -> None:
         # Edit first, declare after: the natural order, and the one a digest
         # taken at declaration time would have flagged.
-        parent = context_document(content, workspace, "Agent Context", root)
-        rewrite_body(documents, parent, "# Agent Context\n\nThe rebrand is not done.\n")
+        parent = context_document(content, workspace, "Rebrand Status", root)
+        rewrite_body(documents, parent, "# Rebrand Status\n\nThe rebrand is not done.\n")
         checkpoint(sessions, session, f"{parent.concept_id}: rebrand status")
 
         assert wrap.wrap(session.id).outstanding_context == ()
@@ -282,7 +282,7 @@ class TestADocumentTheSessionWasNotGiven:
         workspace: ConceptId,
         root: Path,
     ) -> None:
-        parent = context_document(content, workspace, "Agent Context", root)
+        parent = context_document(content, workspace, "Rebrand Status", root)
         checkpoint(sessions, session, f"{parent.concept_id}: rebrand status")
 
         assert wrap.wrap(session.id).outstanding_context == (str(parent.path),)

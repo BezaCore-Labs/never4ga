@@ -34,6 +34,7 @@ from never4ga.indexing.projection import (
     document_names,
     project,
     project_foreign,
+    resolve_link,
     written_title,
 )
 
@@ -51,6 +52,7 @@ __all__ = [
     "document_names",
     "project",
     "project_foreign",
+    "resolve_link",
     "scan_headings",
     "scan_links",
     "scan_sections",

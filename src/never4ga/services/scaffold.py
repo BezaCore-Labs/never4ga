@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from hashlib import sha256
 from typing import Final
 
+from never4ga.layout import AGENT_CONTEXT_NAME, CONTEXT_DIRECTORY
 from never4ga.schema.types import type_spec
 from never4ga.services import dashboard
 from never4ga.services.startup_command import DOCUMENTED_STARTUP_COMMAND
@@ -628,7 +629,11 @@ _SHAPES: Final[dict[str, _Shape]] = {
                 "`never4ga workspace mappings` for where each sits on this machine. "
                 "Work management: see `work_management`, when declared.",
             ),
-            ("Key Links", "- [Context](Context/)\n- [Logs](Logs/)"),
+            # The AI Context is a file every created workspace has, so the link
+            # resolves from the start. A folder link would not: `Logs/` exists
+            # only after the first wrap, and the Recent Activity view already
+            # lists the logs.
+            ("Key Links", f"- [AI Context]({CONTEXT_DIRECTORY}/{AGENT_CONTEXT_NAME})"),
         ),
         embeds={
             # Under Current State: the block sits
@@ -645,6 +650,46 @@ _SHAPES: Final[dict[str, _Shape]] = {
         ),
     ),
 }
+
+
+#: The title every AI Context carries (core/03 section 5.1).
+AGENT_CONTEXT_TITLE: Final = "AI Context"
+
+#: core/03 section 5.1: what an agent needs before working in a workspace. A
+#: `context` document with its own body rather than a type of its own: it is
+#: required reading like every other document in `Context/`, and what sets it
+#: apart is where it lives, which a path states and a type would only repeat.
+#: The sections are the ones the AI Contexts already written by hand share.
+_AGENT_CONTEXT: Final = _Shape(
+    (
+        ("In one paragraph", "What this workspace is, to an agent arriving with no history."),
+        (
+            "Where authority lives",
+            "Which document, system or file answers each kind of question here.",
+        ),
+        (
+            "Repositories and locations",
+            "What lives where. Resolve a repository with `never4ga workspace mappings` "
+            "rather than writing its path here.",
+        ),
+        (
+            "What an agent may change here",
+            "What is safe to change, and what is the owner's call.",
+        ),
+        ("Checks", "How a change here is verified before it is called done."),
+        ("Traps", "What has cost time here before, so nobody pays for it twice."),
+        (
+            "Conventions",
+            "The rules that bind work in this workspace, one line each. A rule for "
+            "every workspace belongs in a vault standard instead.",
+        ),
+    )
+)
+
+
+def agent_context_body() -> str:
+    """The body `workspace create` writes to `Context/agent-context.md`."""
+    return _AGENT_CONTEXT.body(AGENT_CONTEXT_TITLE)
 
 
 def _template_filename(type_name: str) -> str:
@@ -1452,12 +1497,13 @@ never4ga validate            # frontmatter only, per document
 
 - **index_is_stale** -- the derived index is behind the Markdown. Run `never4ga index`. Harmless; the vault is canonical either way.
 - **duplicate_id** -- two documents claim one identity. This is the serious one: fix it before anything else, because identity is what everything else points at.
-- **broken_link** -- a link resolves to nothing. Check for a rename before assuming the target is missing.
+- **broken_link** -- a link resolves to nothing, or points at a folder that does not exist. Check for a rename before assuming the target is missing.
+- **agent_context_missing** -- a live workspace has no AI Context at `Context/agent-context.md`, so its lasting rules have nowhere startup reads them. Writing one is the owner's content; say so rather than inventing it.
 - **a validation error** -- the document does not meet Schema v0.1. `never4ga validate <path>` says exactly which field.
 
 Report what you found. Do not repair a finding you were not asked to repair, and never "fix" a document by deleting the part that failed.
 """,
-        version="0.2.0",
+        version="0.3.0",
     ),
     "never4ga-decide": _skill(
         "never4ga-decide",
@@ -1650,10 +1696,14 @@ never4ga checkpoint --session <id> --walkthrough "<id or path>: step N" "..."
 
 `wrap` holds a declared walkthrough exactly as it holds a declared context document, and the log lists the steps apart, under *Walkthrough steps this session wrote*. When the phase's done-when is met, set its `lifecycle` to `complete`.
 
+## Nothing durable stays in your own memory
+
+If your client keeps a memory of its own -- a directory of notes it writes between sessions -- anything durable you saved there this session goes into the vault as well. A rule about this workspace goes in its AI Context, `Context/agent-context.md`. A rule for every workspace goes in a standard. A client's memory is read by that client alone, and no startup delivers it, so a rule kept only there binds one tool and is lost to the rest (`core/03` §5.1).
+
 ## Before you finish
 
 Say what you left undone. A handoff that omits the unfinished part is worse than no handoff, and `wrap` cannot know what it is -- the log records what you told it happened, not what did not.
 """,
-        version="0.9.0",
+        version="0.10.0",
     ),
 }

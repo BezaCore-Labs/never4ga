@@ -57,8 +57,11 @@ from never4ga.domain.relations import CLOSES, NON_CORROBORATING, SUPERSEDED_BY
 from never4ga.domain.scope import WorkspaceMapping
 from never4ga.domain.vendoring import Drift
 from never4ga.errors import IdentityError
+from never4ga.indexing import resolve_link, scan_links
 from never4ga.layout import (
+    AGENT_CONTEXT_NAME,
     CHILD_WORKSPACE_DIRECTORY,
+    CONTEXT_DIRECTORY,
     HOME,
     INBOX_SCRATCHPAD_NAME,
     KNOWLEDGE_DIRECTORIES,
@@ -235,11 +238,13 @@ class Doctor:
         findings.extend(self._check_untracked(foreign))
         findings.extend(self._check_schema(concepts))
         findings.extend(self._check_index(concepts))
+        findings.extend(self._check_folder_links(concepts))
         findings.extend(self._check_connections(concepts))
         findings.extend(self._check_skills())
         findings.extend(self._check_closed_plans(concepts))
         findings.extend(self._check_staleness(concepts))
         findings.extend(self._check_required_reading(concepts))
+        findings.extend(self._check_agent_context(concepts))
         findings.extend(self._check_workspace_manifests())
         findings.extend(self._check_supersession(concepts))
         findings.extend(self._check_decision_numbers(concepts))
@@ -555,6 +560,77 @@ class Doctor:
                     ),
                 )
             )
+        return findings
+
+    def _check_agent_context(self, concepts: Sequence[StoredDocument]) -> list[Finding]:
+        """A live workspace with no AI Context (core/02 section 32).
+
+        core/03 section 5.1: a workspace's lasting rules live in
+        `Context/agent-context.md`, which startup delivers as required reading.
+        A workspace without one leaves those rules wherever a session happened
+        to put them, where no startup finds them. A WARNING: the vault is no
+        less correct for it, and what the document says is a person's to write.
+
+        A workspace that is finished, or archived, is not asked for one.
+        The file is looked for on disk rather than among the concepts, so an
+        AI Context written by hand and not yet adopted counts: that case is
+        `untracked_document`'s to report.
+        """
+        findings: list[Finding] = []
+        for page in concepts:
+            if page.frontmatter.get("type") != "workspace":
+                continue
+            if page.path.root == VaultRoot.ARCHIVE:
+                continue
+            if page.frontmatter.get("lifecycle") in _FINISHED_WORKSPACE_LIFECYCLES:
+                continue
+            expected = VaultPath((*page.path.segments[:-1], CONTEXT_DIRECTORY, AGENT_CONTEXT_NAME))
+            if self._files.exists(expected):
+                continue
+            findings.append(
+                Finding(
+                    code="agent_context_missing",
+                    message=(
+                        f"{_title_of(page)!r} has no AI Context at {expected} (core/03 section 5.1)"
+                    ),
+                    severity=Severity.WARNING,
+                    path=page.path,
+                    repair_hint=(
+                        f"write {CONTEXT_DIRECTORY}/{AGENT_CONTEXT_NAME} beside it: what an "
+                        "agent needs before working here, then `never4ga adopt` it"
+                    ),
+                    document_id=page.concept_id,
+                )
+            )
+        return findings
+
+    def _check_folder_links(self, concepts: Sequence[StoredDocument]) -> list[Finding]:
+        """A relative link to a folder that does not exist (core/02 section 32).
+
+        The index resolves a link to a concept's identity, and a folder has
+        none, so folder links never reach `broken_link` through it. This asks
+        the filesystem instead, and reports under the same code: to a reader a
+        link that goes nowhere is the same defect whatever it pointed at. It
+        needs no index, so it runs whether or not one exists.
+        """
+        findings: list[Finding] = []
+        for concept in concepts:
+            for link in scan_links(concept.body):
+                if link.is_external or link.is_wikilink or not link.target.endswith("/"):
+                    continue
+                target = resolve_link(concept.path, link.target)
+                if target is None or self._files.is_directory(target):
+                    continue
+                findings.append(
+                    Finding(
+                        "broken_link",
+                        f"{target}/ does not exist",
+                        Severity.WARNING,
+                        concept.path,
+                        "fix the link, or create the folder it points at",
+                        concept.concept_id,
+                    )
+                )
         return findings
 
     def _check_workspace_manifests(self) -> list[Finding]:
@@ -1800,6 +1876,11 @@ _OPEN_LIFECYCLES: Final = frozenset({"draft", "active", "proposed"})
 _RETIRED_LIFECYCLES: Final = frozenset(
     {"superseded", "abandoned", "cancelled", "rejected", "retired", "deprecated"}
 )
+
+
+#: The workspace lifecycles that mean its work is over (core/03 section 5.1),
+#: so `doctor` does not ask it for an AI Context.
+_FINISHED_WORKSPACE_LIFECYCLES: Final = frozenset({"completed", "cancelled", "retired"})
 
 
 def _is_historical(document: StoredDocument, lifecycle: str | None) -> bool:

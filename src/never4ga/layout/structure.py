@@ -117,10 +117,18 @@ CHILD_WORKSPACE_DIRECTORY: Final = "Workspaces"
 #: closed year's roll-up directly in `Logs/`.
 LOGS_DIRECTORY: Final = "Logs"
 
+#: A workspace's durable orientation (core/03 section 5.1).
+CONTEXT_DIRECTORY: Final = "Context"
+
+#: The AI Context every live workspace carries in `Context/` (core/03 section
+#: 5.1): what an agent needs before working there. Creating a workspace writes
+#: it, and `doctor` reports a live workspace without one.
+AGENT_CONTEXT_NAME: Final = "agent-context.md"
+
 #: core/01 section 6 and core/03 section 2. Only those actually needed exist on
 #: disk; a workspace is not required to carry the whole set.
 WORKSPACE_BASE_DIRECTORIES: Final = (
-    "Context",
+    CONTEXT_DIRECTORY,
     "Goals",
     "Plans",
     "Tasks",

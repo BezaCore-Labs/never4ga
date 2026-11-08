@@ -2246,6 +2246,8 @@ The future runtime SHOULD detect:
 - orphan workspace content;
 - a workspace whose required reading is larger than its ceiling (ADR-0043, superseding ADR-0042's per-document item);
 - two decisions in one `Decisions/` folder sharing a series and number (ADR-0044). A gap or an out-of-order number is not a finding.
+- a live workspace with no AI Context at `Context/agent-context.md` (core/03 section 5.1);
+- a relative link to a folder that does not exist, reported as a broken link like a link to a missing document.
 
 Canonical data is never silently discarded merely because maintenance finds a problem.
 

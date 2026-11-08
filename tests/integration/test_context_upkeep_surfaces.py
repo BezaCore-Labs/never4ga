@@ -88,7 +88,8 @@ class TestStartupRecordsWhatItCarried:
         _, wrapped = run("wrap", "--session", session)
 
         titles = [given["title"] for given in wrapped["context_given"]]
-        assert titles == ["History", "Project State"]
+        # Every workspace starts with its AI Context (core/03 section 2).
+        assert titles == ["AI Context", "History", "Project State"]
         assert wrapped["context_question"] == "Did this session change anything these assert?"
 
 
@@ -172,6 +173,7 @@ class TestTheToolboxDoesTheSame:
 
         assert wrapped["outstanding_context"] == [workspace.state["path"]]
         assert [given["title"] for given in wrapped["context_given"]] == [
+            "AI Context",
             "History",
             "Project State",
         ]

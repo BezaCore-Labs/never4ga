@@ -24,8 +24,10 @@ from never4ga.domain.identity import ConceptId
 from never4ga.errors import Never4gaError, VaultIntegrityError
 from never4ga.indexing import written_title
 from never4ga.layout import (
+    AGENT_CONTEXT_NAME,
     AREA_MANIFEST,
     CHILD_WORKSPACE_DIRECTORY,
+    CONTEXT_DIRECTORY,
     DOMAIN_REGISTRY,
     RESERVED_INDEX,
     RESERVED_LOG,
@@ -396,6 +398,11 @@ class ContentService:
         carries (core/03 section 8); naming the base again is harmless.
         ``repositories`` are names, not paths -- where a repository sits on a
         machine is the mapping registry's business, not the vault's.
+
+        The workspace starts with its AI Context, `Context/agent-context.md`
+        (core/03 sections 2 and 5.1), so it is in the convention from its
+        first startup and `doctor` has nothing to report about it. Both
+        documents are validated before either is written.
         """
         directory = self._workspace_directory(title, parent)
         manifest_path = _child(directory, WORKSPACE_MANIFEST)
@@ -417,12 +424,36 @@ class ContentService:
         )
         self._validate(document)
 
+        context_directory = _child(directory, CONTEXT_DIRECTORY)
+        context = build_concept(
+            concept_type="context",
+            title=scaffold.AGENT_CONTEXT_TITLE,
+            path=_child(context_directory, AGENT_CONTEXT_NAME),
+            actor=self._actor,
+            now=self._now,
+            description=(
+                f"What an agent needs before working in {title}: where authority "
+                "lives, what it may change, and the traps."
+            ),
+            body=scaffold.agent_context_body(),
+            workspace=str(document.concept_id),
+        )
+        self._validate(context)
+
         self._files.ensure_directory(directory)
         index_path = _child(directory, RESERVED_INDEX)
         self._files.write_text(index_path, scaffold.WORKSPACE_INDEX.format(title=title))
         self._documents.put(document)
-        self.refresh_generated(document.path)
-        return Created(document, directories=(directory,), files=(index_path,))
+        self._files.ensure_directory(context_directory)
+        self._documents.put(context)
+        # From the AI Context, the lineage is `Context/`, the workspace and
+        # everything above it, so one refresh covers both new directories.
+        self.refresh_generated(context.path)
+        return Created(
+            document,
+            directories=(directory, context_directory),
+            files=(index_path, context.path),
+        )
 
     def refresh_generated(self, document: VaultPath) -> None:
         """Fill in the generated block on the indexes a written document sits under.
