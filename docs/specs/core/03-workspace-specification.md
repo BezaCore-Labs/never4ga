@@ -67,6 +67,8 @@ A workspace directory is:
 
 Only `workspace.md` and `index.md` are required to exist immediately.
 
+Creating a workspace also writes `Context/agent-context.md`, its AI Context (section 5.1). A live workspace without one is reported (core/02 section 32).
+
 Other directories are created on first use.
 
 ---
@@ -168,6 +170,14 @@ Examples:
 Rule:
 
 > Context explains the workspace; it does not replace Goals, Plans, Decisions, Research, or Logs.
+
+### The AI Context
+
+Every live workspace carries one context document at `Context/agent-context.md`, titled *AI Context*. It is what an agent needs before working there: what the workspace is, where authority lives, what an agent may change, how a change is checked, the traps, and the conventions that bind work in it. It is required reading at startup with the rest of `Context/` (core/07 section 10).
+
+A workspace's lasting rules belong in its AI Context. Rules that bind every workspace belong in a vault standard. Neither is kept only in a client's own memory, or in a repository file startup does not load, because no other client reads those and no startup delivers them.
+
+A workspace is live unless its lifecycle is `completed`, `cancelled` or `retired`, or it is archived.
 
 Recommended type:
 

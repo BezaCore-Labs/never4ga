@@ -141,7 +141,11 @@ class TestOneRunIsEnough:
         self, run: Run, vault: Path, repository: Path, context_path: Path
     ) -> None:
         out = startup(run, repository, "--max-characters", "1")
-        (line,) = [line for line in out.splitlines() if line.startswith("  context ")]
+        (line,) = [
+            line
+            for line in out.splitlines()
+            if line.startswith("  context ") and str(context_path) in line
+        ]
         assert f"read in full: {context_path}" in line
         assert MARKER not in out
 

@@ -99,7 +99,9 @@ class TestEverySurfaceFlagsIt:
     def test_the_human_summary_marks_it(self, run: Run, repository: Path, mapped: None) -> None:
         _, out = run("context", "startup", "--path", str(repository), as_json=False)
         # The index line, not the body printed below it, which repeats the title.
-        (line,) = [line for line in out.splitlines() if line.startswith("  context ")]
+        (line,) = [
+            line for line in out.splitlines() if line.startswith("  context ") and TITLE in line
+        ]
         assert TITLE in line
         assert "stale since 2020-01-01" in line
 

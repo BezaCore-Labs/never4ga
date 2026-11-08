@@ -43,10 +43,13 @@ class TestViewsFollowContent:
     def test_a_fresh_workspace_has_the_block_and_no_views(
         self, content: ContentService, root: Path
     ) -> None:
+        # A new workspace holds one document besides its page, its AI Context
+        # (core/03 section 2), so the Context view is the only one it has.
         content.create_workspace("Example", workspace_type="project")
         text = manifest_text(root, "10_Workspaces/Example")
         assert dashboard.BEGIN in text
-        assert "```base" not in text
+        assert text.count("```base") == 1
+        assert "## Context" in text
 
     def test_the_first_goal_makes_the_goals_view_appear(
         self, content: ContentService, root: Path

@@ -497,11 +497,15 @@ class TestWorkspaceCreation:
         self, content: ContentService, root: Path
     ) -> None:
         # core/03 section 29: "MUST NOT create a giant tree of empty folders".
+        # `Context/` is the one directory a new workspace has, and it is not
+        # empty: it holds the AI Context (core/03 section 2).
         content.create_workspace("BezaCore", workspace_type="organization")
         directory = root / "10_Workspaces" / "BezaCore"
-        assert [p.name for p in directory.iterdir()] == ["index.md", "workspace.md"] or sorted(
-            p.name for p in directory.iterdir()
-        ) == ["index.md", "workspace.md"]
+        assert sorted(p.name for p in directory.iterdir()) == [
+            "Context",
+            "index.md",
+            "workspace.md",
+        ]
 
     def test_the_manifest_is_a_concept_and_the_index_is_not(
         self, content: ContentService, initialized: FileSystemMarkdownStore, root: Path

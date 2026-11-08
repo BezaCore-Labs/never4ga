@@ -37,6 +37,7 @@ __all__ = [
     "project",
     "project_foreign",
     "record_names",
+    "resolve_link",
     "written_title",
 ]
 
@@ -324,6 +325,17 @@ def _links(document: StoredDocument, issues: list[ProjectionIssue]) -> list[Docu
             )
         )
     return links
+
+
+def resolve_link(source: VaultPath, target: str) -> VaultPath | None:
+    """Where a relative Markdown link written in ``source`` points.
+
+    ``None`` when it climbs out of the vault, which the projection reports as
+    `link_escapes_vault`. A folder link resolves to the folder's path, which
+    `doctor` checks on disk because a folder is never a concept with an
+    identity to resolve to.
+    """
+    return _resolve(source, target, [])
 
 
 def _resolve(source: VaultPath, target: str, issues: list[ProjectionIssue]) -> VaultPath | None:

@@ -9,9 +9,11 @@ services that create vault content agree on one set of rules.
 from __future__ import annotations
 
 from never4ga.layout.structure import (
+    AGENT_CONTEXT_NAME,
     ARCHIVE_SECTIONS,
     AREA_MANIFEST,
     CHILD_WORKSPACE_DIRECTORY,
+    CONTEXT_DIRECTORY,
     DOMAIN_REGISTRY,
     FOREIGN_FORMAT_DIRECTORIES,
     FOREIGN_MATERIAL_FIELD,
@@ -45,9 +47,11 @@ from never4ga.layout.structure import (
 )
 
 __all__ = [
+    "AGENT_CONTEXT_NAME",
     "ARCHIVE_SECTIONS",
     "AREA_MANIFEST",
     "CHILD_WORKSPACE_DIRECTORY",
+    "CONTEXT_DIRECTORY",
     "DOMAIN_REGISTRY",
     "FOREIGN_FORMAT_DIRECTORIES",
     "FOREIGN_MATERIAL_FIELD",

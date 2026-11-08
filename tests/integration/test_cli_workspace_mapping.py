@@ -351,7 +351,10 @@ class TestContextVerbs:
         result = run(
             "context", "startup", "--path", str(repository), "--max-items", "1", as_json=True
         )
-        assert len(result.json["items"]) == 1
+        # Required reading is never cut (core/07 section 10): the workspace
+        # page and its AI Context both arrive, and the budget adds nothing
+        # beyond them.
+        assert [item["required"] for item in result.json["items"]] == [True, True]
 
     def test_no_llm_stage_runs(self, run: Run, workspace: str, repository: Path) -> None:
         run("workspace", "map", workspace, "--repo", str(repository))
