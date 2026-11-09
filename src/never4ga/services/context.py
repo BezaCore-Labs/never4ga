@@ -93,8 +93,25 @@ class ContextService:
         # than in the assembler keeps the assemblers deterministic and puts the
         # one place that knows "this is a startup" in charge of it.
         if request.depth is ContextDepth.STARTUP:
-            pack = replace(pack, session=self._open_session(request, resolution, pack))
+            discarded = self._discard_abandoned()
+            pack = replace(
+                pack,
+                session=self._open_session(request, resolution, pack),
+                sessions_discarded=discarded,
+            )
         return pack, resolution
+
+    def _discard_abandoned(self) -> int:
+        """Clear the empty sessions earlier startups left, before opening one.
+
+        Every startup opens a session whether or not it goes on to work, and
+        `wrap` refuses one with nothing in it, so without this they pile up
+        until they crowd the pack's list of recent sessions. Only sessions with
+        nothing recorded are removed, so nothing of value goes with them.
+        """
+        if self._sessions is None:
+            return 0
+        return len(SessionService(self._sessions, now=self._now).discard_abandoned())
 
     def _open_session(
         self, request: ContextRequest, resolution: ScopeResolution, pack: ContextPack

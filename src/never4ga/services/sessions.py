@@ -13,6 +13,8 @@ something.
 from __future__ import annotations
 
 from collections.abc import Sequence
+from datetime import timedelta
+from typing import Final
 
 from never4ga.domain.document import StoredDocument
 from never4ga.domain.identity import ConceptId, SessionId
@@ -20,7 +22,12 @@ from never4ga.domain.sessions import Checkpoint, GivenContext, Session, WorkActi
 from never4ga.ports.session_store import SessionStore
 from never4ga.services.authoring import Clock, utc_now
 
-__all__ = ["SessionService"]
+__all__ = ["ABANDONED_AFTER", "SessionService"]
+
+#: How long an empty session is left before a startup discards it. Long enough
+#: that a client which started a moment ago and has not checkpointed yet is
+#: never caught; short enough that a day of stray startups is gone by the next.
+ABANDONED_AFTER: Final = timedelta(days=1)
 
 
 class SessionService:
@@ -41,6 +48,14 @@ class SessionService:
         )
         self._store.open(session)
         return session
+
+    def discard_abandoned(self) -> tuple[SessionId, ...]:
+        """Remove the sessions earlier startups opened and nothing used.
+
+        Empty, unwrapped and not seen for :data:`ABANDONED_AFTER`. The cutoff
+        is taken from this service's clock, like every other instant here.
+        """
+        return tuple(self._store.discard_abandoned(before=self._now() - ABANDONED_AFTER))
 
     def checkpoint(
         self,

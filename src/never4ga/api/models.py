@@ -735,6 +735,8 @@ class ContextPackResponse(_Model):
     #: The session a startup opened. Absent on focused and deep retrieval,
     #: which happen inside a session rather than beginning one.
     session_id: str | None = None
+    #: Empty sessions earlier startups left, which this startup discarded.
+    sessions_discarded: int = 0
 
     @classmethod
     def of(cls, depth: str, pack: ContextPack, resolution: ScopeResolution) -> ContextPackResponse:
@@ -749,4 +751,5 @@ class ContextPackResponse(_Model):
             client=pack.client,
             task_given=pack.task_given,
             session_id=None if pack.session is None else str(pack.session),
+            sessions_discarded=pack.sessions_discarded,
         )

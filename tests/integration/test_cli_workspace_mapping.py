@@ -417,6 +417,81 @@ class TestStartupMintsASession:
         assert payload["session_id"] is None
 
 
+class TestStartupDiscardsAbandonedSessions:
+    """A startup removes the sessions earlier startups opened and nothing used.
+
+    Every startup opens a session whether or not it goes on to do anything,
+    and `wrap` refuses one with nothing in it. Left alone they pile up and
+    crowd the startup pack's list of recent sessions, so each startup clears
+    those last seen more than a day ago, and says how many it removed.
+    """
+
+    def _startup(self, run: Run, repository: Path) -> dict[str, object]:
+        payload = run("context", "startup", "--path", str(repository), as_json=True).json
+        assert isinstance(payload, dict)
+        return payload
+
+    def _age(self, run: Run, session: str, *, days: int) -> None:
+        import sqlite3
+        from datetime import UTC, datetime, timedelta
+
+        from never4ga.domain.identity import ConceptId
+        from never4ga.platform_paths import PlatformPaths
+
+        vault_id = ConceptId.parse(run("status", as_json=True).json["vault_id"])
+        then = (datetime.now(UTC) - timedelta(days=days)).isoformat()
+        connection = sqlite3.connect(PlatformPaths.resolve().sessions_database(vault_id))
+        try:
+            with connection:
+                connection.execute(
+                    "UPDATE sessions SET started_at = ?, last_seen_at = ? WHERE id = ?",
+                    (then, then, session),
+                )
+        finally:
+            connection.close()
+
+    def test_an_empty_session_from_days_ago_is_discarded(
+        self, run: Run, workspace: str, repository: Path
+    ) -> None:
+        run("workspace", "map", workspace, "--repo", str(repository))
+        run("index")
+        abandoned = str(self._startup(run, repository)["session_id"])
+        self._age(run, abandoned, days=2)
+        payload = self._startup(run, repository)
+        assert payload["sessions_discarded"] == 1
+        result = run("checkpoint", "too late", "--session", abandoned)
+        assert "never opened" in result.out + result.err
+
+    def test_a_session_from_a_moment_ago_is_kept(
+        self, run: Run, workspace: str, repository: Path
+    ) -> None:
+        # Another client may have just started and not yet checkpointed.
+        run("workspace", "map", workspace, "--repo", str(repository))
+        run("index")
+        recent = str(self._startup(run, repository)["session_id"])
+        assert self._startup(run, repository)["sessions_discarded"] == 0
+        assert run("checkpoint", "still here", "--session", recent).code == EXIT_OK
+
+    def test_an_old_session_with_a_checkpoint_is_kept(
+        self, run: Run, workspace: str, repository: Path
+    ) -> None:
+        run("workspace", "map", workspace, "--repo", str(repository))
+        run("index")
+        working = str(self._startup(run, repository)["session_id"])
+        run("checkpoint", "did a thing", "--session", working)
+        self._age(run, working, days=10)
+        assert self._startup(run, repository)["sessions_discarded"] == 0
+
+    def test_the_human_output_says_what_it_discarded(
+        self, run: Run, workspace: str, repository: Path
+    ) -> None:
+        run("workspace", "map", workspace, "--repo", str(repository))
+        run("index")
+        self._age(run, str(self._startup(run, repository)["session_id"]), days=2)
+        out = run("context", "startup", "--path", str(repository)).out
+        assert "discarded 1 empty session" in out
+
+
 class TestCheckpoint:
     """`never4ga checkpoint`.
 

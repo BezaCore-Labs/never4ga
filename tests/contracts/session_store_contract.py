@@ -14,7 +14,13 @@ import pytest
 
 from never4ga.domain.document import VaultPath
 from never4ga.domain.identity import ConceptId, SessionId
-from never4ga.domain.sessions import Checkpoint, GivenContext, Session, SessionStateError
+from never4ga.domain.sessions import (
+    Checkpoint,
+    GivenContext,
+    Session,
+    SessionStateError,
+    WorkAction,
+)
 from never4ga.errors import Never4gaError
 from never4ga.ports.session_store import SessionStore
 
@@ -323,3 +329,64 @@ class SessionStoreContract:
 
     def test_an_unknown_session_was_given_nothing(self, store: SessionStore) -> None:
         assert tuple(store.given_context(SessionId.new())) == ()
+
+    # -- discarding what was abandoned ------------------------------------
+
+    def test_an_empty_session_last_seen_before_the_cutoff_is_discarded(
+        self, store: SessionStore
+    ) -> None:
+        # Opened by a startup and never used: no checkpoint, no tracker write,
+        # no wrap. Nothing it could tell a later reader exists to be lost.
+        session = make_session()
+        store.open(session)
+        assert tuple(store.discard_abandoned(before=START + timedelta(days=1))) == (session.id,)
+        assert store.get(session.id) is None
+
+    def test_an_empty_session_seen_since_the_cutoff_is_kept(self, store: SessionStore) -> None:
+        # A session opened a moment ago is empty too, and may be about to work.
+        session = make_session(started_at=START + timedelta(days=2))
+        store.open(session)
+        assert tuple(store.discard_abandoned(before=START + timedelta(days=1))) == ()
+        assert store.get(session.id) is not None
+
+    def test_a_session_with_a_checkpoint_is_never_discarded(self, store: SessionStore) -> None:
+        # Its checkpoints are a record of work that exists nowhere else.
+        session = make_session()
+        store.open(session)
+        store.append(make_checkpoint(session))
+        assert tuple(store.discard_abandoned(before=START + timedelta(days=30))) == ()
+        assert store.get(session.id) is not None
+
+    def test_a_session_that_wrote_to_a_tracker_is_never_discarded(
+        self, store: SessionStore
+    ) -> None:
+        session = make_session()
+        store.open(session)
+        store.record_work_action(
+            WorkAction(session=session.id, recorded_at=START, item="982", verb="comment")
+        )
+        assert tuple(store.discard_abandoned(before=START + timedelta(days=30))) == ()
+        assert store.get(session.id) is not None
+
+    def test_a_wrapped_session_is_never_discarded(self, store: SessionStore) -> None:
+        session = make_session()
+        store.open(session)
+        store.mark_wrapped(session.id, ConceptId.new())
+        assert tuple(store.discard_abandoned(before=START + timedelta(days=30))) == ()
+        assert store.get(session.id) is not None
+
+    def test_what_a_discarded_session_was_given_goes_with_it(self, store: SessionStore) -> None:
+        # What startup handed it is only ever asked about by its own wrap.
+        session = make_session()
+        store.open(session)
+        store.record_given_context((make_given(session),))
+        store.discard_abandoned(before=START + timedelta(days=1))
+        assert tuple(store.given_context(session.id)) == ()
+
+    def test_discarding_leaves_every_other_session_alone(self, store: SessionStore) -> None:
+        empty, working = make_session(), make_session()
+        store.open(empty)
+        store.open(working)
+        store.append(make_checkpoint(working))
+        assert tuple(store.discard_abandoned(before=START + timedelta(days=1))) == (empty.id,)
+        assert len(store.checkpoints(working.id)) == 1

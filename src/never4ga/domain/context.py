@@ -301,6 +301,11 @@ class ContextPack:
     #: retrieval many times within it, so minting on every retrieval would make
     #: each one look like a new session.
     session: SessionId | None = None
+    #: How many abandoned sessions this startup discarded before opening its
+    #: own: opened by an earlier startup, never checkpointed, written through
+    #: or wrapped, and not seen for a day. Said so that removing them is never
+    #: silent. Always zero outside a startup.
+    sessions_discarded: int = 0
 
     @property
     def used_llm(self) -> bool:
