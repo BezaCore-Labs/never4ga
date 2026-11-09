@@ -35,6 +35,7 @@ from never4ga.adapters.openproject.api import API_ROOT
 from never4ga.adapters.openproject.provider import OpenProjectProvider
 from never4ga.adapters.openproject.write import (
     LINKED_FIELDS,
+    cleared,
     divergences,
     unknown_field_names,
     write_payload,
@@ -187,6 +188,7 @@ class OpenProjectWriter(OpenProjectProvider):
         is the moment a person is shown what would happen, and a draft of
         something that cannot succeed is worse than no draft.
         """
+        fields = cleared(fields)
         payload = self._item(ref, WorkManagementCapability.UPDATE_WORK_ITEM)
         lock_version = int(payload["lockVersion"])
         body = self._body(fields, lock_version=lock_version)
@@ -212,6 +214,7 @@ class OpenProjectWriter(OpenProjectProvider):
         answers 409. There is no version to be stale about yet. An omitted
         ``type`` is defaulted by the instance rather than refused.
         """
+        fields = cleared(fields)
         reference = project or self._project_ref or ""
         self._may_create_in(reference)
         body = self._body(fields, lock_version=None)

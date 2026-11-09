@@ -87,6 +87,14 @@ class TestPayload:
         body = write_payload({"parent": ""}, lock_version=1, links={})
         assert body["_links"]["parent"] == {"href": None}
 
+    def test_an_empty_date_clears_it(self) -> None:
+        # `--field due_date=` is the only way the CLI can say "no date", and
+        # OpenProject refuses an empty string where it expects a date. Null is
+        # how its API spells an unset one.
+        body = write_payload({"due_date": "", "start_date": None}, lock_version=1)
+        assert body["dueDate"] is None
+        assert body["startDate"] is None
+
     def test_clearing_a_link_is_satisfied_by_its_absence(self) -> None:
         # A detach asks for {"href": None}. The provider answers by not
         # carrying the link at all, which is success. Reading it as "not
@@ -196,6 +204,15 @@ class TestDivergences:
     def test_an_absent_link_is_a_divergence(self) -> None:
         sent = {"_links": {"status": {"href": STATUS_HREF}}}
         assert divergences(sent, {"_links": {}}) != ()
+
+    def test_a_cleared_date_is_satisfied_by_null_or_absence(self) -> None:
+        # Asking for no date is answered either by a null or by leaving the
+        # key out, and both mean it took.
+        assert divergences({"dueDate": None}, {"dueDate": None}) == ()
+        assert divergences({"dueDate": None}, {}) == ()
+
+    def test_a_date_that_would_not_clear_is_still_reported(self) -> None:
+        assert divergences({"dueDate": None}, {"dueDate": "2026-09-23"})
 
     def test_the_unknown_field_hazard_is_caught(self) -> None:
         # The whole reason this function exists. A PATCH carrying a name the
