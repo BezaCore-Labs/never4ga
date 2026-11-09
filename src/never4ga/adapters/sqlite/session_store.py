@@ -234,6 +234,31 @@ class SQLiteSessionStore:
             if not updated and self.get(session) is None:
                 raise SessionStateError(f"session {session} was never opened")
 
+    def discard_abandoned(self, *, before: datetime) -> Sequence[SessionId]:
+        with _store_failures("discard abandoned sessions"), self._connection:
+            # One transaction: a checkpoint that lands between choosing a
+            # session and deleting it would otherwise be deleted with it.
+            rows = self._connection.execute(
+                """
+                SELECT id FROM sessions
+                WHERE wrapped_log IS NULL
+                  AND last_seen_at < ?
+                  AND NOT EXISTS (SELECT 1 FROM checkpoints WHERE session = sessions.id)
+                  AND NOT EXISTS (SELECT 1 FROM work_actions WHERE session = sessions.id)
+                ORDER BY started_at, id
+                """,
+                (before.isoformat(),),
+            ).fetchall()
+            abandoned = tuple(SessionId.parse(row[0]) for row in rows)
+            for session in abandoned:
+                # Named rather than left to the cascade, so the rule does not
+                # depend on a connection having foreign keys switched on.
+                self._connection.execute(
+                    "DELETE FROM given_context WHERE session = ?", (str(session),)
+                )
+                self._connection.execute("DELETE FROM sessions WHERE id = ?", (str(session),))
+            return abandoned
+
     def checkpoints(self, session: SessionId) -> Sequence[Checkpoint]:
         with _store_failures("read a session's checkpoints"):
             rows = self._connection.execute(

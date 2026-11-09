@@ -86,6 +86,22 @@ class InMemorySessionStore:
         if existing.wrapped_log is None:
             self._sessions[session] = replace(existing, wrapped_log=log)
 
+    def discard_abandoned(self, *, before: datetime) -> Sequence[SessionId]:
+        abandoned = tuple(
+            session.id
+            for session in self._sessions.values()
+            if session.wrapped_log is None
+            and session.last_seen_at < before
+            and not self._checkpoints[session.id]
+            and not self._work_actions[session.id]
+        )
+        for session in abandoned:
+            del self._sessions[session]
+            del self._checkpoints[session]
+            del self._work_actions[session]
+            del self._given[session]
+        return abandoned
+
     def checkpoints(self, session: SessionId) -> Sequence[Checkpoint]:
         # Stable sort, so equal instants keep the order they arrived in.
         return tuple(sorted(self._checkpoints.get(session, ()), key=lambda c: c.recorded_at))

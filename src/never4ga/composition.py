@@ -252,6 +252,12 @@ class FileSessionStore:
         with self._open() as store:
             store.mark_wrapped(session, log)
 
+    def discard_abandoned(self, *, before: datetime) -> Sequence[SessionId]:
+        if not self._database.exists():
+            return ()
+        with self._open() as store:
+            return store.discard_abandoned(before=before)
+
     def checkpoints(self, session: SessionId) -> Sequence[Checkpoint]:
         if not self._database.exists():
             return ()

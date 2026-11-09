@@ -1596,6 +1596,12 @@ def _context_summary(payload: dict[str, Any]) -> str:
     session = payload.get("session_id")
     if session:
         lines.append(f"  session: {session}")
+    # Removing sessions is never silent. `.get` because an older service
+    # answers without the field.
+    discarded = payload.get("sessions_discarded") or 0
+    if discarded:
+        plural = "" if discarded == 1 else "s"
+        lines.append(f"  discarded {discarded} empty session{plural} earlier startups left unused")
     lines.extend(_required_reading_lines(payload))
     for item in payload["items"]:
         lines.append(

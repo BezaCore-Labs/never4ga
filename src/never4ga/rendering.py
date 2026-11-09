@@ -189,6 +189,7 @@ def scope_pack(depth: str, pack: ContextPack, resolution: ScopeResolution) -> di
         # session, the same way `client` is always present. An absent key and
         # a null key are different shapes, and the API sends null.
         "session_id": None if pack.session is None else str(pack.session),
+        "sessions_discarded": pack.sessions_discarded,
     }
 
 

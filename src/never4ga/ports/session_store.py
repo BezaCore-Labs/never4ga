@@ -109,6 +109,19 @@ class SessionStore(Protocol):
         """
         ...
 
+    def discard_abandoned(self, *, before: datetime) -> Sequence[SessionId]:
+        """Remove every session a startup opened and nothing ever used.
+
+        A session is abandoned when it has no checkpoint, no tracker write and
+        no wrap, and was last seen before ``before``. Such a session carries no
+        record of work, so removing it loses nothing; leaving it lets empty
+        sessions pile up until they crowd out the ones a startup pack should
+        show. What startup gave it goes with it. A session with anything
+        recorded is never touched. Answers the ids removed, so the caller can
+        say what it did.
+        """
+        ...
+
     def checkpoints(self, session: SessionId) -> Sequence[Checkpoint]:
         """Every checkpoint of one session, oldest first.
 
