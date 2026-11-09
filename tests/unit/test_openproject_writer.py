@@ -317,6 +317,12 @@ class TestProposing:
         # spell, and nothing else it could mean is ambiguous with detaching.
         assert writer().propose_update(REF, {"parent": ""}).lock_version == 1
 
+    def test_an_empty_date_is_proposed_as_clearing_it(self) -> None:
+        # The proposal shows what would be sent, so it carries the null the
+        # body will, not the empty string the CLI had to spell it with.
+        proposal = writer().propose_update(REF, {"due_date": ""})
+        assert proposal.fields["due_date"] is None
+
     def test_an_unreadable_form_does_not_block_a_write(self) -> None:
         # The form makes a failure legible early; the response comparison is
         # the check that cannot be skipped. Losing the first must not cost the

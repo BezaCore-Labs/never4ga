@@ -30,8 +30,10 @@ from typing import Any, Final
 from never4ga.errors import WriteRejectedError
 
 __all__ = [
+    "CLEARABLE_FIELDS",
     "LINKED_FIELDS",
     "WRITABLE_FIELDS",
+    "cleared",
     "divergences",
     "unknown_field_names",
     "write_payload",
@@ -46,6 +48,11 @@ PLAIN_FIELDS: Final[Mapping[str, str]] = {
     "due_date": "dueDate",
     "percent_complete": "percentageDone",
 }
+
+#: Plain fields whose empty value means "unset" and travels as null. An empty
+#: string is all `--field due_date=` can spell, and OpenProject refuses one
+#: where it expects a date.
+CLEARABLE_FIELDS: Final = frozenset({"start_date", "due_date"})
 
 #: Fields that travel as a formattable object rather than a string.
 FORMATTABLE_FIELDS: Final = frozenset({"description"})
@@ -80,6 +87,18 @@ _NOT_A_FIELD: Final[Mapping[str, str]] = {
 #: Sent on every write and expected to come back changed, so comparing it would
 #: report a divergence on every successful write.
 _NOT_COMPARED: Final = frozenset({"lockVersion"})
+
+
+def cleared(fields: Mapping[str, Any]) -> dict[str, Any]:
+    """``fields`` with an empty value of a clearable field made ``None``.
+
+    Applied before a change is proposed, so the proposal shows and compares
+    the null that will be sent rather than the empty string that asked for it.
+    """
+    return {
+        name: None if name in CLEARABLE_FIELDS and _is_detach(value) else value
+        for name, value in fields.items()
+    }
 
 
 def _is_detach(value: Any) -> bool:
@@ -127,7 +146,8 @@ def write_payload(
         elif name in FORMATTABLE_FIELDS:
             body[name] = {"raw": value}
         elif name in PLAIN_FIELDS:
-            body[PLAIN_FIELDS[name]] = value
+            empty = name in CLEARABLE_FIELDS and _is_detach(value)
+            body[PLAIN_FIELDS[name]] = None if empty else value
         else:
             raise WriteRejectedError(
                 f"cannot write {name!r}: this adapter writes {', '.join(sorted(WRITABLE_FIELDS))}"
@@ -170,6 +190,9 @@ def divergences(sent: Mapping[str, Any], answered: Mapping[str, Any]) -> tuple[s
             found.extend(_link_divergences(value, answered.get("_links", {})))
             continue
         if key not in answered:
+            if value is None:
+                # Asking for no value is answered by leaving the key out.
+                continue
             found.append(
                 f"{key}: asked for {value!r}, and the provider's answer does not mention it"
             )

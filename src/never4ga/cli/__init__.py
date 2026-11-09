@@ -4155,7 +4155,10 @@ def _add_work_commands(commands: Any) -> None:
         action="append",
         default=[],
         metavar="NAME=VALUE",
-        help="a field to change, e.g. status=Closed; repeatable",
+        help=(
+            "a field to change, e.g. status=Closed; repeatable; an empty value, "
+            "as in due_date= or parent=, clears it"
+        ),
     )
     _common(update)
     update.set_defaults(handler=_work_update)
