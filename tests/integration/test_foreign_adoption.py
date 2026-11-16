@@ -207,7 +207,7 @@ class TestTheDestination:
             content.adopt_concept(
                 path(RAISED_BEDS), in_directory=path(f"{WORKSPACE_DIRECTORY}/Units")
             )
-        assert refused.value.candidates == ("course_assignment", "course_unit")
+        assert refused.value.candidates == ("course_assignment", "course_unit", "resource")
 
     def test_a_named_folder_the_type_does_not_belong_in_is_refused(
         self, content: ContentService, root: Path
