@@ -248,7 +248,7 @@ class TestNamingTheFolder:
     ) -> None:
         """core/02 spells `resource` "Typical location": a mismatch is advice.
 
-        `validate` honors that: a resource moved into `Units/` by hand is a
+        `validate` honors that: a resource moved into `Research/` by hand is a
         `misplaced_document` *warning* at strict. Refusing the same placement
         at creation would make the verb stricter than the validator, and the
         workaround (create in `Resources/`, then move the file) produces
@@ -256,20 +256,20 @@ class TestNamingTheFolder:
         """
         created = content.create_concept(
             "resource",
-            "Unit 3 Rubric",
+            "Interview Transcript",
             workspace=workspace,
-            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Units/Unit-3"),
+            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Research"),
         )
-        assert str(created.path) == f"{WORKSPACE_DIRECTORY}/Units/Unit-3/unit-3-rubric.md"
+        assert str(created.path) == f"{WORKSPACE_DIRECTORY}/Research/interview-transcript.md"
 
     def test_the_advice_names_the_typical_home(
         self, content: ContentService, workspace: ConceptId
     ) -> None:
         created = content.create_concept(
             "resource",
-            "Unit 3 Rubric",
+            "Interview Transcript",
             workspace=workspace,
-            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Units/Unit-3"),
+            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Research"),
         )
         assert "typically belongs" in created.placement_reason
         assert "Resources" in created.placement_reason
@@ -285,14 +285,27 @@ class TestNamingTheFolder:
         )
         assert "typically belongs" not in created.placement_reason
 
+    def test_a_course_units_folder_is_listed_for_a_resource(
+        self, content: ContentService, workspace: ConceptId
+    ) -> None:
+        """core/02 section 21.13: a unit's supporting material sits beside it."""
+        created = content.create_concept(
+            "resource",
+            "Unit 3 Notes",
+            workspace=workspace,
+            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Units/Unit-3"),
+        )
+        assert str(created.path) == f"{WORKSPACE_DIRECTORY}/Units/Unit-3/unit-3-notes.md"
+        assert "typically belongs" not in created.placement_reason
+
     def test_an_advisory_placement_still_validates(
         self, content: ContentService, workspace: ConceptId
     ) -> None:
         created = content.create_concept(
             "resource",
-            "Unit 3 Rubric",
+            "Interview Transcript",
             workspace=workspace,
-            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Units/Unit-3"),
+            in_directory=VaultPath.parse(f"{WORKSPACE_DIRECTORY}/Research"),
         )
         report = validate_document(
             created.path, created.document.frontmatter, level=ValidationLevel.STRICT
@@ -306,9 +319,9 @@ class TestNamingTheFolder:
         with pytest.raises(ConceptCreationError, match="workspace"):
             content.create_concept(
                 "resource",
-                "Unit 3 Rubric",
+                "Interview Transcript",
                 workspace=workspace,
-                in_directory=VaultPath.parse("10_Workspaces/Harborview/Units/Unit-3"),
+                in_directory=VaultPath.parse("10_Workspaces/Harborview/Research"),
             )
 
 

@@ -1413,9 +1413,10 @@ Typical location:
 <Workspace>/Resources/
 <Workspace>/<profile extension>/   (Strategy, Finance, Operations, Brand,
                                     Requirements, Testing, Releases -- ADR-0017)
+<Workspace>/Units/                 (a course unit's own material, section 21.24)
 ```
 
-Supporting material appears wherever the material it supports does, so a `resource` is accepted in any profile extension folder core/03 sections 9 and 10 define.
+Supporting material appears wherever the material it supports does, so a `resource` is accepted in any profile extension folder core/03 sections 9 and 10 define, and in a course's `Units/`, where material that supports one unit, such as a page of notes, sits beside that unit's `course_unit` page.
 
 Required when describing an external/binary resource:
 

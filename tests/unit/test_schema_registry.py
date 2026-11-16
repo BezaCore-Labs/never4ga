@@ -182,6 +182,25 @@ class TestALifeAreaHoldsItsOwnDocuments:
         assert not spec.accepts(p("20_Life/Education/Workspaces/MATH-101/Research/g.md"))
 
 
+class TestAResourceCanSupportACourseUnit:
+    """core/02 section 21.13: supporting material sits where what it supports
+    does, and a course unit's own material, such as a page of notes, sits
+    beside the unit's page in `Units/`.
+    """
+
+    def test_it_is_accepted_under_units_at_any_depth(self) -> None:
+        spec = type_spec("resource")
+        assert spec is not None
+        course = "20_Life/Education/Workspaces/CS-202"
+        assert spec.accepts(p(f"{course}/Units/unit-3_notes.md"))
+        assert spec.accepts(p(f"{course}/Units/Unit-3/unit-3_notes.md"))
+
+    def test_a_course_unit_still_does_not_belong_in_resources(self) -> None:
+        spec = type_spec("course_unit")
+        assert spec is not None
+        assert not spec.accepts(p("20_Life/Education/Workspaces/CS-202/Resources/unit-3.md"))
+
+
 class TestACourseAssignmentIsItsOwnType:
     """core/02 section 21.25, beside `course_unit` in section 21.24.
 

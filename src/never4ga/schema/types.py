@@ -345,12 +345,14 @@ _SPECS: Final = (
     # 21.13 -- supporting material record. "Typical location", so advisory,
     # but advisory still means a warning everywhere it is not listed, and
     # supporting material appears wherever the material it supports does. So it
-    # is accepted in every profile section too.
+    # is accepted in every profile section too, and in a course's Units/, where
+    # material that supports one unit sits beside that unit's page.
     TypeSpec(
         name="resource",
         locations=(
             _section("Resources"),
             *(_section(name) for name in _PROFILE_SECTIONS),
+            _section("Units"),
             _IN_AN_AREA,
         ),
         location_is_binding=False,
