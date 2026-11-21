@@ -464,6 +464,42 @@ _SPECS: Final = (
         # the plan is a relation, `implements`, not a field.
         extra_fields=("phase",),
     ),
+    # 21.28 -- one physical device a person owns or looks after.
+    #
+    # A life area, and only a life area, as `person`: a device is not scoped
+    # to a project, and hardware a workspace owns is that workspace's own
+    # documentation. A device that is gone keeps its record with its
+    # lifecycle changed, so its serial number and purchase survive.
+    #
+    # The inventory fields are registered, and flat, because a record is
+    # mostly those fields: unregistered, each would warn on every device, and
+    # frontmatter editors and table views read top-level properties only.
+    TypeSpec(
+        name="device",
+        locations=(_IN_AN_AREA,),
+        required_fields=("lifecycle",),
+        lifecycle_values=("in_use", "stored", "sold", "disposed"),
+        extra_fields=(
+            "device_kind",
+            "make",
+            "model",
+            "serial_number",
+            "location",
+            "owner",
+            "purchased_on",
+            "purchased_from",
+            "price",
+            "order_number",
+            "warranty_ends",
+            "warranty_provider",
+            "mac_wifi",
+            "mac_ethernet",
+            "ip_reserved",
+            "vlan",
+            "network_name",
+            "manual",
+        ),
+    ),
     # 21.19 -- integration description/configuration.
     TypeSpec(
         name="integration",

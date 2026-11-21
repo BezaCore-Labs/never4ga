@@ -1885,6 +1885,67 @@ It is separate from `runbook` because it records one phase of one plan rather th
 
 ---
 
+## 21.28 `device`
+
+Registered 2026-11-21 by ADR-0052.
+
+Location:
+
+```text
+20_Life/<Area>/      (any depth -- 20_Life/Household/Devices/ is home)
+```
+
+Required:
+
+```yaml
+lifecycle: <device-lifecycle>
+```
+
+Initial vocabulary:
+
+```text
+in_use
+stored
+sold
+disposed
+```
+
+Optional, all flat:
+
+```yaml
+area: <life-area-id>
+device_kind: tv | console | phone | tablet | laptop | desktop | smart-home | printer | audio | wearable | other
+make: <manufacturer>
+model: <model number>
+serial_number: <serial>
+location: <where it is>
+owner: <whose it is>
+purchased_on: "YYYY-MM-DD"
+purchased_from: <seller>
+price: <what it cost>
+order_number: <order or receipt number>
+warranty_ends: "YYYY-MM-DD"
+warranty_provider: <who honours the warranty>
+mac_wifi: <wireless MAC address>
+mac_ethernet: <wired MAC address>
+ip_reserved: <reserved address>
+vlan: <network segment>
+network_name: <the name the network knows it by>
+manual: <a link, or a vault path to the manual>
+```
+
+Purpose:
+
+One physical device a person owns or looks after -- a TV, a console, a phone, a printer -- with what it is, where it came from, its warranty and its place on the network, so a serial number or a warranty date is found by looking, and a table over the devices can sort and filter on them. The fields are flat because frontmatter editors and table views read top-level properties.
+
+**A life area, and only a life area**, as `person` (§21.23). A device is not scoped to a project, and hardware a workspace owns -- a homelab's servers -- is that workspace's documentation. **No `workspace` field.**
+
+A device that is gone keeps its record, its lifecycle changed to `sold` or `disposed`, so its serial number and purchase details survive.
+
+`network_name` is the name of the client in the network's own controller or DHCP server. Where an address plan elsewhere in the vault carries the device's reservation, that plan stays authoritative for the network and the device record links to it.
+
+---
+
 # 22. Controlled Registries
 
 The following registries are required conceptually by v0.1:
