@@ -11,6 +11,7 @@ from never4ga.adapters.fakes import (
     FakeWorkManagementProvider,
     FakeWorkManagementWriter,
     InMemorySecretStore,
+    InMemoryTrackerCache,
 )
 from never4ga.adapters.null import NullExternalMemoryProvider, NullTemporalGraphProvider
 from never4ga.domain.identity import ConceptId, ExternalId
@@ -19,15 +20,19 @@ from never4ga.ports.memory_augmentor import MemoryAugmentor
 from never4ga.ports.secret_store import SecretStore
 from never4ga.ports.temporal_graph import TemporalGraphProvider
 from never4ga.ports.work_management import (
+    ProposedMutation,
+    WorkCommentReader,
     WorkItem,
     WorkManagementProvider,
     WorkManagementWriter,
 )
+from never4ga.services.trackers import CachingWorkManagementProvider
 from tests.contracts.memory_contract import (
     MemoryAugmentorContract,
     TemporalGraphProviderContract,
 )
 from tests.contracts.secret_store_contract import SecretStoreContract
+from tests.contracts.work_comment_reader_contract import WorkCommentReaderContract
 from tests.contracts.work_management_contract import (
     UnavailableWorkManagementProviderContract,
     WorkManagementProviderContract,
@@ -60,6 +65,43 @@ class TestFakeWorkManagementWriter(WorkManagementWriterContract):
     @pytest.fixture
     def project(self) -> str:
         return "never4ga"
+
+
+def commented_writer() -> FakeWorkManagementWriter:
+    """A fake that carries two comments on one item, written through its own port."""
+    writer = FakeWorkManagementWriter([WORK_ITEM])
+    for body in ("Started on the parser.", "Decided: one pass, no lookahead."):
+        writer.apply(ProposedMutation.comment(WORK_ITEM.ref, body))
+    return writer
+
+
+class TestFakeCommentReader(WorkCommentReaderContract):
+    @pytest.fixture
+    def reader(self) -> WorkCommentReader:
+        return commented_writer()
+
+    @pytest.fixture
+    def commented(self, reader: WorkCommentReader) -> tuple[ExternalId, str]:
+        return WORK_ITEM.ref, "Decided: one pass, no lookahead."
+
+    def test_a_plain_reader_is_not_a_comment_reader(self) -> None:
+        # The split is real only if something reads items and not comments,
+        # and is not made to implement them to satisfy structural typing.
+        assert not isinstance(FakeWorkManagementProvider([WORK_ITEM]), WorkCommentReader)
+
+
+class TestCachedCommentReader(WorkCommentReaderContract):
+    """The read-through cache passes comments through, and holds none of them."""
+
+    @pytest.fixture
+    def reader(self) -> WorkCommentReader:
+        return CachingWorkManagementProvider(
+            commented_writer(), cache=InMemoryTrackerCache(), connection="fake"
+        )
+
+    @pytest.fixture
+    def commented(self, reader: WorkCommentReader) -> tuple[ExternalId, str]:
+        return WORK_ITEM.ref, "Decided: one pass, no lookahead."
 
 
 class TestFakeReadOnlyWriter(RefusingWorkManagementWriterContract):

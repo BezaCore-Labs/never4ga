@@ -1,0 +1,192 @@
+{
+  "_type": "Collection",
+  "total": 3,
+  "count": 3,
+  "_embedded": {
+    "elements": [
+      {
+        "_type": "Activity",
+        "id": 1813,
+        "comment": {
+          "format": "markdown",
+          "raw": "",
+          "html": ""
+        },
+        "details": [
+          {
+            "format": "custom",
+            "raw": "Type set to Task",
+            "html": "<strong>Type</strong> set to <i>Task</i>"
+          },
+          {
+            "format": "custom",
+            "raw": "Project set to Never4gA",
+            "html": "<strong>Project</strong> set to <i>Never4gA</i>"
+          },
+          {
+            "format": "custom",
+            "raw": "Subject set to Milestone 6 — OpenProject Read Integration",
+            "html": "<strong>Subject</strong> set to <i>Milestone 6 — OpenProject Read Integration</i>"
+          },
+          {
+            "format": "custom",
+            "raw": "Description set (/journals/1813/diff/description)",
+            "html": "<strong>Description</strong> set (<a target=\"_top\" class=\"diff-details\" href=\"/journals/1813/diff/description?activity_page=work_packages%2F838\">Details</a>)"
+          },
+          {
+            "format": "custom",
+            "raw": "Status set to New",
+            "html": "<strong>Status</strong> set to <i>New</i>"
+          },
+          {
+            "format": "custom",
+            "raw": "Priority set to Normal",
+            "html": "<strong>Priority</strong> set to <i>Normal</i>"
+          },
+          {
+            "format": "custom",
+            "raw": "Author set to Ada Example",
+            "html": "<strong>Author</strong> set to <i>Ada Example</i>"
+          },
+          {
+            "format": "custom",
+            "raw": "Scheduling mode set to Manual",
+            "html": "<strong>Scheduling mode</strong> set to Manual"
+          },
+          {
+            "format": "custom",
+            "raw": "Working days set to working days only",
+            "html": "<strong>Working days</strong> set to <i>working days only</i>"
+          }
+        ],
+        "version": 1,
+        "internal": false,
+        "createdAt": "2026-08-25T17:33:35.329Z",
+        "updatedAt": "2026-08-25T17:33:35.329Z",
+        "_links": {
+          "attachments": {
+            "href": "/api/v3/activities/1813/attachments"
+          },
+          "addAttachment": {
+            "href": "/api/v3/activities/1813/attachments",
+            "method": "post"
+          },
+          "self": {
+            "href": "/api/v3/activities/1813"
+          },
+          "workPackage": {
+            "href": "/api/v3/work_packages/838",
+            "title": "Milestone 6 — OpenProject Read Integration"
+          },
+          "user": {
+            "href": "/api/v3/users/5"
+          },
+          "update": {
+            "href": "/api/v3/activities/1813",
+            "method": "patch"
+          },
+          "emojiReactions": {
+            "href": "/api/v3/activities/1813/emoji_reactions"
+          }
+        }
+      },
+      {
+        "_type": "Activity",
+        "id": 1821,
+        "comment": {
+          "format": "markdown",
+          "raw": "",
+          "html": ""
+        },
+        "details": [
+          {
+            "format": "custom",
+            "raw": "Type changed from Task to Epic",
+            "html": "<strong>Type</strong> changed from <i>Task</i> to <i>Epic</i>"
+          }
+        ],
+        "version": 2,
+        "internal": false,
+        "createdAt": "2026-08-25T18:40:30.703Z",
+        "updatedAt": "2026-08-25T18:40:30.703Z",
+        "_links": {
+          "attachments": {
+            "href": "/api/v3/activities/1821/attachments"
+          },
+          "addAttachment": {
+            "href": "/api/v3/activities/1821/attachments",
+            "method": "post"
+          },
+          "self": {
+            "href": "/api/v3/activities/1821"
+          },
+          "workPackage": {
+            "href": "/api/v3/work_packages/838",
+            "title": "Milestone 6 — OpenProject Read Integration"
+          },
+          "user": {
+            "href": "/api/v3/users/5"
+          },
+          "update": {
+            "href": "/api/v3/activities/1821",
+            "method": "patch"
+          },
+          "emojiReactions": {
+            "href": "/api/v3/activities/1821/emoji_reactions"
+          }
+        }
+      },
+      {
+        "_type": "Activity::Comment",
+        "id": 1829,
+        "comment": {
+          "format": "markdown",
+          "raw": "Closed on completion. The read half is merged and checked against a live instance.\n\nWrites follow separately.",
+          "html": "<p class=\"op-uc-p\">Closed on completion. The read half is merged and checked against a live instance.</p><p class=\"op-uc-p\">Writes follow separately.</p>"
+        },
+        "details": [
+          {
+            "format": "custom",
+            "raw": "Status changed from New to Closed",
+            "html": "<strong>Status</strong> changed from <i>New</i> to <i>Closed</i>"
+          }
+        ],
+        "version": 3,
+        "internal": false,
+        "createdAt": "2026-08-26T12:55:38.146Z",
+        "updatedAt": "2026-08-26T12:56:52.127Z",
+        "_links": {
+          "attachments": {
+            "href": "/api/v3/activities/1829/attachments"
+          },
+          "addAttachment": {
+            "href": "/api/v3/activities/1829/attachments",
+            "method": "post"
+          },
+          "self": {
+            "href": "/api/v3/activities/1829"
+          },
+          "workPackage": {
+            "href": "/api/v3/work_packages/838",
+            "title": "Milestone 6 — OpenProject Read Integration"
+          },
+          "user": {
+            "href": "/api/v3/users/5"
+          },
+          "update": {
+            "href": "/api/v3/activities/1829",
+            "method": "patch"
+          },
+          "emojiReactions": {
+            "href": "/api/v3/activities/1829/emoji_reactions"
+          }
+        }
+      }
+    ]
+  },
+  "_links": {
+    "self": {
+      "href": "/api/v3/work_packages/838/activities"
+    }
+  }
+}

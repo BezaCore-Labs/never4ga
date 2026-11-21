@@ -12,6 +12,8 @@ Captured live from an OpenProject instance and sanitized before being checked in
 | `work-packages_page-1..3.json` | the same collection at `pageSize=3` |
 | `work-package.json` | `GET /api/v3/work_packages/838` |
 | `relations_empty.json` | `GET /api/v3/work_packages/838/relations` |
+| `activities.json` | `GET /api/v3/work_packages/838/activities`: two field changes and one comment |
+| `user.json` | `GET /api/v3/users/5`, the author an activity links to without a name |
 | `statuses.json`, `types.json`, `priorities.json`, `versions.json` | the vocabularies a filter resolves against |
 | `not-found.json` | the body of a `404` for an unknown work package |
 
@@ -28,7 +30,7 @@ Everything else is a live response with only the substitutions below applied.
 
 ## Sanitization
 
-Instance host, account and organisation names are replaced, and every work package's description is invented text of the same shape: Markdown paragraphs in `raw`, and the paragraphs OpenProject renders from them in `html`. Nothing else is edited, so the field set, the envelope and the `_links` shape stay exactly as the server sent them.
+Instance host, account and organisation names are replaced, and every work package's description and every comment is invented text of the same shape: Markdown paragraphs in `raw`, and the paragraphs OpenProject renders from them in `html`. Nothing else is edited, so the field set, the envelope and the `_links` shape stay exactly as the server sent them.
 
 ```text
 the real instance's host -> openproject.example
@@ -38,6 +40,7 @@ email addresses         -> ada@example.test
 gravatar URLs           -> https://avatar.example/anonymous
 organisation names      -> Example Org / Example-Org
 descriptions            -> invented text, as above
+comments                -> invented text, as above
 ```
 
 No credential was captured: authentication is an `Authorization` header, and only response bodies are stored here.

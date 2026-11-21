@@ -13,6 +13,12 @@ workspace's declaration, build a provider, ask -- because a reader and a writer
 that discovered their tracker differently would eventually disagree about which
 one they had.
 
+**A read of one item carries its comments** beside it, because a ticket's
+decisions often live there rather than in its description. They are their own
+records, so they travel next to the item rather than inside it. When they
+cannot be read, ``comments`` is ``null`` and ``comments_unavailable`` says why:
+an empty list would claim that nobody said anything.
+
 **A read needs no policy.** ``sync_policy: read`` is enough, which is what
 `work_signals.py` already treats as permission to query. Only ``reference``
 declines, and it declines by saying so rather than by returning nothing.
@@ -26,6 +32,7 @@ from datetime import date, datetime
 from pathlib import PurePath
 from typing import Any
 
+from never4ga.domain.capabilities import WorkManagementCapability
 from never4ga.domain.connections import Connection
 from never4ga.domain.document import StoredDocument
 from never4ga.domain.identity import ExternalId
@@ -44,7 +51,13 @@ from never4ga.errors import (
     UnknownWorkItemStatusError,
 )
 from never4ga.ports.document_store import DocumentStore
-from never4ga.ports.work_management import WorkItem, WorkItemQuery, WorkManagementProvider
+from never4ga.ports.work_management import (
+    WorkComment,
+    WorkCommentReader,
+    WorkItem,
+    WorkItemQuery,
+    WorkManagementProvider,
+)
 from never4ga.services.connections import ConnectionRegistry, project_ref_for
 from never4ga.services.workspaces import WorkspaceService, scope_refusal
 
@@ -186,7 +199,37 @@ class WorkReadService:
             "connection": bound.connection.name,
             "project_ref": bound.project,
             "item": _item(found),
+            **_comments(bound.provider, identity),
         }
+
+
+def _comments(provider: WorkManagementProvider, ref: ExternalId) -> dict[str, Any]:
+    """An item's comments, or ``null`` and the reason they are not here.
+
+    A failure here does not fail the read. The item may have come from the
+    cache while the tracker is down, and what was read is still worth handing
+    back, with the gap stated rather than hidden.
+    """
+    if WorkManagementCapability.READ_COMMENTS not in provider.capabilities or not isinstance(
+        provider, WorkCommentReader
+    ):
+        reason = f"{provider.provider_id} does not report comments"
+        return {"comments": None, "comments_unavailable": reason}
+    try:
+        found = provider.get_work_item_comments(ref)
+    except Never4gaError as error:
+        return {"comments": None, "comments_unavailable": str(error)}
+    return {"comments": [_comment(one) for one in found]}
+
+
+def _comment(comment: WorkComment) -> dict[str, Any]:
+    """One comment. ``ref`` is what `work comment --amends` takes to edit it."""
+    return {
+        "ref": comment.ref.value,
+        "author": comment.author,
+        "created_at": _scalar(comment.created_at),
+        "body": comment.body,
+    }
 
 
 def _unknown_status(bound: BoundReader, error: UnknownWorkItemStatusError) -> StructuredError:

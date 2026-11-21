@@ -16,10 +16,12 @@ import pytest
 from never4ga.adapters.openproject import OpenProjectProvider, OpenProjectWriter
 from never4ga.domain.identity import ExternalId
 from never4ga.ports.work_management import (
+    WorkCommentReader,
     WorkItem,
     WorkManagementProvider,
     WorkManagementWriter,
 )
+from tests.contracts.work_comment_reader_contract import WorkCommentReaderContract
 from tests.contracts.work_management_contract import (
     UnavailableWorkManagementProviderContract,
     WorkManagementProviderContract,
@@ -56,6 +58,25 @@ class TestOpenProjectProvider(WorkManagementProviderContract):
         found = provider.get_work_item(ExternalId(provider="openproject", value="838"))
         assert found is not None
         return found
+
+
+class TestOpenProjectCommentReader(WorkCommentReaderContract):
+    """Against the captured activities of one work package.
+
+    It has three activities and one comment: the other two only changed
+    fields, which is what makes the filter on `comment.raw` observable.
+    """
+
+    @pytest.fixture
+    def reader(self) -> WorkCommentReader:
+        return build(fixture_transport())
+
+    @pytest.fixture
+    def commented(self, reader: WorkCommentReader) -> tuple[ExternalId, str]:
+        return ExternalId(provider="openproject", value="838"), (
+            "Closed on completion. The read half is merged and checked against a live "
+            "instance.\n\nWrites follow separately."
+        )
 
 
 class TestUnreachableOpenProjectProvider(UnavailableWorkManagementProviderContract):

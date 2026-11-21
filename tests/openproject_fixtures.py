@@ -151,9 +151,13 @@ def fixture_transport(*, relations: str = "relations_empty.json") -> httpx.MockT
             return httpx.Response(
                 308, headers={"Location": f"/api/v3/relations?filters={quote(involved)}"}
             )
+        if path == f"/api/v3/work_packages/{KNOWN_WORK_PACKAGE}/activities":
+            return _json(load_fixture("activities.json"))
+        if path == "/api/v3/users/5":
+            return _json(load_fixture("user.json"))
         if path.startswith("/api/v3/work_packages/"):
-            identifier = path.rsplit("/", 1)[-1]
-            if identifier == KNOWN_WORK_PACKAGE:
+            identifier = path.split("/")[4]
+            if identifier == KNOWN_WORK_PACKAGE and path.count("/") == 4:
                 return _json(load_fixture("work-package.json"))
             return _json(load_fixture("not-found.json"), status=404)
         if path.endswith("/work_packages"):
@@ -526,6 +530,10 @@ def writable_transport() -> httpx.MockTransport:
                     "_type": "Activity::Comment",
                     "id": state["next_activity"],
                     "comment": {"format": "markdown", "raw": said, "html": f"<p>{said}</p>"},
+                    "details": [],
+                    # After everything captured, and in the order written.
+                    "createdAt": f"2026-11-21T12:{len(state['activities']):02d}:00.000Z",
+                    "_links": {"user": {"href": "/api/v3/users/5"}},
                 }
                 state["activities"][str(made["id"])] = made
                 return _json(made, status=201)
@@ -600,6 +608,14 @@ def writable_transport() -> httpx.MockTransport:
         if path.startswith("/api/v3/activities/"):
             made = state["activities"].get(path.rsplit("/", 1)[-1])
             return _json(made) if made else _json(load_fixture("not-found.json"), status=404)
+        if path == f"/api/v3/work_packages/{identifier}/activities":
+            captured = load_fixture("activities.json")
+            listed = [*captured["_embedded"]["elements"], *state["activities"].values()]
+            captured["_embedded"]["elements"] = listed
+            captured["total"] = captured["count"] = len(listed)
+            return _json(captured)
+        if path == "/api/v3/users/5":
+            return _json(load_fixture("user.json"))
         if path.startswith("/api/v3/work_packages/"):
             made = state["created"].get(path.rsplit("/", 1)[-1])
             if made is not None:

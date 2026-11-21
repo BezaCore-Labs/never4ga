@@ -20,13 +20,15 @@ answered, which is a statement about the network rather than about the
 instance, and is not remembered.
 
 Reads only. No method here creates, updates or comments; :class:`OpenProjectWriter`
-adds those.
+adds those. Reading what was *said* on a work package is a read, and is here:
+:meth:`OpenProjectProvider.get_work_item_comments`.
 """
 
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from typing import Any, Final, Self
 
 import httpx
@@ -39,12 +41,21 @@ from never4ga.adapters.openproject.api import (
     encode_filters,
     work_package_filters,
 )
-from never4ga.adapters.openproject.normalise import PROVIDER_ID, work_item
+from never4ga.adapters.openproject.normalise import (
+    PROVIDER_ID,
+    author_href,
+    work_comment,
+    work_item,
+)
 from never4ga.domain.capabilities import WorkManagementCapability
 from never4ga.domain.connections import Connection
 from never4ga.domain.identity import ExternalId
-from never4ga.errors import ProviderUnavailableError, UnknownWorkItemStatusError
-from never4ga.ports.work_management import ProviderHealth, WorkItem, WorkItemQuery
+from never4ga.errors import (
+    ProviderUnavailableError,
+    UnknownWorkItemStatusError,
+    WorkItemNotFoundError,
+)
+from never4ga.ports.work_management import ProviderHealth, WorkComment, WorkItem, WorkItemQuery
 
 __all__ = ["OpenProjectProvider", "ProjectSummary"]
 
@@ -62,6 +73,10 @@ _WRITE_CAPABILITIES: Final = frozenset(
         WorkManagementCapability.COMMENT_WORK_ITEM,
     }
 )
+
+
+#: Where a comment with no time sorts: before every dated one.
+_UNDATED: Final = datetime.min.replace(tzinfo=UTC)
 
 
 @dataclass(frozen=True, slots=True)
@@ -115,6 +130,9 @@ class OpenProjectProvider:
         self._status_names: tuple[str, ...] = ()
         self._version: str | None = None
         self._asked_for_version = False
+        #: A user's name by the href an activity links to, ``None`` once a
+        #: lookup has been refused. Asked once per author per provider.
+        self._authors: dict[str, str | None] = {}
 
     @classmethod
     def from_connection(
@@ -250,6 +268,36 @@ class OpenProjectProvider:
             found = found[:limit]
         return tuple(found)
 
+    def get_work_item_comments(self, ref: ExternalId) -> Sequence[WorkComment]:
+        """What was said on a work package, oldest first.
+
+        `GET /work_packages/{id}/activities` lists every journal entry; only
+        those whose text is not empty become comments. A 404 is
+        ``WorkItemNotFoundError`` and an unreachable instance
+        ``ProviderUnavailableError``, as the port says.
+        """
+        if ref.provider != self.provider_id:
+            # As in `get_work_item`: another tracker's key names nothing here.
+            raise WorkItemNotFoundError(f"{self.provider_id} has no work item {ref.value!r}")
+        path = f"{API_ROOT}/work_packages/{ref.value}/activities"
+        payload = self._api.get_optional(path)
+        if payload is None:
+            raise WorkItemNotFoundError(f"{self.provider_id} has no work item {ref.value!r}")
+        elements: Sequence[Mapping[str, Any]] = payload.get("_embedded", {}).get("elements", [])
+        if int(payload.get("total", len(elements))) > len(elements):
+            # The instances measured answer this collection whole, unpaged. One
+            # that pages it is walked by page number, like every other.
+            elements = self._api.collection(path)
+        found = [
+            comment
+            for element in elements
+            if (comment := work_comment(element, author=self._author(element))) is not None
+        ]
+        # The instance lists them in order; sorting makes the port's promise
+        # hold whatever order an instance chooses. An undated one sorts first.
+        found.sort(key=lambda one: one.created_at or _UNDATED)
+        return tuple(found)
+
     # -- beyond the port, still section 5 ---------------------------------
 
     def resolve_project(self, project_ref: str | None = None) -> ProjectSummary:
@@ -320,6 +368,27 @@ class OpenProjectProvider:
             return ()
         elements: Sequence[Mapping[str, Any]] = payload.get("_embedded", {}).get("elements", [])
         return elements
+
+    def _author(self, activity: Mapping[str, Any]) -> str | None:
+        """Who wrote an activity, by name, or ``None`` when that cannot be read.
+
+        The activity's user link carries an href and no title, so the name is
+        the user resource's. A token may read a ticket and not the user
+        directory, and a refusal costs the label and nothing else, as a missing
+        `provider_version` does.
+        """
+        if (titled := activity.get("_links", {}).get("user", {}).get("title")) is not None:
+            return str(titled)
+        href = author_href(activity)
+        if href is None:
+            return None
+        if href not in self._authors:
+            try:
+                user = self._api.get_optional(href)
+            except ProviderUnavailableError:
+                user = None
+            self._authors[href] = None if not user or not user.get("name") else str(user["name"])
+        return self._authors[href]
 
     def _resolve_statuses(self, names: Sequence[str]) -> tuple[str, ...]:
         """Status *names* as the ids the API filters on.
@@ -434,6 +503,9 @@ class OpenProjectProvider:
             # in the product. A field on an actual work package proves the
             # instance uses one, which is the question section 12 asks.
             found.add(WorkManagementCapability.CUSTOM_FIELDS)
+        if "activities" in links:
+            # The link to the item's journal, where its comments are.
+            found.add(WorkManagementCapability.READ_COMMENTS)
         if "addRelation" in links:
             found.add(WorkManagementCapability.RELATE_WORK_ITEMS)
         if {"update", "updateImmediately"} & set(links):
