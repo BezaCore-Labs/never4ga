@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import replace
-from typing import Any
+from datetime import UTC, datetime, timedelta
+from typing import Any, Final
 
 from never4ga.domain.capabilities import WorkManagementCapability, require_capability
 from never4ga.domain.identity import ExternalId
@@ -17,6 +18,7 @@ from never4ga.errors import (
 from never4ga.ports.work_management import (
     ProposedMutation,
     ProviderHealth,
+    WorkComment,
     WorkItem,
     WorkItemQuery,
     WorkProject,
@@ -25,6 +27,10 @@ from never4ga.ports.work_management import (
 )
 
 __all__ = ["FakeWorkManagementProvider", "FakeWorkManagementWriter"]
+
+#: When the fake's first comment was made. Each later one is a minute after the
+#: one before, so the order they were written in is the order their times say.
+_FIRST_COMMENT: Final = datetime(2026, 1, 1, tzinfo=UTC)
 
 
 class FakeWorkManagementProvider:
@@ -110,11 +116,15 @@ class FakeWorkManagementWriter(FakeWorkManagementProvider):
         self._next_id = 1
         self._activities = 0
         self._comments: dict[ExternalId, str] = {}
+        #: Which item each comment is on, in the order they were made.
+        self._commented: dict[ExternalId, list[ExternalId]] = {}
         self._projects: dict[str, WorkProject] = {}
 
     @property
     def capabilities(self) -> frozenset[WorkManagementCapability]:
-        found = set(super().capabilities)
+        # Reading comments is a read: a writer that may not write still lists
+        # what is there.
+        found = set(super().capabilities) | {WorkManagementCapability.READ_COMMENTS}
         if self._writable:
             found |= {
                 WorkManagementCapability.CREATE_WORK_ITEM,
@@ -192,6 +202,20 @@ class FakeWorkManagementWriter(FakeWorkManagementProvider):
         self._projects[identifier] = made
         return made
 
+    def get_work_item_comments(self, ref: ExternalId) -> Sequence[WorkComment]:
+        self._require_available()
+        if ref not in self._items:
+            raise WorkItemNotFoundError(f"{self.provider_id} has no work item {ref.value!r}")
+        return tuple(
+            WorkComment(
+                ref=activity,
+                body=self._comments[activity],
+                author="fake",
+                created_at=_FIRST_COMMENT + timedelta(minutes=int(activity.value[1:])),
+            )
+            for activity in self._commented.get(ref, ())
+        )
+
     def comment_text(self, activity: ExternalId) -> str | None:
         """What a comment this writer made now says. Beyond the port."""
         return self._comments.get(activity)
@@ -235,6 +259,8 @@ class FakeWorkManagementWriter(FakeWorkManagementProvider):
             self._activities += 1
             made = ExternalId(provider=self.provider_id, value=f"a{self._activities}")
             self._comments[made] = str(proposal.body)
+            assert proposal.ref is not None  # the value type guarantees it
+            self._commented.setdefault(proposal.ref, []).append(made)
             return WriteResult(proposal=proposal, activity=made)
         return self._update(proposal)
 

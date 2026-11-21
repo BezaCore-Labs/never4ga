@@ -29,6 +29,7 @@ import sys
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import closing, contextmanager
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path, PurePath
 from typing import Any, Final, NamedTuple
 
@@ -3931,8 +3932,37 @@ def _work_get(context: _Context, arguments: argparse.Namespace) -> int:
     if isinstance(result, StructuredError):
         context.reporter.fail(result)
         return EXIT_FAILED
-    context.reporter.emit(result, _work_item_summary(result["item"]))
+    context.reporter.emit(result, _work_get_summary(result))
     return EXIT_OK
+
+
+def _work_get_summary(result: Mapping[str, Any]) -> str:
+    """The item, then what was said on it, oldest first.
+
+    Comments that could not be read are reported as such rather than left out,
+    which would read as nobody having commented.
+    """
+    lines = [_work_item_summary(result["item"])]
+    comments = result.get("comments")
+    if comments is None:
+        if result.get("comments_unavailable"):
+            lines += ["", f"  comments not read: {result['comments_unavailable']}"]
+        return "\n".join(lines)
+    if not comments:
+        return "\n".join(lines)
+    lines += ["", f"  comments ({len(comments)})"]
+    for comment in comments:
+        said = [part for part in (comment.get("author"), _when(comment.get("created_at"))) if part]
+        lines += ["", f"  {comment['ref']}" + (f"  {', '.join(said)}" if said else "")]
+        lines += [f"    {line}".rstrip() for line in _wrapped(str(comment["body"]), width=74)]
+    return "\n".join(lines)
+
+
+def _when(stamp: Any) -> str | None:
+    """An instant as a person reads it, to the minute, in the time it was given in."""
+    if not stamp:
+        return None
+    return datetime.fromisoformat(str(stamp)).strftime("%Y-%m-%d %H:%M")
 
 
 #: What `work get` shows, in reading order, and the label each field gets.
@@ -4142,7 +4172,7 @@ def _add_work_commands(commands: Any) -> None:
     )
     searching.set_defaults(handler=_work_search)
 
-    getting = actions.add_parser("get", help="read one work item")
+    getting = actions.add_parser("get", help="read one work item and its comments")
     getting.add_argument("work_item", help="the tracker's id for the item")
     getting.add_argument(
         "--refresh",

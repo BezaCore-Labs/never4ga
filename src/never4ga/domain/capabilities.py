@@ -67,6 +67,10 @@ class WorkManagementCapability(enum.StrEnum):
     HIERARCHY = "work_item_hierarchy"
     CUSTOM_FIELDS = "work_item_custom_fields"
     SPRINTS = "work_item_sprints"
+    # Reading what was said on an item. Separate from `COMMENT_WORK_ITEM`, the
+    # write: a token may read a ticket's discussion and not add to it, and a
+    # tracker may take comments through a channel it does not list back.
+    READ_COMMENTS = "work_item_comments"
     # The three writes core/03 section 25 names `create_item`, `update_item`
     # and `comment`, spelled to this vocabulary's convention. A capability
     # belongs here only once code exercises it.

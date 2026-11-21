@@ -28,9 +28,9 @@ from datetime import date, datetime
 from typing import Any, Final
 
 from never4ga.domain.identity import ExternalId
-from never4ga.ports.work_management import WorkItem
+from never4ga.ports.work_management import WorkComment, WorkItem
 
-__all__ = ["PROVIDER_ID", "work_item"]
+__all__ = ["PROVIDER_ID", "author_href", "work_comment", "work_item"]
 
 #: The namespace every reference this adapter produces is qualified by.
 PROVIDER_ID: Final = "openproject"
@@ -106,6 +106,36 @@ def work_item(
         relations=related,
         extra=extra,
     )
+
+
+def work_comment(payload: Mapping[str, Any], *, author: str | None = None) -> WorkComment | None:
+    """One activity as a :class:`WorkComment`, or ``None`` if it says nothing.
+
+    OpenProject lists every journal entry as an activity, and most of them only
+    record a field changing: their ``comment.raw`` is empty. Those are not
+    comments, and turning them into blank ones would read as somebody having
+    spoken. ``raw`` is kept rather than ``html``, because it is what was
+    written.
+
+    ``author`` is passed in because the activity rarely carries it: its user
+    link has an href and, on the instances measured, no title. Resolving that
+    takes a request, which this module does not make.
+    """
+    body = _raw(payload.get("comment"))
+    if body is None or not body.strip():
+        return None
+    return WorkComment(
+        ref=ExternalId(provider=PROVIDER_ID, value=str(payload["id"])),
+        body=body,
+        author=author if author is not None else _title(payload.get("_links", {}), "user"),
+        created_at=_instant(payload.get("createdAt")),
+    )
+
+
+def author_href(payload: Mapping[str, Any]) -> str | None:
+    """The href of the user who wrote an activity, which names them on request."""
+    link = _link(payload.get("_links", {}), "user")
+    return None if link is None else str(link["href"])
 
 
 def _set(target: dict[str, Any], key: str, value: Any) -> None:

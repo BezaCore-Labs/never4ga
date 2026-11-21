@@ -28,6 +28,10 @@ caller cannot forget when it was true.
 
 **A miss is not cached.** A ticket absent now may exist in a minute, and a
 remembered "no" would outlast the fact.
+
+**Comments are not cached at all.** They are passed through to the wrapped
+provider on every read. A ticket's decisions are recorded in them, and a read
+that served one fifteen minutes old could miss the one that settles it.
 """
 
 from __future__ import annotations
@@ -39,9 +43,12 @@ from typing import Final
 
 from never4ga.domain.capabilities import WorkManagementCapability
 from never4ga.domain.identity import ExternalId, WorkItemKey
+from never4ga.errors import CapabilityNotSupportedError
 from never4ga.ports.tracker_cache import CachedWorkItem, TrackerCache
 from never4ga.ports.work_management import (
     ProviderHealth,
+    WorkComment,
+    WorkCommentReader,
     WorkItem,
     WorkItemQuery,
     WorkManagementProvider,
@@ -145,6 +152,15 @@ class CachingWorkManagementProvider:
         """
         self._store(found := self._provider.search_work_items(query), query=query)
         return found
+
+    def get_work_item_comments(self, ref: ExternalId) -> Sequence[WorkComment]:
+        """The wrapped provider's answer, every time. See the module docstring."""
+        if not isinstance(self._provider, WorkCommentReader):
+            raise CapabilityNotSupportedError(
+                f"{self.provider_id} does not report comments "
+                f"({WorkManagementCapability.READ_COMMENTS.value})"
+            )
+        return self._provider.get_work_item_comments(ref)
 
     # -- beyond the port --------------------------------------------------
 

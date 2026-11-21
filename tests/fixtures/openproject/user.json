@@ -1,0 +1,40 @@
+{
+  "_type": "User",
+  "id": 5,
+  "name": "Ada Example",
+  "createdAt": "2026-07-12T12:18:44.642Z",
+  "updatedAt": "2026-11-21T19:02:23.111Z",
+  "login": "ada",
+  "admin": true,
+  "firstName": "Ada",
+  "lastName": "Example",
+  "email": "ada@example.test",
+  "avatar": "https://avatar.example/anonymous",
+  "status": "active",
+  "identityUrl": null,
+  "language": "en",
+  "_links": {
+    "self": {
+      "href": "/api/v3/users/5",
+      "title": "Ada Example"
+    },
+    "memberships": {
+      "href": "/api/v3/memberships?filters=%5B%7B%22principal%22%3A%7B%22operator%22%3A%22%3D%22%2C%22values%22%3A%5B%225%22%5D%7D%7D%5D",
+      "title": "Memberships"
+    },
+    "showUser": {
+      "href": "/users/5",
+      "type": "text/html"
+    },
+    "updateImmediately": {
+      "href": "/api/v3/users/5",
+      "title": "Update ada",
+      "method": "patch"
+    },
+    "lock": {
+      "href": "/api/v3/users/5/lock",
+      "title": "Set lock on ada",
+      "method": "post"
+    }
+  }
+}

@@ -4,6 +4,9 @@ A PM tracker stays the external system of record for configured operational
 work. Never4gA reads it mechanically (core/07 Stage F) rather than asking a
 model to infer ticket state, and does not mirror every ticket into Markdown.
 
+Reading an item's comments is a third role, :class:`WorkCommentReader`, for
+the reason the writer is a second one.
+
 The write half is a *second* Protocol rather than methods on the first:
 core/03 section 24 says
 "if a provider lacks a feature, the capability is reported unavailable", and a
@@ -34,6 +37,8 @@ from never4ga.domain.identity import ExternalId
 __all__ = [
     "ProposedMutation",
     "ProviderHealth",
+    "WorkComment",
+    "WorkCommentReader",
     "WorkItem",
     "WorkItemQuery",
     "WorkManagementProvider",
@@ -76,6 +81,25 @@ class WorkItem:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "extra", MappingProxyType(dict(self.extra)))
+
+
+@dataclass(frozen=True, slots=True)
+class WorkComment:
+    """Something somebody said on a work item.
+
+    Its own record rather than a field of :class:`WorkItem`: it has its own
+    provider id, which is what a later write names to amend it, and an item's
+    comments are read on demand rather than with every search result.
+
+    ``body`` is the text as it was written, in the tracker's own markup, not a
+    rendering of it. ``author`` is the name a person reads, and absent when the
+    tracker would not say.
+    """
+
+    ref: ExternalId
+    body: str
+    author: str | None = None
+    created_at: datetime | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -124,6 +148,28 @@ class WorkManagementProvider(Protocol):
 
     def health(self) -> ProviderHealth:
         """Never raises: an unreachable provider reports itself unavailable."""
+        ...
+
+
+@runtime_checkable
+class WorkCommentReader(WorkManagementProvider, Protocol):
+    """A provider that can also list what was said on an item.
+
+    Its own role, so that a provider with no comment read is not made to
+    implement one emptily: `core/03` section 24 reports a missing feature as an
+    unavailable capability. A caller checks
+    :attr:`~WorkManagementCapability.READ_COMMENTS` as well as the type, since
+    a wrapper may satisfy the type for a provider that cannot.
+    """
+
+    def get_work_item_comments(self, ref: ExternalId) -> Sequence[WorkComment]:
+        """The item's comments, oldest first, read from the tracker.
+
+        Only entries that carry text: an entry that recorded a field changing
+        is not a comment. Raises ``WorkItemNotFoundError`` when the tracker has
+        no such item, because "no comments" would be a claim about one that
+        exists, and ``ProviderUnavailableError`` when it could not be asked.
+        """
         ...
 
 

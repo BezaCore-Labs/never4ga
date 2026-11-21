@@ -490,7 +490,7 @@ class Toolbox:
             ),
             Tool(
                 "never4ga_work_get",
-                "Read one work item from the workspace's tracker.",
+                "Read one work item from the workspace's tracker, with its comments.",
                 self.work_get,
                 schema(
                     {
