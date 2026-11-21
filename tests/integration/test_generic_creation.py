@@ -558,8 +558,9 @@ class TestEveryShapedTypeIsCreatable:
 
     #: Types whose only home is a life area, so a workspace section cannot hold
     #: one. `person` (core/02 section 21.23) is the first: `20_Life/` is
-    #: where people live and a person is not scoped to a project.
-    NEEDS_AN_AREA: ClassVar = frozenset({"person"})
+    #: where people live and a person is not scoped to a project. `device`
+    #: (section 21.28) follows it.
+    NEEDS_AN_AREA: ClassVar = frozenset({"person", "device"})
 
     @pytest.mark.parametrize(
         "type_name", sorted(shaped_types() - frozenset({"workspace", "life_area"}))

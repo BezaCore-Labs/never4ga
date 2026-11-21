@@ -66,6 +66,7 @@ EXPECTED_TYPES: Final = frozenset(
         "course_assignment",
         "runbook",
         "walkthrough",
+        "device",
     }
 )
 
@@ -74,11 +75,11 @@ class TestTypeRegistry:
     def test_every_registered_type_is_present(self) -> None:
         assert set(TYPE_REGISTRY) == EXPECTED_TYPES
 
-    def test_there_are_twenty_six_of_them(self) -> None:
-        # core/02 sections 21.1 to 21.27, less the retired 21.6 `entity`.
+    def test_there_are_twenty_seven_of_them(self) -> None:
+        # core/02 sections 21.1 to 21.28, less the retired 21.6 `entity`.
         # Registration and retirement are both deliberate, so this count only
         # changes when section 21 does.
-        assert len(TYPE_REGISTRY) == 26
+        assert len(TYPE_REGISTRY) == 27
 
     @pytest.mark.parametrize("name", sorted(EXPECTED_TYPES))
     def test_every_type_name_is_snake_case(self, name: str) -> None:
@@ -233,6 +234,56 @@ class TestACourseAssignmentIsItsOwnType:
         assert spec is not None
         assert spec.required_fields == ("workspace", "lifecycle")
         assert spec.extra_fields == ("unit", "due", "grade")
+
+
+class TestDevice:
+    """core/02 section 21.28: one physical device a person owns or looks after.
+
+    Like `person`, a device lives in a life area and only there, and is not
+    scoped to a project. Its inventory fields are registered and flat, so a
+    record that carries them validates without a warning per field.
+    """
+
+    def test_it_is_at_home_anywhere_in_a_life_area(self) -> None:
+        spec = type_spec("device")
+        assert spec is not None
+        assert spec.accepts(p("20_Life/Household/Devices/living-room-tv.md"))
+        assert spec.accepts(p("20_Life/Household/game-console.md"))
+
+    def test_it_does_not_belong_in_a_workspace(self) -> None:
+        spec = type_spec("device")
+        assert spec is not None
+        assert not spec.accepts(p("10_Workspaces/Example/Resources/server.md"))
+
+    def test_a_device_that_is_gone_keeps_its_record(self) -> None:
+        spec = type_spec("device")
+        assert spec is not None
+        assert spec.required_fields == ("lifecycle",)
+        assert spec.lifecycle_values == ("in_use", "stored", "sold", "disposed")
+
+    def test_its_inventory_fields_are_registered(self) -> None:
+        spec = type_spec("device")
+        assert spec is not None
+        assert spec.extra_fields == (
+            "device_kind",
+            "make",
+            "model",
+            "serial_number",
+            "location",
+            "owner",
+            "purchased_on",
+            "purchased_from",
+            "price",
+            "order_number",
+            "warranty_ends",
+            "warranty_provider",
+            "mac_wifi",
+            "mac_ethernet",
+            "ip_reserved",
+            "vlan",
+            "network_name",
+            "manual",
+        )
 
 
 class TestScopeFollowsPlacement:

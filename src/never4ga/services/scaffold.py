@@ -344,6 +344,32 @@ _SHAPES: Final[dict[str, _Shape]] = {
             ("What is left", "What remains of this phase, so the next session starts there."),
         ),
     ),
+    # core/02 section 21.28. The fields carry what a device is and where it
+    # came from; the sections carry what does not fit a field.
+    "device": _Shape(
+        template_note=(
+            "A device lives only in a life area and never carries `workspace`. Its "
+            "fields are flat and all optional: `device_kind`, `make`, `model`, "
+            "`serial_number`, `location`, `owner`, `purchased_on`, `purchased_from`, "
+            "`price`, `order_number`, `warranty_ends`, `warranty_provider`, `mac_wifi`, "
+            "`mac_ethernet`, `ip_reserved`, `vlan`, `network_name` and `manual`. Keep "
+            "`lifecycle` current: `in_use`, `stored`, `sold` or `disposed`."
+        ),
+        sections=(
+            (
+                "Network",
+                "Its addresses, any reservation, and a link to the address plan that is "
+                "authoritative for them.",
+            ),
+            ("Hardware and software", "What is inside it and what it runs, where it matters."),
+            (
+                "Purchase and warranty",
+                "Where and when it was bought, what the warranty covers, and until when.",
+            ),
+            ("Manuals", "Links, or the vault path of a manual kept beside this record."),
+            ("Notes and history", "Dated notes: repairs, moves, settings changed."),
+        ),
+    ),
     # A runbook is read by somebody who is not calm: the thing is down, or
     # about to be. So the shape front-loads recognition and access -- am I in
     # the right document, and can I even run this -- before the first command,

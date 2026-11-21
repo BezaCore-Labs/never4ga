@@ -706,6 +706,38 @@ class TestExtensibility:
         assert report.ok, report.issues
         assert "unregistered_field" not in codes(report)
 
+    def test_a_devices_inventory_fields_are_registered(self) -> None:
+        # core/02 section 21.28. A device record is its inventory fields, so
+        # unregistered they would report a warning each on every device.
+        report = check(
+            concept(
+                type="device",
+                title="Hall printer",
+                lifecycle="in_use",
+                device_kind="printer",
+                make="Examplecorp",
+                model="EX-100",
+                serial_number="SN0001",
+                location="hall",
+                owner="household",
+                purchased_on="2025-01-02",
+                purchased_from="A shop",
+                price="99.00",
+                order_number="0001",
+                warranty_ends="2026-01-02",
+                warranty_provider="Examplecorp",
+                mac_wifi="02-00-00-00-00-01",
+                mac_ethernet="02-00-00-00-00-02",
+                ip_reserved="192.0.2.10",
+                vlan="20",
+                network_name="hall-printer",
+                manual="https://example.com/manual.pdf",
+            ),
+            path=p("20_Life/Household/Devices/hall-printer.md"),
+        )
+        assert report.ok, report.issues
+        assert "unregistered_field" not in codes(report)
+
     def test_a_workspace_manifests_cover_image_is_registered(self) -> None:
         # The active-workspaces cards read `cover` off the manifest, so
         # Never4gA both writes this field and depends on it. Unregistered, every
