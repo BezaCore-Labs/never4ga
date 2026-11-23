@@ -39,7 +39,14 @@ from never4ga.adapters.filesystem.frontmatter import (
 from never4ga.domain.document import ForeignNote, StoredDocument, UntrackedMarkdown, VaultPath
 from never4ga.domain.identity import ConceptId
 from never4ga.errors import DuplicateConceptIdError, VaultIntegrityError, VaultPathError
-from never4ga.layout import DocumentRole, foreign_names, is_foreign_note, role_of
+from never4ga.layout import (
+    AGENT_FILENAMES,
+    DocumentRole,
+    foreign_names,
+    is_agent_pointer,
+    is_foreign_note,
+    role_of,
+)
 from never4ga.ports.document_store import FileStat, StoreProblem
 
 __all__ = ["FileSystemMarkdownStore", "StoreProblem"]
@@ -199,7 +206,9 @@ class FileSystemMarkdownStore:
         healthy around it.
         """
         return tuple(
-            path for path in self._concept_eligible_paths() if not self._declares_frontmatter(path)
+            path
+            for path in self._concept_eligible_paths()
+            if not self._declares_frontmatter(path) and not self._is_agent_pointer(path)
         )
 
     # -- foreign material (core/02 section 3.3) ----------------------------
@@ -357,6 +366,21 @@ class FileSystemMarkdownStore:
             # scan reports rather than silently dropping it.
             return True
         return _opens_a_frontmatter_block(first)
+
+    def _is_agent_pointer(self, path: VaultPath) -> bool:
+        """Whether the file is a generated agent pointer (core/02 section 3.3).
+
+        Read one line deep, like :meth:`_declares_frontmatter`, and only for the
+        names a pointer can have.
+        """
+        if path.name not in AGENT_FILENAMES:
+            return False
+        try:
+            with self._absolute(path).open("r", encoding="utf-8") as handle:
+                first = handle.readline()
+        except OSError, UnicodeDecodeError:
+            return False
+        return is_agent_pointer(path.name, first)
 
     def _read_text(self, path: VaultPath) -> str | None:
         absolute = self._absolute(path)

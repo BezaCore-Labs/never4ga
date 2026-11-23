@@ -160,6 +160,8 @@ A directory `never4ga init` registered as foreign material (ADR-0039, `core/01` 
 
 **Amended 2026-09-21 by ADR-0040.** Adopting such a document keeps what the writer wrote. Every key of its own frontmatter whose value the adopted concept does not carry unchanged -- a value that does not fit the field, a value `--field` replaced, a key Never4gA owns, or a `type` that is not registered -- is kept verbatim under `extensions.adopted` (§20) and reported, rather than refused or discarded. No value is mapped to a registered one.
 
+**Amended 2026-11-22.** An agent instruction pointer Never4gA generated is identified by its own first line, wherever it sits. That is a file named `AGENTS.md`, `CLAUDE.md` or `GEMINI.md` whose first line is `<!-- never4ga:pointer -->` (`details/agent-instruction-layering.md` §2). Such a file appears in the vault when the vault is itself a mapped repository. It is tool-owned, not a concept, and never reported as untracked. A file by one of those names whose first line is anything else is not identified by this rule.
+
 Never4gA consumers MUST NOT silently rewrite these files as Never4gA concept documents.
 
 ---

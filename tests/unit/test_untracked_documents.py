@@ -23,6 +23,11 @@ from never4ga.domain.document import VaultPath
 from never4ga.schema import Severity
 from never4ga.services import ContentService, VaultInitializer
 from never4ga.services.doctor import Doctor, Finding
+from never4ga.services.repository_pointers import (
+    AGENT_FILENAMES,
+    POINTER_MARKER,
+    subordinate_body,
+)
 
 
 def fixed_clock() -> datetime:
@@ -114,3 +119,43 @@ class TestWhereProseIsTheDesign:
         ).create_knowledge("Tracked")
 
         assert untracked_findings(vault) == {}
+
+
+class TestAGeneratedAgentPointer:
+    """core/02 section 3.3: a pointer Never4gA generated is tool-owned.
+
+    A vault that is itself a mapped repository holds the agent instruction
+    pointers every mapped repository holds. They carry no frontmatter by
+    design, and they identify themselves by their first line.
+    """
+
+    @pytest.mark.parametrize("name", AGENT_FILENAMES)
+    def test_a_generated_pointer_at_the_root_is_not_reported(self, vault: Path, name: str) -> None:
+        write(vault, name, subordinate_body(name))
+
+        assert untracked_findings(vault) == {}
+
+    def test_the_authoritative_pointer_is_not_reported(self, vault: Path) -> None:
+        write(vault, "AGENTS.md", f"{POINTER_MARKER}\n\n# Agent instructions\n")
+
+        assert untracked_findings(vault) == {}
+
+    def test_a_generated_pointer_below_the_root_is_not_reported(self, vault: Path) -> None:
+        write(vault, "10_Workspaces/Example/AGENTS.md", subordinate_body("AGENTS.md"))
+
+        assert untracked_findings(vault) == {}
+
+    def test_a_hand_written_agent_file_is_still_reported(self, vault: Path) -> None:
+        write(vault, "AGENTS.md", "# How to work here\n\nprose\n")
+
+        assert "AGENTS.md" in untracked_findings(vault)
+
+    def test_the_marker_counts_only_on_the_first_line(self, vault: Path) -> None:
+        write(vault, "CLAUDE.md", f"# Notes\n\n{POINTER_MARKER}\n")
+
+        assert "CLAUDE.md" in untracked_findings(vault)
+
+    def test_the_marker_does_not_excuse_another_name(self, vault: Path) -> None:
+        write(vault, "30_Knowledge/Notes/copied.md", subordinate_body("AGENTS.md"))
+
+        assert "30_Knowledge/Notes/copied.md" in untracked_findings(vault)
