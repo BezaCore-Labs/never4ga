@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from never4ga.layout.structure import (
     AGENT_CONTEXT_NAME,
+    AGENT_FILENAMES,
     ARCHIVE_SECTIONS,
     AREA_MANIFEST,
     CHILD_WORKSPACE_DIRECTORY,
@@ -22,6 +23,7 @@ from never4ga.layout.structure import (
     INBOX_SCRATCHPAD_NAME,
     INTEGRATIONS_DIRECTORY,
     KNOWLEDGE_DIRECTORIES,
+    POINTER_MARKER,
     RESERVED_INDEX,
     RESERVED_LOG,
     ROOT_INDEX,
@@ -36,6 +38,7 @@ from never4ga.layout.structure import (
     archived_counterpart,
     flat_area_of,
     foreign_names,
+    is_agent_pointer,
     is_foreign_format,
     is_foreign_note,
     is_life_area_content,
@@ -48,6 +51,7 @@ from never4ga.layout.structure import (
 
 __all__ = [
     "AGENT_CONTEXT_NAME",
+    "AGENT_FILENAMES",
     "ARCHIVE_SECTIONS",
     "AREA_MANIFEST",
     "CHILD_WORKSPACE_DIRECTORY",
@@ -60,6 +64,7 @@ __all__ = [
     "INBOX_SCRATCHPAD_NAME",
     "INTEGRATIONS_DIRECTORY",
     "KNOWLEDGE_DIRECTORIES",
+    "POINTER_MARKER",
     "RESERVED_INDEX",
     "RESERVED_LOG",
     "ROOT_INDEX",
@@ -74,6 +79,7 @@ __all__ = [
     "archived_counterpart",
     "flat_area_of",
     "foreign_names",
+    "is_agent_pointer",
     "is_foreign_format",
     "is_foreign_note",
     "is_life_area_content",

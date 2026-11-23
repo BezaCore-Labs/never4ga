@@ -49,6 +49,7 @@ from never4ga.domain.extensions import (
     PortabilityLevel,
 )
 from never4ga.domain.scope import WorkspaceMapping
+from never4ga.layout import AGENT_FILENAMES, POINTER_MARKER
 from never4ga.ports.extension_registry import ExtensionRegistry
 from never4ga.ports.repository_locator import RepositoryLocator
 from never4ga.services.authoring import Clock, format_timestamp, utc_now
@@ -68,21 +69,6 @@ __all__ = [
 #: The canonical pointer, which every client either reads natively or is
 #: pointed at by a file of its own.
 CANONICAL_FILENAME: Final = "AGENTS.md"
-
-#: Every agent instruction filename kept out of the Git index
-#: (`details/agent-instruction-layering.md` section 6). The list grows with
-#: the ecosystem; `details/tool-adapter-matrix.md` is where a new client is
-#: recorded, and a client descriptor's `repository_rules_path` is what adds one
-#: here in practice. These are the names gitignored even when no client on this
-#: machine uses them, so a repository stays safe on a machine that installs one
-#: later.
-AGENT_FILENAMES: Final = ("AGENTS.md", "CLAUDE.md", "GEMINI.md")
-
-#: A generated file says so on its first line. Nothing parses this -- byte
-#: equality against a regenerated pointer is the check
-#: (`details/agent-instruction-layering.md` section 7) -- but a person opening
-#: the file should not have to guess where it came from.
-POINTER_MARKER: Final = "<!-- never4ga:pointer -->"
 
 GITIGNORE_BEGIN: Final = "# BEGIN never4ga agent instruction files"
 GITIGNORE_END: Final = "# END never4ga agent instruction files"

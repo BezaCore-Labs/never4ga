@@ -15,6 +15,7 @@ from typing import Any, Final
 from never4ga.domain.document import VaultPath
 
 __all__ = [
+    "AGENT_FILENAMES",
     "ARCHIVE_SECTIONS",
     "AREA_MANIFEST",
     "CHILD_WORKSPACE_DIRECTORY",
@@ -22,6 +23,7 @@ __all__ = [
     "INBOX_RESERVED_NAMES",
     "INBOX_SCRATCHPAD_NAME",
     "KNOWLEDGE_DIRECTORIES",
+    "POINTER_MARKER",
     "RESERVED_INDEX",
     "RESERVED_LOG",
     "ROOT_INDEX",
@@ -36,6 +38,7 @@ __all__ = [
     "archived_counterpart",
     "flat_area_of",
     "foreign_names",
+    "is_agent_pointer",
     "is_foreign_format",
     "is_foreign_note",
     "is_life_area_content",
@@ -85,6 +88,33 @@ INBOX_SCRATCHPAD_NAME: Final = "scratchpad.md"
 #: the service that clears the pile need the same answer, and a listing that
 #: disagreed with the pack would send a session to file something it cannot see.
 INBOX_RESERVED_NAMES: Final = frozenset({RESERVED_INDEX, RESERVED_LOG, INBOX_SCRATCHPAD_NAME})
+
+#: Every agent instruction filename Never4gA may write as a generated pointer
+#: (`details/agent-instruction-layering.md` section 6). The list grows with
+#: the ecosystem; `details/tool-adapter-matrix.md` is where a new client is
+#: recorded, and a client descriptor's `repository_rules_path` is what adds one
+#: here in practice. These are the names gitignored even when no client on this
+#: machine uses them, so a repository stays safe on a machine that installs one
+#: later.
+AGENT_FILENAMES: Final = ("AGENTS.md", "CLAUDE.md", "GEMINI.md")
+
+#: A generated pointer says so on its first line. Sync compares a pointer by
+#: byte equality against a regenerated one (`details/agent-instruction-layering.md`
+#: section 7); this line is what lets a person, and the vault scan, tell a
+#: generated pointer from a hand-written file by the same name (core/02
+#: section 3.3).
+POINTER_MARKER: Final = "<!-- never4ga:pointer -->"
+
+
+def is_agent_pointer(name: str, first_line: str) -> bool:
+    """Is a file with this name and first line a generated agent pointer?
+
+    core/02 section 3.3: such a pointer is tool-owned wherever it sits, which
+    is how a vault that is itself a mapped repository holds the pointers every
+    mapped repository holds. A hand-written file by the same name is not one.
+    """
+    return name in AGENT_FILENAMES and first_line.strip() == POINTER_MARKER
+
 
 #: Semantic manifests, kept separate from ``index.md`` so that OKF navigation
 #: semantics survive (core/01 section 4).
